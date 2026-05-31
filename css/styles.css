@@ -837,19 +837,16 @@ section{ padding-block:var(--section-py); position:relative; }
   content:""; width:5px; height:5px; border-radius:50%; flex:none;
   background:var(--accent); box-shadow:var(--glow-lime-sm);
 }
-.defense__label-short{ display:none; }
 .defense__label--floor{ bottom:var(--space-4); left:var(--space-5); color:var(--accent-2-text); }
 .defense__label--floor .defense__label-v{ color:var(--text-muted); letter-spacing:0.06em; }
 @media (max-width:519px){
   .defense__label-v{ display:none; }              /* keep mobile uncluttered */
   .defense__label--surface, .defense__label--floor{ left:var(--space-4); }
-  /* swap to the short label and lift it INTO the empty band above the line,
-     right-aligned and clear of the central burst + the site below it. */
-  .defense__label-full{ display:none; }
-  .defense__label-short{ display:inline; }
-  .defense__label--boundary{
-    top:calc(var(--defense-bound) - 2.4em); right:var(--space-4);
-  }
+  /* Drop the boundary chip on mobile. A floating tag in the narrow attack
+     airspace always read awkward; the burst lands ON the line and the floor
+     label ("one layer below · out of reach") already carries the meaning. The
+     figure's aria-label still states "reach ends here" for assistive tech. */
+  .defense__label--boundary{ display:none; }
 }
 
 /* ---- The statement: argument (left) + payoff spec row (right/below). ----- */
