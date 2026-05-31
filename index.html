@@ -181,66 +181,119 @@
           </p>
         </div>
 
-        <div class="services-grid reveal-group">
-          <!-- Card 1 -->
-          <article class="card card--service">
-            <div class="lottie-well">
-              <div class="lottie-mount" data-lottie="assets/lottie/malware-removal.json" role="img" aria-label="Animation of automated malware being detected and removed from a website"></div>
+        <!-- ── Watch console: one screen, four scan passes ──────────── -->
+        <div class="console reveal" data-console>
+          <!-- LEFT: the screen being watched -->
+          <div class="console__screen">
+            <div class="screen-chrome">
+              <span class="screen-chrome__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="screen-chrome__url">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                yoursite.com
+              </span>
+              <span class="screen-chrome__live"><span class="screen-chrome__pulse" aria-hidden="true"></span>LIVE</span>
             </div>
-            <span class="card__eyebrow">01 — Remove</span>
-            <h3 class="card__title">Malware Removal</h3>
-            <p class="card__body">Infected? We clean it — automatically, completely, with no surprise invoice.</p>
-            <ul class="feature-list">
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Automated removal, not a manual ticket queue</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>No per-clean fees, ever</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Backed by our money-back guarantee</li>
-            </ul>
-          </article>
 
-          <!-- Card 2 -->
-          <article class="card card--service">
-            <div class="lottie-well">
-              <div class="lottie-mount" data-lottie="assets/lottie/file-integrity-main.json" role="img" aria-label="Animation of file integrity scanning and hash verification"></div>
+            <div class="screen-stage">
+              <!-- All four mount; only the active one is shown + played -->
+              <div class="lottie-mount" data-pass="0" data-lottie="assets/lottie/malware-removal.json" role="img" aria-label="Animation of automated malware being detected and removed from a website"></div>
+              <div class="lottie-mount" data-pass="1" data-lottie="assets/lottie/file-integrity-main.json" role="img" aria-label="Animation of file integrity scanning and hash verification" hidden></div>
+              <div class="lottie-mount" data-pass="2" data-lottie="assets/lottie/root-cause-Determination-main.json" role="img" aria-label="Animation tracing an attacker’s entry point back to its root cause" hidden></div>
+              <div class="lottie-mount" data-pass="3" data-lottie="assets/lottie/total-protection-main.json" role="img" aria-label="Animation of continuous, around-the-clock site monitoring and intrusion detection" hidden></div>
+              <span class="screen-stage__scanline" aria-hidden="true"></span>
+              <span class="screen-stage__grid" aria-hidden="true"></span>
             </div>
-            <span class="card__eyebrow">02 — Verify</span>
-            <h3 class="card__title">File Integrity Monitoring</h3>
-            <p class="card__body">We hash your files and verify them against known-good WordPress core, so unauthorized changes surface the moment they appear.</p>
-            <ul class="feature-list">
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>4-second average scan</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>WP core hash verification</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Catches changes you would never see in cPanel</li>
-            </ul>
-          </article>
 
-          <!-- Card 3 -->
-          <article class="card card--service">
-            <div class="lottie-well">
-              <div class="lottie-mount" data-lottie="assets/lottie/root-cause-Determination-main.json" role="img" aria-label="Animation tracing an attacker’s entry point back to its root cause"></div>
+            <div class="screen-readout" aria-hidden="true">
+              <span class="screen-readout__label" data-readout-label>scanning · malware signatures</span>
+              <span class="screen-readout__status"><span class="screen-readout__dot"></span><span data-readout-status>clean</span></span>
             </div>
-            <span class="card__eyebrow">03 — Investigate</span>
-            <h3 class="card__title">Root-Cause Determination</h3>
-            <p class="card__body">A clean site that stays vulnerable gets reinfected. We find HOW the attacker got in — not just the file they left behind.</p>
-            <ul class="feature-list">
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Traces the entry point, not just the symptom</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Closes the door reinfections walk through</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Real analysis from a security expert</li>
-            </ul>
-          </article>
+          </div>
 
-          <!-- Card 4 -->
-          <article class="card card--service">
-            <div class="lottie-well">
-              <div class="lottie-mount" data-lottie="assets/lottie/total-protection-main.json" role="img" aria-label="Animation of continuous, around-the-clock site monitoring and intrusion detection"></div>
+          <!-- RIGHT: the four scan passes as a tablist -->
+          <div class="console__rail">
+            <div class="console__rail-head">
+              <span class="console__eyebrow">Continuous scan · 4 passes</span>
+              <button type="button" class="console__toggle" data-console-toggle aria-pressed="false">
+                <span class="console__toggle-icon" aria-hidden="true">
+                  <svg class="icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+                  <svg class="icon-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                </span>
+                <span class="console__toggle-label" data-console-toggle-label>Pause</span>
+              </button>
             </div>
-            <span class="card__eyebrow">04 — Protect</span>
-            <h3 class="card__title">Total Protection</h3>
-            <p class="card__body">Continuous monitoring and intrusion detection watching your site around the clock — so threats are caught while they are still small.</p>
-            <ul class="feature-list">
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Continuous, always-on monitoring</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Intrusion detection at the infrastructure level</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Alerts before a problem becomes an outage</li>
-            </ul>
-          </article>
+            <div class="passes" role="tablist" aria-label="Site protection scan passes" aria-orientation="vertical" data-passes>
+
+              <button class="pass is-active" role="tab" id="pass-tab-0" aria-selected="true" aria-controls="pass-panel-0" data-pass-btn="0">
+                <span class="pass__num">01</span>
+                <span class="pass__main">
+                  <span class="pass__title">Malware Removal</span>
+                  <span class="pass__verb">Remove</span>
+                </span>
+                <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
+              </button>
+              <div class="pass-panel" role="tabpanel" id="pass-panel-0" aria-labelledby="pass-tab-0" data-pass-panel="0" tabindex="0">
+                <p class="pass__body">Infected? We clean it — automatically, completely, with no surprise invoice.</p>
+                <ul class="feature-list">
+                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Automated removal, not a manual ticket queue</li>
+                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>No per-clean fees, ever</li>
+                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Backed by our money-back guarantee</li>
+                </ul>
+              </div>
+
+              <button class="pass" role="tab" id="pass-tab-1" aria-selected="false" aria-controls="pass-panel-1" tabindex="-1" data-pass-btn="1">
+                <span class="pass__num">02</span>
+                <span class="pass__main">
+                  <span class="pass__title">File Integrity Monitoring</span>
+                  <span class="pass__verb">Verify</span>
+                </span>
+                <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
+              </button>
+              <div class="pass-panel" role="tabpanel" id="pass-panel-1" aria-labelledby="pass-tab-1" data-pass-panel="1" tabindex="0" hidden>
+                <p class="pass__body">We hash your files and verify them against known-good WordPress core, so unauthorized changes surface the moment they appear.</p>
+                <ul class="feature-list">
+                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>4-second average scan</li>
+                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>WP core hash verification</li>
+                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Catches changes you would never see in cPanel</li>
+                </ul>
+              </div>
+
+              <button class="pass" role="tab" id="pass-tab-2" aria-selected="false" aria-controls="pass-panel-2" tabindex="-1" data-pass-btn="2">
+                <span class="pass__num">03</span>
+                <span class="pass__main">
+                  <span class="pass__title">Root-Cause Determination</span>
+                  <span class="pass__verb">Investigate</span>
+                </span>
+                <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
+              </button>
+              <div class="pass-panel" role="tabpanel" id="pass-panel-2" aria-labelledby="pass-tab-2" data-pass-panel="2" tabindex="0" hidden>
+                <p class="pass__body">A clean site that stays vulnerable gets reinfected. We find HOW the attacker got in — not just the file they left behind.</p>
+                <ul class="feature-list">
+                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Traces the entry point, not just the symptom</li>
+                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Closes the door reinfections walk through</li>
+                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Real analysis from a security expert</li>
+                </ul>
+              </div>
+
+              <button class="pass" role="tab" id="pass-tab-3" aria-selected="false" aria-controls="pass-panel-3" tabindex="-1" data-pass-btn="3">
+                <span class="pass__num">04</span>
+                <span class="pass__main">
+                  <span class="pass__title">Total Protection</span>
+                  <span class="pass__verb">Protect</span>
+                </span>
+                <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
+              </button>
+              <div class="pass-panel" role="tabpanel" id="pass-panel-3" aria-labelledby="pass-tab-3" data-pass-panel="3" tabindex="0" hidden>
+                <p class="pass__body">Continuous monitoring and intrusion detection watching your site around the clock — so threats are caught while they are still small.</p>
+                <ul class="feature-list">
+                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Continuous, always-on monitoring</li>
+                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Intrusion detection at the infrastructure level</li>
+                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Alerts before a problem becomes an outage</li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
     </section>

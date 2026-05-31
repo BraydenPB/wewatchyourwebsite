@@ -1,7 +1,7 @@
 /* ============================================================
    WWYW landing — orchestration
    - Mounts LetterGlitch into hero / dividers / footer
-   - Lazy-loads the 4 Lottie pillar animations (lottie-web CDN)
+   - Drives the "watch console" — 4 Lottie scan passes on one screen
    - Sticky-header scroll state + mobile menu
    - IntersectionObserver scroll-reveal
    ============================================================ */
@@ -26,43 +26,194 @@
     });
   }
 
-  /* ---------- Lottie pillar animations ---------- */
-  function mountLottie() {
-    if (typeof window.lottie === "undefined") return;
-    var mounts = document.querySelectorAll("[data-lottie]");
-    if (!mounts.length) return;
+  /* ---------- Watch console: one screen, four scan passes ----------
+     - Lazy-loads all 4 Lottie animations (lottie-web CDN), but only the
+       ACTIVE pass plays — the rest are paused (perf + the "same screen,
+       four passes" concept).
+     - Auto-cycles through the 4 passes; pauses on hover/focus/off-screen.
+     - Real tablist: arrow-key nav, aria-selected, panels toggle hidden.
+     - prefers-reduced-motion: no autoplay, no auto-cycle, holds a static
+       frame; user can still click between passes.
+  ------------------------------------------------------------------- */
+  var READOUTS = [
+    { label: "scanning · malware signatures", status: "removing" },
+    { label: "hashing · core file integrity", status: "verified" },
+    { label: "tracing · attacker entry point", status: "root cause" },
+    { label: "monitoring · intrusion detection", status: "protected" }
+  ];
 
-    function load(el) {
-      if (el.dataset.loaded === "true") return;
+  function mountConsole() {
+    var root = document.querySelector("[data-console]");
+    if (!root || typeof window.lottie === "undefined") return;
+
+    var mounts = Array.prototype.slice.call(root.querySelectorAll("[data-lottie]"));
+    var tabs = Array.prototype.slice.call(root.querySelectorAll("[data-pass-btn]"));
+    var panels = Array.prototype.slice.call(root.querySelectorAll("[data-pass-panel]"));
+    var screen = root.querySelector(".console__screen");
+    var readoutLabel = root.querySelector("[data-readout-label]");
+    var readoutStatus = root.querySelector("[data-readout-status]");
+    if (!mounts.length || !tabs.length) return;
+
+    var DWELL = 5200; // ms per pass — keep in sync with --pass-dwell
+    var anims = [];
+    var active = 0;
+    var toggle = root.querySelector("[data-console-toggle]");
+    var toggleLabel = root.querySelector("[data-console-toggle-label]");
+    var canHover = typeof matchMedia === "function" && matchMedia("(hover: hover)").matches;
+
+    var timer = null;
+    var hoverPaused = false; // transient: pointer/focus inside the console
+    var userPaused = false;  // sticky: user pressed the toggle (or tapped on touch)
+    var visible = false;
+
+    function isHalted() { return hoverPaused || userPaused; }
+
+    function load(i) {
+      var el = mounts[i];
+      if (!el || el.dataset.loaded === "true") return;
       el.dataset.loaded = "true";
-      var anim = window.lottie.loadAnimation({
+      anims[i] = window.lottie.loadAnimation({
         container: el,
         renderer: "svg",
         loop: true,
-        autoplay: !prefersReduced,
+        autoplay: false,
         path: el.getAttribute("data-lottie")
       });
-      if (prefersReduced) {
-        anim.addEventListener("DOMLoaded", function () {
-          // hold a representative static frame
-          anim.goToAndStop(Math.floor(anim.totalFrames * 0.5), true);
-        });
+      // play immediately if this is the active pass and we're allowed to move
+      anims[i].addEventListener("DOMLoaded", function () {
+        if (prefersReduced) {
+          anims[i].goToAndStop(Math.floor(anims[i].totalFrames * 0.55), true);
+        } else if (i === active && visible && !isHalted()) {
+          anims[i].play();
+        }
+      });
+    }
+
+    function select(i, focusTab) {
+      if (i === active) return;
+      // swap tab state
+      tabs.forEach(function (t, n) {
+        var on = n === i;
+        t.classList.toggle("is-active", on);
+        t.setAttribute("aria-selected", on ? "true" : "false");
+        t.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach(function (p, n) { p.hidden = n !== i; });
+      // swap screen: hide+stop old, show+play new
+      mounts.forEach(function (m, n) { m.hidden = n !== i; });
+      if (anims[active]) anims[active].stop();
+      active = i;
+      load(active);
+      if (anims[active] && !prefersReduced && visible && !isHalted()) anims[active].play();
+      if (readoutLabel) readoutLabel.textContent = READOUTS[i].label;
+      if (readoutStatus) readoutStatus.textContent = READOUTS[i].status;
+      restartBar();
+      if (focusTab) tabs[i].focus();
+    }
+
+    // re-trigger the active pass's progress-bar fill animation
+    function restartBar() {
+      var fill = tabs[active].querySelector(".pass__bar-fill");
+      if (!fill) return;
+      fill.style.animation = "none";
+      // force reflow so the animation restarts
+      void fill.offsetWidth;
+      fill.style.animation = "";
+    }
+
+    function advance() { select((active + 1) % tabs.length); }
+
+    function startCycle() {
+      if (prefersReduced || isHalted() || !visible || timer) return;
+      restartBar();
+      timer = window.setInterval(advance, DWELL);
+    }
+    function stopCycle() {
+      if (timer) { window.clearInterval(timer); timer = null; }
+    }
+    // Apply the current halt state: stop/pause when halted, resume otherwise.
+    function applyHalt() {
+      var halted = isHalted();
+      root.setAttribute("data-paused", halted ? "true" : "false");
+      if (halted) {
+        stopCycle();
+        if (anims[active]) anims[active].pause();
+      } else {
+        if (anims[active] && !prefersReduced && visible) anims[active].play();
+        startCycle();
+      }
+    }
+    function setHoverPaused(state) {
+      // a sticky user-pause overrides transient hover state
+      if (userPaused) { hoverPaused = state; return; }
+      hoverPaused = state;
+      applyHalt();
+    }
+    function setUserPaused(state) {
+      userPaused = state;
+      if (toggle) {
+        toggle.setAttribute("aria-pressed", state ? "true" : "false");
+        if (toggleLabel) toggleLabel.textContent = state ? "Play" : "Pause";
+      }
+      applyHalt();
+    }
+
+    // ----- wire interactions -----
+    // Toggle button — the discoverable WCAG 2.2.2 pause control.
+    if (toggle) {
+      toggle.addEventListener("click", function () { setUserPaused(!userPaused); });
+    }
+
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener("click", function () {
+        // On touch (no hover), a tap is the user taking control — pause stickily
+        // so a reader is never yanked off the pass they just chose.
+        if (!canHover && !userPaused) setUserPaused(true);
+        select(i, false);
+      });
+      tab.addEventListener("keydown", function (e) {
+        var key = e.key;
+        var next = null;
+        if (key === "ArrowDown" || key === "ArrowRight") next = (i + 1) % tabs.length;
+        else if (key === "ArrowUp" || key === "ArrowLeft") next = (i - 1 + tabs.length) % tabs.length;
+        else if (key === "Home") next = 0;
+        else if (key === "End") next = tabs.length - 1;
+        if (next !== null) { e.preventDefault(); select(next, true); }
+      });
+    });
+
+    // transient pause on hover / focus within the console
+    root.addEventListener("mouseenter", function () { setHoverPaused(true); });
+    root.addEventListener("mouseleave", function () { setHoverPaused(false); });
+    root.addEventListener("focusin", function () { setHoverPaused(true); });
+    root.addEventListener("focusout", function () {
+      if (!root.contains(document.activeElement)) setHoverPaused(false);
+    });
+
+    // visibility: only run while on screen
+    function onVisible(isVisible) {
+      visible = isVisible;
+      if (isVisible) {
+        load(active);
+        if (anims[active] && !prefersReduced && !isHalted()) anims[active].play();
+        startCycle();
+      } else {
+        stopCycle();
+        if (anims[active]) anims[active].pause();
       }
     }
 
-    if (!("IntersectionObserver" in window)) {
-      mounts.forEach(load);
-      return;
+    // preload the active pass right away; lazily warm the rest after
+    load(active);
+
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) { onVisible(entry.isIntersecting); });
+      }, { rootMargin: "0px", threshold: 0.25 });
+      io.observe(screen || root);
+    } else {
+      onVisible(true);
     }
-    var io = new IntersectionObserver(function (entries, obs) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          load(entry.target);
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { rootMargin: "200px 0px" });
-    mounts.forEach(function (el) { io.observe(el); });
   }
 
   /* ---------- Sticky header scroll state ---------- */
@@ -213,7 +364,7 @@
 
   function init() {
     mountGlitch();
-    mountLottie();
+    mountConsole();
     stickyHeader();
     mobileMenu();
     scrollSpy();
