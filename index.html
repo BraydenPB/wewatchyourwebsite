@@ -225,10 +225,17 @@
             <div class="passes" role="tablist" aria-label="Site protection scan passes" aria-orientation="vertical" data-passes>
 
               <button class="pass is-active" role="tab" id="pass-tab-0" aria-selected="true" aria-controls="pass-panel-0" data-pass-btn="0">
-                <span class="pass__num">01</span>
+                <span class="pass__status" aria-hidden="true">
+                  <span class="pass__num">01</span>
+                  <span class="pass__indicator"></span>
+                </span>
                 <span class="pass__main">
                   <span class="pass__title">Malware Removal</span>
                   <span class="pass__verb">Remove</span>
+                </span>
+                <span class="pass__result" aria-hidden="true">
+                  <span class="pass__result-state">scanning</span>
+                  <span class="pass__result-value">0 threats</span>
                 </span>
                 <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
               </button>
@@ -242,10 +249,17 @@
               </div>
 
               <button class="pass" role="tab" id="pass-tab-1" aria-selected="false" aria-controls="pass-panel-1" tabindex="-1" data-pass-btn="1">
-                <span class="pass__num">02</span>
+                <span class="pass__status" aria-hidden="true">
+                  <span class="pass__num">02</span>
+                  <span class="pass__indicator"></span>
+                </span>
                 <span class="pass__main">
                   <span class="pass__title">File Integrity Monitoring</span>
                   <span class="pass__verb">Verify</span>
+                </span>
+                <span class="pass__result" aria-hidden="true">
+                  <span class="pass__result-state">scanning</span>
+                  <span class="pass__result-value">files verified</span>
                 </span>
                 <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
               </button>
@@ -259,10 +273,17 @@
               </div>
 
               <button class="pass" role="tab" id="pass-tab-2" aria-selected="false" aria-controls="pass-panel-2" tabindex="-1" data-pass-btn="2">
-                <span class="pass__num">03</span>
+                <span class="pass__status" aria-hidden="true">
+                  <span class="pass__num">03</span>
+                  <span class="pass__indicator"></span>
+                </span>
                 <span class="pass__main">
                   <span class="pass__title">Root-Cause Determination</span>
                   <span class="pass__verb">Investigate</span>
+                </span>
+                <span class="pass__result" aria-hidden="true">
+                  <span class="pass__result-state">scanning</span>
+                  <span class="pass__result-value">entry sealed</span>
                 </span>
                 <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
               </button>
@@ -276,10 +297,17 @@
               </div>
 
               <button class="pass" role="tab" id="pass-tab-3" aria-selected="false" aria-controls="pass-panel-3" tabindex="-1" data-pass-btn="3">
-                <span class="pass__num">04</span>
+                <span class="pass__status" aria-hidden="true">
+                  <span class="pass__num">04</span>
+                  <span class="pass__indicator"></span>
+                </span>
                 <span class="pass__main">
                   <span class="pass__title">Total Protection</span>
                   <span class="pass__verb">Protect</span>
+                </span>
+                <span class="pass__result" aria-hidden="true">
+                  <span class="pass__result-state">scanning</span>
+                  <span class="pass__result-value">monitored 24/7</span>
                 </span>
                 <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
               </button>

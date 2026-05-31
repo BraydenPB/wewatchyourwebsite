@@ -615,30 +615,72 @@ section{ padding-block:var(--section-py); position:relative; }
 /* aria-pressed="true" = user has PAUSED → show the play (resume) affordance */
 .console__toggle[aria-pressed="true"] .icon-pause{ display:none; }
 .console__toggle[aria-pressed="true"] .icon-play{ display:inline; }
-.passes{ display:flex; flex-direction:column; }
+/* The rail reads as a live scan-status panel: every pass is steadily LIVE
+   (the product is continuous monitoring); the active pass is highlighted and
+   "scanning". Quieter than the screen — no per-row cards, a single inset
+   surface that slides to the active row. */
+.passes{
+  position:relative; display:flex; flex-direction:column;
+  border:1px solid var(--border-subtle); border-radius:var(--radius-md);
+  background:linear-gradient(180deg, var(--surface-1), var(--bg-base-2, var(--surface-1)));
+  overflow:hidden;
+}
 
 .pass{
-  position:relative; display:grid; grid-template-columns:auto 1fr; align-items:center;
+  position:relative; z-index:1; display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto; align-items:center;
   gap:var(--space-4); width:100%; text-align:left; cursor:pointer;
-  padding:var(--space-4) 0; background:none; border:0;
+  padding:var(--space-4) var(--space-5); background:none; border:0;
   border-top:1px solid var(--border-subtle); color:var(--text-secondary);
-  transition:color var(--dur-base) var(--ease-out);
+  transition:color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
 }
 .passes .pass:first-of-type{ border-top:0; }
-.pass:hover{ color:var(--text-primary); }
-.pass:focus-visible{ outline:none; box-shadow:var(--focus-ring-on-surface); border-radius:var(--radius-sm); }
+.pass:hover{ color:var(--text-primary); background:rgba(255,255,255,0.015); }
+.pass:focus-visible{ outline:none; box-shadow:inset var(--focus-ring-on-surface); border-radius:var(--radius-sm); }
+
+/* ---- status cell: number that becomes a live scan indicator ---- */
+.pass__status{
+  position:relative; display:grid; place-items:center;
+  width:1.75rem; height:1.75rem; flex:none;
+}
 .pass__num{
   font-family:var(--font-mono); font-size:var(--text-small); font-weight:600;
+  color:var(--text-muted); transition:color var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
+}
+/* quiet "live" dot for non-active passes; scanning ring for the active one */
+.pass__indicator{
+  position:absolute; inset:0; margin:auto; width:7px; height:7px; border-radius:50%;
+  background:var(--text-faint, #5b6479); opacity:0; transform:scale(0.6);
+  transition:opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+
+/* title over a quiet verb sub-label (stacked, like the stats data-tag) — keeps
+   the whole right column free for the live result chip, no collision */
+.pass__main{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.pass__verb{
+  order:-1;
+  font-family:var(--font-mono); font-size:10px; font-weight:500; letter-spacing:0.18em;
+  text-transform:uppercase; color:var(--text-faint);
+  transition:color var(--dur-base) var(--ease-out);
+}
+.pass__title{ font-size:var(--text-body-lg); font-weight:600; color:inherit; line-height:1.15; }
+
+/* ---- live result chip (right): per-site watch result ---- */
+.pass__result{
+  display:flex; flex-direction:column; align-items:flex-end; gap:1px; flex:none;
+  text-align:right; font-family:var(--font-mono);
+}
+.pass__result-state{
+  font-size:9px; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--text-faint, #5b6479); line-height:1;
+  opacity:0; height:0; overflow:hidden; transition:opacity var(--dur-base) var(--ease-out);
+}
+.pass__result-value{
+  font-size:var(--text-xs); font-weight:500; letter-spacing:0.02em;
   color:var(--text-muted); transition:color var(--dur-base) var(--ease-out);
 }
-.pass__main{ display:flex; align-items:baseline; gap:var(--space-3); min-width:0; }
-.pass__title{ font-size:var(--text-body-lg); font-weight:600; color:inherit; }
-.pass__verb{
-  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.04em;
-  text-transform:uppercase; color:var(--text-muted);
-  padding:0.125rem 0.5rem; border-radius:var(--radius-pill);
-  border:1px solid var(--border-subtle); flex:none;
-}
+@media (max-width:560px){ .pass__result{ display:none; } }
+
 /* progress bar under each pass — fills while that pass is the active auto-cycle target */
 .pass__bar{
   position:absolute; left:0; right:0; bottom:-1px; height:2px; grid-column:1 / -1;
@@ -646,35 +688,60 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 .pass__bar-fill{
   display:block; height:100%; width:100%; transform:scaleX(0); transform-origin:left;
-  background:var(--accent);
+  background:linear-gradient(90deg, var(--accent), var(--accent-2, var(--accent)));
 }
 
-.pass.is-active{ color:var(--text-primary); }
-.pass.is-active .pass__num{ color:var(--text-accent); }
-.pass.is-active .pass__verb{ color:var(--text-accent); border-color:var(--accent-border); background:var(--accent-soft); }
+/* ---- ACTIVE pass: the row being scanned right now ---- */
+.pass.is-active{ color:var(--text-primary); background:var(--surface-inset); }
+.pass.is-active::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent) 30%, transparent));
+}
+.pass.is-active .pass__num{ opacity:0; }
+.pass.is-active .pass__indicator{
+  opacity:1; transform:scale(1); background:var(--accent);
+  box-shadow:0 0 0 0 rgba(105,255,18,0.5); animation:pass-scan 2s var(--ease-out) infinite;
+}
+.pass.is-active .pass__verb{ color:var(--text-accent); }
+.pass.is-active .pass__result-state{ opacity:1; height:auto; color:var(--text-accent); }
+.pass.is-active .pass__result-value{ color:var(--text-primary); }
 .pass.is-active .pass__bar{ background:var(--border-subtle); }
 /* fill animates over the auto-cycle interval; paused/instant per JS + reduced-motion */
 .pass.is-active .pass__bar-fill{
   animation:pass-fill var(--pass-dwell, 5200ms) linear forwards;
 }
 .console[data-paused="true"] .pass.is-active .pass__bar-fill{ animation-play-state:paused; }
+.console[data-paused="true"] .pass.is-active .pass__indicator{ animation-play-state:paused; }
 @keyframes pass-fill{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+@keyframes pass-scan{
+  0%{ box-shadow:0 0 0 0 rgba(105,255,18,0.5); }
+  70%{ box-shadow:0 0 0 7px rgba(105,255,18,0); }
+  100%{ box-shadow:0 0 0 0 rgba(105,255,18,0); }
+}
 
 @media (prefers-reduced-motion: reduce){
   .screen-stage__scanline,
-  .screen-chrome__pulse{ animation:none; }
+  .screen-chrome__pulse,
+  .pass.is-active .pass__indicator{ animation:none; }
   .screen-stage__scanline{ opacity:0; }
   .pass.is-active .pass__bar-fill{ animation:none; transform:scaleX(1); }
 }
 
-/* the expanding copy panel */
-.pass-panel{ padding:0 0 var(--space-5) calc(2ch + var(--space-4)); }
+/* the expanding copy panel — continues the active row's inset surface */
+.pass-panel{
+  position:relative; z-index:1;
+  background:var(--surface-inset);
+  padding:0 var(--space-5) var(--space-5) calc(1.75rem + var(--space-4) + var(--space-5));
+}
+.pass-panel::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:linear-gradient(180deg, color-mix(in oklab, var(--accent) 30%, transparent), transparent);
+}
 .pass-panel[hidden]{ display:none; }
 .pass__body{ color:var(--text-secondary); margin-bottom:var(--space-4); }
 
 @media (max-width:560px){
-  .pass-panel{ padding-left:0; }
-  .pass__main{ flex-direction:column; gap:2px; }
+  .pass-panel{ padding-left:var(--space-5); }
 }
 
 .feature-list{ display:flex; flex-direction:column; gap:var(--space-3); }
