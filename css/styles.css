@@ -1248,3 +1248,238 @@ section{ padding-block:var(--section-py); position:relative; }
    custom properties) cross the boundary. The lime shield glyph
    (.wm-cls-21) and radial gradient are intentionally left untouched.
    ============================================================ */
+
+/* ============================================================
+   HERO STATS — six field metrics under the hero CTA. A mono readout
+   row, not cards: hairline-separated cells that wrap responsively.
+   ============================================================ */
+.hero-stats{
+  display:grid; grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:var(--space-5) var(--space-6); margin-top:var(--space-7);
+  max-width:600px;
+}
+@media (min-width:560px){ .hero-stats{ grid-template-columns:repeat(3, minmax(0,1fr)); } }
+.hero-stat{ margin:0; position:relative; padding-left:var(--space-4); border-left:1px solid var(--border-default); }
+.hero-stat::before{
+  content:""; position:absolute; left:-1px; top:0; width:2px; height:20px;
+  background:linear-gradient(180deg, var(--accent), transparent); border-radius:2px;
+}
+.hero-stat__num{
+  font-family:var(--font-display); font-weight:600; line-height:1;
+  font-size:clamp(1.5rem, 1.2rem + 1vw, 2rem); letter-spacing:-0.03em;
+  font-feature-settings:"tnum"; color:var(--text-primary); white-space:nowrap;
+}
+/* The count-up JS rewrites the inner suffix span to .stat__sup, so style both. */
+.hero-stat__num .hero-stat__sup,
+.hero-stat__num .stat__sup{
+  font-size:0.5em; font-weight:500; color:var(--text-secondary);
+  vertical-align:0.5em; margin-left:0.04em; letter-spacing:0;
+}
+.hero-stat--accent .hero-stat__num{ color:var(--accent); }
+.hero-stat__label{
+  margin:var(--space-2) 0 0; font-family:var(--font-mono);
+  font-size:var(--text-xs); letter-spacing:0.03em; color:var(--text-muted);
+  line-height:1.4; text-transform:uppercase;
+}
+
+/* ============================================================
+   CODE ANALYZER — second product. Glitch backdrop (low-text zone framing
+   the pipeline), headline numbers, then the eight-stage pipeline conveyor.
+   ============================================================ */
+.analyzer{ position:relative; isolation:isolate; overflow:hidden; }
+.analyzer__bg{ position:absolute; inset:0; z-index:-2; background:#000; opacity:0.30; }
+.analyzer__bg-fade{
+  position:absolute; inset:0; z-index:-1;
+  background:linear-gradient(180deg, var(--bg-base) 0%, rgba(5,6,10,0.86) 30%, rgba(5,6,10,0.86) 70%, var(--bg-base) 100%);
+}
+
+.analyzer-stats{
+  display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:var(--grid-gap);
+  margin-bottom:var(--section-gap);
+}
+@media (min-width:780px){ .analyzer-stats{ grid-template-columns:repeat(4, minmax(0,1fr)); } }
+.analyzer-stat{
+  border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  padding:var(--space-5);
+  background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.analyzer-stat__num{
+  display:block; font-family:var(--font-display); font-weight:600; line-height:1;
+  font-size:clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); letter-spacing:-0.03em;
+  font-feature-settings:"tnum"; color:var(--accent);
+}
+.analyzer-stat__num .analyzer-stat__sup,
+.analyzer-stat__num .stat__sup{
+  font-size:0.5em; font-weight:500; color:var(--text-secondary); vertical-align:0.5em; letter-spacing:0;
+}
+.analyzer-stat__num--text{ color:var(--accent-2-text); letter-spacing:0.02em; }
+.analyzer-stat__label{
+  display:block; margin-top:var(--space-3); font-size:var(--text-small);
+  color:var(--text-muted); line-height:1.5;
+}
+
+/* ---- The pipeline conveyor ---- */
+.pipeline{ position:relative; max-width:760px; margin-inline:auto; }
+.pipeline__source,.pipeline__output{
+  display:flex; flex-direction:column; gap:2px; align-items:center; text-align:center;
+  padding:var(--space-4) var(--space-5); border-radius:var(--radius-md);
+  border:1px dashed var(--border-strong); background:var(--surface-inset);
+  font-family:var(--font-mono);
+}
+.pipeline__source-label,.pipeline__output-label{
+  font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-faint);
+}
+.pipeline__source-val{ font-size:var(--text-small); color:var(--text-secondary); }
+.pipeline__output{ border-style:solid; border-color:var(--accent-border); background:var(--accent-soft); }
+.pipeline__output-label{ color:var(--accent-2-text); }
+.pipeline__output-val{ font-size:var(--text-small); color:var(--text-accent); font-weight:600; }
+
+.pipeline__stages{ list-style:none; margin:var(--space-2) 0; padding:0; }
+
+/* Each stage: a number node on a vertical rail + the stage copy. The rail
+   segment connects to the previous node; the travelling scan packet (JS) lights
+   nodes as it descends. Readable with no JS — nodes are quiet by default. */
+.pipeline-stage{
+  position:relative; display:grid; grid-template-columns:auto 1fr; gap:var(--space-4);
+  padding:var(--space-4) 0; padding-left:var(--space-2);
+}
+.pipeline-stage__rail{
+  position:absolute; left:calc(0.875rem + var(--space-2)); top:0; bottom:0; width:2px;
+  background:var(--border-default); transform:translateX(-50%);
+}
+.pipeline-stage:first-child .pipeline-stage__rail{ top:50%; }
+.pipeline-stage:last-child .pipeline-stage__rail{ bottom:50%; }
+.pipeline-stage__num{
+  position:relative; z-index:1; flex:none;
+  width:1.75rem; height:1.75rem; display:grid; place-items:center;
+  border-radius:50%; background:var(--surface-2); border:1px solid var(--border-strong);
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:600; color:var(--text-muted);
+  transition:color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out),
+             background var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+}
+.pipeline-stage__body{ display:flex; flex-direction:column; gap:2px; padding-top:1px; min-width:0; }
+.pipeline-stage__title{ font-family:var(--font-display); font-weight:600; font-size:var(--text-h5); color:var(--text-primary); line-height:1.25; }
+.pipeline-stage__desc{ font-size:var(--text-small); color:var(--text-muted); line-height:1.5; }
+
+/* Lit state — set by JS as the packet passes (and held after). */
+.pipeline-stage.is-lit .pipeline-stage__num{
+  color:var(--text-on-accent); background:var(--accent); border-color:var(--accent);
+  box-shadow:var(--glow-lime-sm);
+}
+.pipeline-stage.is-lit .pipeline-stage__rail{ background:linear-gradient(180deg, var(--accent), var(--border-default)); }
+.analyzer__cta{ display:flex; flex-wrap:wrap; gap:var(--space-4); justify-content:center; margin-top:var(--section-gap); }
+
+@media (prefers-reduced-motion: reduce){
+  .pipeline-stage .pipeline-stage__num{ transition:none; }
+}
+
+/* ============================================================
+   WHY THIS IS DIFFERENT + INCIDENT RESPONSE
+   ============================================================ */
+.link-arrow{
+  display:inline-flex; align-items:center; gap:var(--space-2); margin-top:var(--space-5);
+  font-family:var(--font-mono); font-size:var(--text-small); font-weight:500;
+  letter-spacing:0.02em; color:var(--text-accent);
+}
+.link-arrow svg{ transition:transform var(--dur-base) var(--ease-out); }
+.link-arrow:hover{ color:var(--text-link-hover); }
+.link-arrow:hover svg{ transform:translate(2px,-2px); }
+.link-arrow:focus-visible{ box-shadow:var(--focus-ring); border-radius:var(--radius-sm); }
+
+.incidents{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr; gap:var(--space-4); }
+@media (min-width:680px){ .incidents{ grid-template-columns:repeat(2, minmax(0,1fr)); gap:var(--grid-gap); } }
+.incident{
+  position:relative; padding:var(--space-5); padding-left:var(--space-6);
+  border:1px solid var(--border-subtle); border-radius:var(--radius-md);
+  background:linear-gradient(180deg, var(--surface-1) 0%, var(--bg-base-2) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
+  transition:border-color var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+.incident::before{
+  content:""; position:absolute; left:0; top:var(--space-5); bottom:var(--space-5); width:2px;
+  background:linear-gradient(180deg, var(--accent-2), transparent); border-radius:2px;
+}
+.incident:hover{ border-color:var(--border-default); transform:translateY(-2px); }
+.incident__year{
+  display:inline-block; margin-bottom:var(--space-3);
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:600;
+  letter-spacing:0.14em; color:var(--accent-2-text);
+}
+.incident__desc{ color:var(--text-secondary); font-size:var(--text-body); line-height:1.55; }
+
+/* ============================================================
+   HOSTING PARTNERS
+   ============================================================ */
+.partner-grid{
+  list-style:none; margin:0; padding:0;
+  display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:var(--grid-gap);
+}
+@media (min-width:680px){ .partner-grid{ grid-template-columns:repeat(3, minmax(0,1fr)); } }
+.partner{
+  display:flex; flex-direction:column; gap:var(--space-3);
+  padding:var(--space-5); border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+  transition:border-color var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+.partner:hover{ border-color:var(--border-strong); transform:translateY(-2px); }
+.partner__name{ font-family:var(--font-display); font-weight:600; font-size:var(--text-h5); color:var(--text-primary); }
+.partner__status{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.06em;
+  text-transform:uppercase; color:var(--text-muted);
+}
+.partner__status--active{ color:var(--text-accent); }
+.partner__dot{ width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:var(--glow-lime-sm); animation:pulse 2.4s var(--ease-in-out) infinite; }
+@media (prefers-reduced-motion: reduce){ .partner__dot{ animation:none; } }
+.partner__status--available{ color:var(--accent-2-text); }
+.partner--cta{ border-style:dashed; border-color:var(--accent-border); background:var(--accent-soft); }
+.partner__link{
+  display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono);
+  font-size:var(--text-small); font-weight:600; color:var(--text-accent);
+}
+.partner__link svg{ transition:transform var(--dur-base) var(--ease-out); }
+.partner__link:hover svg{ transform:translateX(3px); }
+.partners__note{ margin-top:var(--space-7); text-align:center; }
+
+/* ============================================================
+   PRICING — two-product duo override
+   ============================================================ */
+@media (min-width:880px){
+  .pricing-grid--duo{ grid-template-columns:repeat(2, minmax(0,1fr)); max-width:840px; margin-inline:auto; }
+  /* The featured (WordPress) card no longer lifts above a third card — keep the
+     duo level so the two products read as co-equal. */
+  .pricing-grid--duo .price-card--featured{ transform:none; }
+  .pricing-grid--duo .price-card--featured:hover{ transform:translateY(-4px); }
+}
+
+/* ============================================================
+   BLOG TEASER
+   ============================================================ */
+.blog__head{
+  display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
+  gap:var(--space-4); max-width:none; margin-bottom:var(--space-7);
+}
+.post-grid{
+  list-style:none; margin:0; padding:0;
+  display:grid; grid-template-columns:1fr; gap:var(--grid-gap);
+}
+@media (min-width:780px){ .post-grid{ grid-template-columns:repeat(3, minmax(0,1fr)); } }
+.post{
+  display:flex; flex-direction:column; gap:var(--space-3); height:100%;
+  padding:var(--space-6); border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+  transition:border-color var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+}
+.post:hover{ border-color:var(--accent-border); transform:translateY(-4px); }
+.post:focus-visible{ box-shadow:var(--focus-ring); }
+.post__tag{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--text-accent);
+}
+.post__title{ font-size:var(--text-h5); color:var(--text-primary); line-height:1.3; }
+.post:hover .post__title{ color:var(--text-accent); }
+.post__excerpt{ font-size:var(--text-small); color:var(--text-muted); line-height:1.55; flex:1; }
+.post__meta{ font-family:var(--font-mono); font-size:var(--text-xs); color:var(--text-faint); letter-spacing:0.04em; }
