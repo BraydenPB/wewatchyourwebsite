@@ -784,153 +784,161 @@ section{ padding-block:var(--section-py); position:relative; }
 .feature-list .tick{ margin-top:2px; }
 
 /* ============================================================
-   HOW IT WORKS — asymmetric: sticky aside + layered diagram | timeline
+   HOW IT WORKS — one argument, one diagram.
+   The watch console above already lists the operational passes; this
+   section's only job is the plugin-vs-infrastructure / "one layer below"
+   argument. So it is NOT a two-column list — it is a single dominant
+   "depth field" read top-to-bottom: attack pressure descends, stops dead at a
+   hard boundary, and WWYW is the foundation everything rests on.
    ============================================================ */
-.how__grid{ display:grid; grid-template-columns:1fr; gap:var(--space-8); }
-@media (min-width:920px){
-  .how__grid{ grid-template-columns:minmax(0,0.92fr) minmax(0,1fr); gap:var(--space-9); align-items:start; }
-  .how__aside{ position:sticky; top:96px; }
-}
-.how__aside .section-head{ margin-bottom:var(--space-7); }
+.how__inner{ max-width:780px; margin-inline:auto; }
+.how__inner .section-head{ margin-bottom:var(--space-8); }
 
-/* Depth-stack diagram — the "we work one layer below" idea made spatial.
-   A bracketed "attacker's reach" zone holds the threat + the site; a hard
-   boundary line marks where that reach ends; WWYW sits below it as the
-   load-bearing foundation everything rests on, lime-edged and anchored. */
-.depth-stack{ position:relative; margin:0; max-width:454px; }
-/* Two columns: a narrow gutter for the reach bracket + the stacked layers.
-   The layers define the rows; the bracket spans exactly the rows inside the
-   attacker's reach (threat → site → boundary) so it always lines up, whatever
-   the content height. */
-.depth-stack__layers{
-  display:grid; grid-template-columns:14px 1fr; column-gap:var(--space-4); row-gap:var(--space-3);
-  min-width:0;
-}
-.depth-layer, .depth-boundary{ grid-column:2; }
+/* The depth field — one centered vertical diagram. */
+.depth-field{ margin:0; display:flex; flex-direction:column; }
 
-/* Reach bracket: spans the threat row through the boundary row. */
-.depth-stack__reach{
-  grid-column:1; grid-row:1 / 4; align-self:stretch; position:relative;
-  border-left:1px solid var(--border-strong);
-  border-top:1px solid var(--border-strong); border-bottom:1px solid var(--border-strong);
-  border-radius:var(--radius-xs) 0 0 var(--radius-xs);
+/* Tier marker — labels each element by WHAT IT IS (external / application /
+   infrastructure), inline so it always aligns. */
+.depth-plane__tier{
+  position:absolute; top:var(--space-3); right:var(--space-4);
+  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-faint);
 }
-.depth-stack__reach-label{
-  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) rotate(180deg);
-  writing-mode:vertical-rl;
-  font-family:var(--font-mono); font-size:9px; letter-spacing:0.18em; text-transform:uppercase;
-  color:var(--text-faint); white-space:nowrap;
-}
+.depth-plane__tier--safe{ position:static; display:block; color:var(--accent-2-text); margin-bottom:var(--space-4); }
 
-/* Shared layer card. */
-.depth-layer{
-  position:relative; display:flex; flex-direction:column; gap:2px;
-  padding:var(--space-4) var(--space-5); border-radius:var(--radius-md);
+/* Exposed zone — a recessed, inset surface holding the attack + the site.
+   Reads as "the danger zone": darker inset, a faint hatch, all within reach. */
+.depth-zone{ position:relative; border-radius:var(--radius-lg); }
+.depth-zone--exposed{
+  padding:var(--space-6) var(--space-5) var(--space-5);
   border:1px solid var(--border-default);
+  background:
+    repeating-linear-gradient(135deg, transparent 0 11px, rgba(255,255,255,0.015) 11px 12px),
+    linear-gradient(180deg, var(--surface-inset), var(--bg-base-2));
+}
+.depth-zone__label{
+  position:absolute; top:var(--space-4); left:var(--space-5);
+  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-faint);
+}
+
+/* The two exposed planes — flat slabs, muted, clearly "above the line". */
+.depth-plane{
+  position:relative; display:flex; flex-direction:column; gap:3px;
+  padding:var(--space-4) var(--space-5); border-radius:var(--radius-md);
+  border:1px solid var(--border-subtle);
   background:linear-gradient(180deg, var(--surface-1), var(--bg-base-2));
 }
-.depth-layer__meta{
-  display:flex; align-items:center; gap:var(--space-2);
-  font-family:var(--font-mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase;
-  color:var(--text-faint); margin-bottom:var(--space-1);
+.depth-plane--threat{ margin-top:var(--space-5); opacity:0.82; }
+.depth-plane__kicker{ font-family:var(--font-display); font-weight:600; font-size:var(--text-h6); color:var(--text-primary); line-height:1.2; }
+.depth-plane__detail{ font-size:var(--text-xs); color:var(--text-muted); font-family:var(--font-mono); letter-spacing:0.01em; max-width:52ch; }
+.depth-plane--threat .depth-plane__kicker{ color:var(--text-secondary); }
+
+/* Pressure — the attack flowing DOWN from the threat into the site. */
+.depth-pressure{
+  display:flex; justify-content:center; gap:var(--space-5);
+  padding:var(--space-3) 0; height:var(--space-7);
 }
-.depth-layer__tag{ font-family:var(--font-display); font-weight:600; font-size:var(--text-h6); color:var(--text-primary); line-height:1.2; }
-.depth-layer__sub{ font-size:var(--text-xs); color:var(--text-muted); font-family:var(--font-mono); letter-spacing:0.02em; }
+.depth-pressure__arrow{
+  width:1px; height:100%; position:relative;
+  background:linear-gradient(180deg, transparent, var(--border-strong));
+}
+.depth-pressure__arrow::after{
+  content:""; position:absolute; left:50%; bottom:0; transform:translate(-50%,1px) rotate(45deg);
+  width:5px; height:5px; border-right:1px solid var(--border-strong); border-bottom:1px solid var(--border-strong);
+}
+.depth-pressure__arrow:nth-child(2){ animation:depth-fall 2.4s var(--ease-in-out) infinite; }
+.depth-pressure__arrow:nth-child(1){ animation:depth-fall 2.4s var(--ease-in-out) 0.2s infinite; opacity:0.6; }
+.depth-pressure__arrow:nth-child(3){ animation:depth-fall 2.4s var(--ease-in-out) 0.4s infinite; opacity:0.6; }
+@keyframes depth-fall{ 0%,100%{ opacity:0.35; } 50%{ opacity:0.9; } }
 
-/* Threat + site sit inside the reach: muted, recessed (they're exposed). */
-.depth-layer--threat{ opacity:0.78; }
-.depth-layer--threat .depth-layer__tag{ color:var(--text-secondary); }
-.depth-layer--site .depth-layer__tag{ color:var(--text-primary); }
-
-/* The boundary — a hard demarcation line: this is where the attacker stops. */
+/* The boundary — the focal moment. A hard, full-width demarcation that the
+   attack pressure dies against and the foundation sits beneath. It overlaps
+   both zones (negative margins + z-index) so it reads as a seam, not a gap. */
 .depth-boundary{
-  display:flex; align-items:center; gap:var(--space-3);
-  margin:var(--space-2) 0; padding:0 var(--space-1);
+  display:flex; align-items:center; gap:var(--space-4);
+  position:relative; z-index:2;
+  margin:calc(var(--space-4) * -1) var(--space-5) calc(var(--space-4) * -1);
+  padding:var(--space-2) 0;
 }
-.depth-boundary__line{
-  flex:1; height:1px;
-  background:repeating-linear-gradient(90deg, var(--accent-border) 0 6px, transparent 6px 12px);
+.depth-boundary__rule{
+  flex:1; height:2px; border-radius:2px;
+  background:repeating-linear-gradient(90deg, var(--accent) 0 8px, transparent 8px 16px);
+  opacity:0.85;
 }
 .depth-boundary__tag{
-  font-family:var(--font-mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase;
-  color:var(--accent-2-text); white-space:nowrap;
+  flex:none; font-family:var(--font-mono); font-size:var(--text-xs);
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--accent-2-text);
+  padding:var(--space-1) var(--space-3); border-radius:var(--radius-pill);
+  border:1px solid var(--accent-border); background:var(--bg-base);
+  box-shadow:0 0 0 5px var(--bg-base);
 }
 
-/* WWYW — the foundation: full-bleed lime edge, depth shadow, faint scanline. */
-.depth-layer--wwyw{
-  border-color:var(--accent-border);
+/* The foundation — wide, lime-edged, load-bearing. The heaviest element on the
+   vertical: where the eye lands. The ARGUMENT dominates; the roles below are
+   quiet supporting detail, not a co-equal column. */
+.depth-zone--foundation{
+  margin-top:var(--space-6);
+  padding:var(--space-7) var(--space-6) var(--space-6);
+  border:1px solid var(--accent-border);
   background:linear-gradient(180deg, var(--surface-2), var(--surface-1));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 48px -32px rgba(105,255,18,0.30);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 36px 72px -40px rgba(105,255,18,0.36);
   overflow:hidden;
 }
-.depth-layer--wwyw::before{
-  /* lime spine flush to the left edge — the "load-bearing" tell */
+.depth-foundation__scan{
+  position:absolute; inset:0; pointer-events:none; opacity:0.5;
+  background:repeating-linear-gradient(180deg, transparent 0 3px, rgba(105,255,18,0.035) 3px 4px);
+}
+.depth-zone--foundation::before{
   content:""; position:absolute; inset:0 auto 0 0; width:3px;
   background:linear-gradient(180deg, var(--accent), var(--accent-2));
   box-shadow:var(--glow-lime-sm);
 }
-.depth-layer__scan{
-  position:absolute; inset:0; pointer-events:none; opacity:0.5;
-  background:repeating-linear-gradient(180deg, transparent 0 3px, rgba(105,255,18,0.04) 3px 4px);
+.depth-zone--foundation > *{ position:relative; }
+.depth-foundation__eyebrow{
+  display:flex; align-items:center; gap:var(--space-2);
+  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent-2-text); margin-bottom:var(--space-3);
 }
-.depth-layer__dot{
+.depth-foundation__dot{
   width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:var(--glow-lime-sm);
   animation:depth-pulse 2.4s var(--ease-in-out) infinite;
 }
 @keyframes depth-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
+.depth-foundation__name{
+  font-family:var(--font-display); font-weight:600;
+  font-size:var(--text-h2); color:var(--text-primary); line-height:1.05; margin:0 0 var(--space-4);
+}
+.depth-foundation__line{
+  color:var(--text-secondary); font-size:var(--text-body-lg); max-width:62ch; margin:0 0 var(--space-6);
+}
+.depth-foundation__line strong{ color:var(--text-primary); font-weight:600; }
 
-/* Pipeline — the operation as one continuous signal path with live stages. */
-.pipeline{ list-style:none; margin:0; padding:0; position:relative; }
-.pipeline-step{
-  position:relative; display:grid; grid-template-columns:auto 1fr; gap:var(--space-5);
-  padding-bottom:var(--space-8);
+/* The payoff roles — quiet, subordinate supporting detail. A compact strip of
+   three; "Seal" is the only non-redundant one, so it carries the lime accent.
+   This is deliberately NOT a numbered stepper — that's the console's job. */
+.depth-foundation__roles{
+  list-style:none; margin:0; padding:var(--space-5) 0 0;
+  border-top:1px solid var(--border-subtle);
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:var(--space-5);
 }
-.pipeline-step:last-child{ padding-bottom:0; }
-
-/* The rail: a fixed-width column holding the node and the connecting path. */
-.pipeline-step__rail{
-  position:relative; flex:none; width:48px;
-  display:flex; justify-content:center;
+.depth-foundation__roles li{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.depth-role__k{
+  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--text-faint);
 }
-/* Connecting path — a continuous signal line running through the rail. */
-.pipeline-step__rail::before{
-  content:""; position:absolute; left:50%; transform:translateX(-50%);
-  top:48px; bottom:calc(var(--space-8) * -1 - 4px); width:2px;
-  background:linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent-2) 60%, transparent));
+.depth-role__v{ font-size:var(--text-small); color:var(--text-secondary); line-height:1.4; }
+.depth-role--key .depth-role__k{ color:var(--accent-2-text); }
+.depth-role--key .depth-role__v{ color:var(--text-primary); }
+@media (max-width:559px){
+  .depth-foundation__roles{ grid-template-columns:1fr; gap:var(--space-4); }
 }
-.pipeline-step:last-child .pipeline-step__rail::before{ display:none; }
-
-.pipeline-step__node{
-  position:relative; z-index:1;
-  width:48px; height:48px; border-radius:50%;
-  display:grid; place-items:center;
-  border:1px solid var(--accent-border);
-  background:radial-gradient(120% 120% at 50% 20%, var(--surface-3), var(--surface-1));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.06);
-}
-/* Concentric ring — echoes the radar language, marks each node as a live stage. */
-.pipeline-step__node::after{
-  content:""; position:absolute; inset:-5px; border-radius:50%;
-  border:1px solid var(--accent-border); opacity:0.45;
-}
-.pipeline-step__num{
-  font-family:var(--font-mono); font-size:var(--text-small); font-weight:600;
-  color:var(--accent-2-text); letter-spacing:0; line-height:1;
-}
-
-.pipeline-step__body{ padding-top:var(--space-1); min-width:0; }
-.pipeline-step__state{
-  display:inline-block;
-  font-family:var(--font-mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase;
-  color:var(--text-faint); margin-bottom:var(--space-2);
-  padding:3px var(--space-2); border-radius:var(--radius-pill);
-  border:1px solid var(--border-subtle); background:var(--surface-1);
-}
-.pipeline-step__title{ font-size:var(--text-h4); margin:0 0 var(--space-3); }
-.pipeline-step__copy{ color:var(--text-secondary); font-size:var(--text-body); max-width:52ch; }
 
 @media (prefers-reduced-motion: reduce){
-  .depth-layer__dot{ animation:none; }
+  .depth-foundation__dot,
+  .depth-pressure__arrow{ animation:none; }
 }
 
 /* ============================================================
