@@ -361,45 +361,84 @@
             </p>
           </div>
 
-          <!-- Layered-stack diagram: attacker → your site → WWYW underneath -->
-          <figure class="stack-diagram reveal" aria-label="Diagram: WeWatchYourWebsite operates one layer below your website, beneath where an attacker reaches.">
-            <div class="stack-layer stack-layer--threat">
-              <span class="stack-layer__tag">Threat actor</span>
-              <span class="stack-layer__sub">Probes, injects, defaces</span>
-            </div>
-            <div class="stack-layer stack-layer--site">
-              <span class="stack-layer__tag">Your website</span>
-              <span class="stack-layer__sub">WordPress · plugins · the dashboard</span>
-            </div>
-            <div class="stack-layer stack-layer--wwyw">
-              <span class="stack-layer__dot" aria-hidden="true"></span>
-              <span class="stack-layer__tag">WeWatchYourWebsite</span>
-              <span class="stack-layer__sub">Infrastructure level — out of the attacker’s reach</span>
+          <!-- Depth-stack diagram: the "one layer below" idea made spatial.
+               Threat and site sit in the attacker's reach (above the boundary);
+               WWYW is the foundation everything rests on, below the line the
+               attacker can't cross. -->
+          <figure class="depth-stack reveal" aria-label="Diagram: a threat actor and your website both sit inside the attacker's reach, while WeWatchYourWebsite operates at the infrastructure level below the boundary the attacker cannot cross.">
+            <div class="depth-stack__layers">
+              <div class="depth-stack__reach" aria-hidden="true">
+                <span class="depth-stack__reach-label">Attacker’s reach</span>
+              </div>
+
+              <div class="depth-layer depth-layer--threat">
+                <span class="depth-layer__meta">External</span>
+                <span class="depth-layer__tag">Threat actor</span>
+                <span class="depth-layer__sub">Probes, injects, defaces</span>
+              </div>
+
+              <div class="depth-layer depth-layer--site">
+                <span class="depth-layer__meta">Application</span>
+                <span class="depth-layer__tag">Your website</span>
+                <span class="depth-layer__sub">WordPress · plugins · the dashboard</span>
+              </div>
+
+              <!-- The boundary: where the attacker's reach ends. -->
+              <div class="depth-boundary" aria-hidden="true">
+                <span class="depth-boundary__line"></span>
+                <span class="depth-boundary__tag">Reach ends here</span>
+                <span class="depth-boundary__line"></span>
+              </div>
+
+              <div class="depth-layer depth-layer--wwyw">
+                <span class="depth-layer__scan" aria-hidden="true"></span>
+                <span class="depth-layer__meta">
+                  <span class="depth-layer__dot" aria-hidden="true"></span>Infrastructure
+                </span>
+                <span class="depth-layer__tag">WeWatchYourWebsite</span>
+                <span class="depth-layer__sub">One layer below — out of the attacker’s reach</span>
+              </div>
             </div>
           </figure>
         </div>
 
-        <!-- Right rail: the sequence as a connected timeline -->
-        <ol class="how__timeline reveal-group">
-          <li class="how-step">
-            <span class="how-step__node" aria-hidden="true"><span class="how-step__num">01</span></span>
-            <div class="how-step__body">
-              <h3 class="how-step__title">Watch</h3>
-              <p class="how-step__copy">We monitor your files continuously and scan them against known-good hashes — a 4-second average pass that flags any unauthorized change.</p>
+        <!-- Right rail: the operation as a connected pipeline — each step is a
+             live stage on one continuous signal path. -->
+        <ol class="pipeline reveal-group" aria-label="How the operation runs, in three stages">
+          <li class="pipeline-step">
+            <span class="pipeline-step__rail" aria-hidden="true">
+              <span class="pipeline-step__node">
+                <span class="pipeline-step__num">01</span>
+              </span>
+            </span>
+            <div class="pipeline-step__body">
+              <span class="pipeline-step__state">Continuous</span>
+              <h3 class="pipeline-step__title">Watch</h3>
+              <p class="pipeline-step__copy">We monitor your files continuously and scan them against known-good hashes — a 4-second average pass that flags any unauthorized change.</p>
             </div>
           </li>
-          <li class="how-step">
-            <span class="how-step__node" aria-hidden="true"><span class="how-step__num">02</span></span>
-            <div class="how-step__body">
-              <h3 class="how-step__title">Clean</h3>
-              <p class="how-step__copy">The moment malware appears, automated removal kicks in. No per-clean fees, no waiting on a support ticket, no negotiating an invoice.</p>
+          <li class="pipeline-step">
+            <span class="pipeline-step__rail" aria-hidden="true">
+              <span class="pipeline-step__node">
+                <span class="pipeline-step__num">02</span>
+              </span>
+            </span>
+            <div class="pipeline-step__body">
+              <span class="pipeline-step__state">On detection</span>
+              <h3 class="pipeline-step__title">Clean</h3>
+              <p class="pipeline-step__copy">The moment malware appears, automated removal kicks in. No per-clean fees, no waiting on a support ticket, no negotiating an invoice.</p>
             </div>
           </li>
-          <li class="how-step">
-            <span class="how-step__node" aria-hidden="true"><span class="how-step__num">03</span></span>
-            <div class="how-step__body">
-              <h3 class="how-step__title">Close the door</h3>
-              <p class="how-step__copy">Then a real security expert determines the root cause — how the attacker got in — and seals the entry point so it does not happen again.</p>
+          <li class="pipeline-step">
+            <span class="pipeline-step__rail" aria-hidden="true">
+              <span class="pipeline-step__node">
+                <span class="pipeline-step__num">03</span>
+              </span>
+            </span>
+            <div class="pipeline-step__body">
+              <span class="pipeline-step__state">Root cause</span>
+              <h3 class="pipeline-step__title">Close the door</h3>
+              <p class="pipeline-step__copy">Then a real security expert determines the root cause — how the attacker got in — and seals the entry point so it does not happen again.</p>
             </div>
           </li>
         </ol>
