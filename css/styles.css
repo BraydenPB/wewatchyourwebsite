@@ -818,9 +818,22 @@ section{ padding-block:var(--section-py); position:relative; }
 .defense__label-v{ display:block; font-size:var(--text-xs); letter-spacing:0.08em; text-transform:none; }
 .defense__label--surface{ top:var(--space-4); left:var(--space-5); color:var(--text-faint); }
 .defense__label--surface .defense__label-v{ color:var(--text-faint); opacity:0.75; }
+/* The boundary label names the defended line. It sits ON the line, so it needs
+   a solid dark chip to stay legible — without it the glowing lime rule strikes
+   through the text. The chip's matching box-shadow masks the line behind it. */
 .defense__label--boundary{
-  top:calc(var(--defense-bound) - 0.85em); right:var(--space-5);
-  font-size:var(--text-xs); font-weight:500; color:var(--accent-2-text);
+  top:calc(var(--defense-bound) - 1.05em); right:var(--space-5);
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  font-size:var(--text-xs); font-weight:600; color:var(--accent-2-text);
+  letter-spacing:0.12em;
+  padding:var(--space-1) var(--space-3); border-radius:var(--radius-pill);
+  background:var(--bg-base); border:1px solid var(--accent-border);
+  box-shadow:0 0 0 4px var(--bg-base), 0 2px 8px rgba(0,0,0,0.5);
+}
+/* a small lime node on the chip, tying it to the line it labels */
+.defense__label--boundary::before{
+  content:""; width:5px; height:5px; border-radius:50%; flex:none;
+  background:var(--accent); box-shadow:var(--glow-lime-sm);
 }
 .defense__label--floor{ bottom:var(--space-4); left:var(--space-5); color:var(--accent-2-text); }
 .defense__label--floor .defense__label-v{ color:var(--text-muted); letter-spacing:0.06em; }
