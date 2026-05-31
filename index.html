@@ -255,37 +255,62 @@
     <!-- ============================================================
          HOW IT WORKS
          ============================================================ -->
-    <section class="section--alt" id="how-it-works" aria-labelledby="how-title">
-      <div class="container">
-        <div class="section-head reveal">
-          <p class="eyebrow">How It Works</p>
-          <h2 class="section-title" id="how-title">Not a plugin. A security operation.</h2>
-          <p class="section-lede">
-            A WordPress plugin runs inside the same site an attacker just compromised. We work one layer
-            below — watching, verifying, and cleaning at the infrastructure level, where the attacker
-            can't switch us off.
-          </p>
+    <section class="section--alt how" id="how-it-works" aria-labelledby="how-title">
+      <div class="container how__grid">
+        <!-- Left rail: heading + the "we work one layer below" layered diagram -->
+        <div class="how__aside">
+          <div class="section-head reveal">
+            <p class="eyebrow">How It Works</p>
+            <h2 class="section-title" id="how-title">Not a plugin. A security operation.</h2>
+            <p class="section-lede">
+              A WordPress plugin runs inside the same site an attacker just compromised. We work one layer
+              below — watching, verifying, and cleaning at the infrastructure level, where the attacker
+              can't switch us off.
+            </p>
+          </div>
+
+          <!-- Layered-stack diagram: attacker → your site → WWYW underneath -->
+          <figure class="stack-diagram reveal" aria-label="Diagram: WeWatchYourWebsite operates one layer below your website, beneath where an attacker reaches.">
+            <div class="stack-layer stack-layer--threat">
+              <span class="stack-layer__tag">Threat actor</span>
+              <span class="stack-layer__sub">Probes, injects, defaces</span>
+            </div>
+            <div class="stack-layer stack-layer--site">
+              <span class="stack-layer__tag">Your website</span>
+              <span class="stack-layer__sub">WordPress · plugins · the dashboard</span>
+            </div>
+            <div class="stack-layer stack-layer--wwyw">
+              <span class="stack-layer__dot" aria-hidden="true"></span>
+              <span class="stack-layer__tag">WeWatchYourWebsite</span>
+              <span class="stack-layer__sub">Infrastructure level — out of the attacker's reach</span>
+            </div>
+          </figure>
         </div>
 
-        <ol class="steps reveal-group">
-          <li class="step">
-            <span class="step__num">01</span>
-            <h3 class="step__title">Watch</h3>
-            <p class="step__body">We monitor your files continuously and scan them against known-good hashes — a 4-second average pass that flags any unauthorized change.</p>
+        <!-- Right rail: the sequence as a connected timeline -->
+        <ol class="how__timeline reveal-group">
+          <li class="how-step">
+            <span class="how-step__node" aria-hidden="true"><span class="how-step__num">01</span></span>
+            <div class="how-step__body">
+              <h3 class="how-step__title">Watch</h3>
+              <p class="how-step__copy">We monitor your files continuously and scan them against known-good hashes — a 4-second average pass that flags any unauthorized change.</p>
+            </div>
           </li>
-          <li class="step">
-            <span class="step__num">02</span>
-            <h3 class="step__title">Clean</h3>
-            <p class="step__body">The moment malware appears, automated removal kicks in. No per-clean fees, no waiting on a support ticket, no negotiating an invoice.</p>
+          <li class="how-step">
+            <span class="how-step__node" aria-hidden="true"><span class="how-step__num">02</span></span>
+            <div class="how-step__body">
+              <h3 class="how-step__title">Clean</h3>
+              <p class="how-step__copy">The moment malware appears, automated removal kicks in. No per-clean fees, no waiting on a support ticket, no negotiating an invoice.</p>
+            </div>
           </li>
-          <li class="step">
-            <span class="step__num">03</span>
-            <h3 class="step__title">Close the door</h3>
-            <p class="step__body">Then a real security expert determines the root cause — how the attacker got in — and seals the entry point so it does not happen again.</p>
+          <li class="how-step">
+            <span class="how-step__node" aria-hidden="true"><span class="how-step__num">03</span></span>
+            <div class="how-step__body">
+              <h3 class="how-step__title">Close the door</h3>
+              <p class="how-step__copy">Then a real security expert determines the root cause — how the attacker got in — and seals the entry point so it does not happen again.</p>
+            </div>
           </li>
         </ol>
-
-        <p class="how__closer reveal">Every step runs at the infrastructure level — not from inside the site that just got hacked.</p>
       </div>
     </section>
 
