@@ -503,14 +503,20 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 
 /* ---------- The screen (left) ---------- */
+/* Sticky on ALL sizes: it's a monitor you keep watching. On mobile the rail
+   stacks below and scrolls UNDER the pinned screen, so tapping any pass always
+   shows the Lottie swap (the screen never scrolls out of view). z-index keeps
+   the screen above the later-in-DOM rail; the gradient bg is fully opaque. */
 .console__screen{
-  position:relative; isolation:isolate;
+  position:sticky; top:72px; z-index:2;
+  isolation:isolate;
   border:1px solid var(--border-default); border-radius:var(--radius-lg);
   background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 32px 64px -48px rgba(0,0,0,0.8);
   overflow:hidden;
 }
-@media (min-width:900px){ .console__screen{ position:sticky; top:96px; } }
+@media (min-width:900px){ .console__screen{ top:96px; z-index:auto; } }
+@media (min-width:900px){ .pass{ scroll-margin-top:120px; } }
 
 .console__screen::before{
   content:""; position:absolute; inset:0; z-index:3; pointer-events:none; border-radius:inherit;
@@ -553,6 +559,11 @@ section{ padding-block:var(--section-py); position:relative; }
 .screen-stage{
   position:relative; aspect-ratio:600 / 400; overflow:hidden;
   background:radial-gradient(120% 100% at 50% 0%, #fbfdff 0%, #eef2f6 100%);
+}
+/* keep the pinned screen short on phones so it doesn't eat the viewport while
+   the rail scrolls beneath it */
+@media (max-width:899px){
+  .screen-stage{ aspect-ratio:auto; height:min(42vh, 230px); }
 }
 .screen-stage .lottie-mount{ position:absolute; inset:0; }
 .screen-stage .lottie-mount[hidden]{ display:none; }
@@ -628,6 +639,8 @@ section{ padding-block:var(--section-py); position:relative; }
 
 .pass{
   position:relative; z-index:1; display:grid;
+  /* keyboard focus / scrollIntoView clears the sticky header + pinned screen */
+  scroll-margin-top:360px;
   grid-template-columns:auto minmax(0,1fr) auto; align-items:center;
   gap:var(--space-4); width:100%; text-align:left; cursor:pointer;
   padding:var(--space-4) var(--space-5); background:none; border:0;

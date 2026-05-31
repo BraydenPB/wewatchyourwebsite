@@ -123,6 +123,25 @@
 
     function advance() { select((active + 1) % tabs.length); }
 
+    // Mobile only: when the screen is pinned (sticky) above the rail, tapping a
+    // pass can collapse the panel above it and yank the tapped tab up behind the
+    // screen. Settle the tapped tab into the readable zone just below the pinned
+    // screen — but only if it's actually clipped. Click path only (never on
+    // auto-advance, which would scroll the page every cycle).
+    function settleTab(i) {
+      // desktop lays the screen beside the rail — no pinned-over-rail collision
+      if (typeof matchMedia === "function" && matchMedia("(min-width: 900px)").matches) return;
+      var tab = tabs[i];
+      var rect = tab.getBoundingClientRect();
+      var sc = screen ? screen.getBoundingClientRect() : null;
+      var coverBottom = sc ? sc.bottom : 72; // bottom edge of the pinned screen
+      var vh = document.documentElement.clientHeight;
+      var clipped = rect.top < coverBottom + 8 || rect.bottom > vh;
+      if (!clipped) return;
+      var target = window.scrollY + rect.top - coverBottom - 12; // land just under the screen
+      window.scrollTo({ top: target, behavior: prefersReduced ? "auto" : "smooth" });
+    }
+
     function startCycle() {
       if (prefersReduced || isHalted() || !visible || timer) return;
       restartBar();
@@ -170,6 +189,7 @@
         // so a reader is never yanked off the pass they just chose.
         if (!canHover && !userPaused) setUserPaused(true);
         select(i, false);
+        settleTab(i);
       });
       tab.addEventListener("keydown", function (e) {
         var key = e.key;
