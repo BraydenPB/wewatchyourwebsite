@@ -155,10 +155,10 @@ body{
 h1,h2,h3,h4,h5,h6{
   margin:0;
   font-family:var(--font-display);
-  font-weight:600;
+  font-weight:700;
   color:var(--text-primary);
   line-height:1.1;
-  letter-spacing:-0.02em;
+  letter-spacing:-0.025em;
   /* Balance every headline by default so multi-line headings break evenly
      instead of orphaning a single word on the last line. */
   text-wrap:balance;
@@ -209,6 +209,10 @@ button{ font-family:inherit; }
 
 section{ padding-block:var(--section-py); position:relative; }
 .section--alt{ background:var(--bg-base-2); }
+/* Vary the vertical rhythm so the page doesn't pulse at one fixed interval:
+   the monitor (radar) breathes wider; the FAQ sits tighter as a dense list. */
+#stats{ padding-block:clamp(5rem, 8vw, 10rem); }
+#faq{ padding-block:clamp(3rem, 5vw, 6rem); }
 
 .section-head{ max-width:640px; margin-bottom:var(--space-7); }
 .section-head--center{ margin-inline:auto; text-align:center; }
@@ -232,11 +236,9 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 .section-head--center .section-lede{ margin-inline:auto; }
 
-.text-grad{
-  background:var(--grad-lime-text);
-  -webkit-background-clip:text; background-clip:text;
-  -webkit-text-fill-color:transparent; color:transparent;
-}
+/* Solid lime accent on display words — gradient-fill text reads as an AI tell.
+   Weight + the display face carry the emphasis, not a gradient. */
+.text-grad{ color:var(--accent); }
 
 /* ============================================================
    BUTTONS
@@ -502,7 +504,7 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 .card--service:hover{
   border-color:var(--accent-border); transform:translateY(-4px);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), 0 30px 60px -40px rgba(105,255,18,0.22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), 0 24px 48px -32px rgba(0,0,0,0.6);
 }
 @media (hover:hover){ .card--service:hover::before{ opacity:1; } }
 .card--service:hover .lottie-well{ box-shadow:inset 0 0 0 1px var(--accent-border); }
@@ -563,7 +565,7 @@ section{ padding-block:var(--section-py); position:relative; }
 .stack-layer--wwyw{
   border-color:var(--accent-border);
   background:linear-gradient(180deg, var(--surface-2), var(--surface-1));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 48px -32px rgba(105,255,18,0.30);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 20px 40px -30px rgba(105,255,18,0.18);
 }
 .stack-layer--wwyw .stack-layer__tag{ color:var(--text-primary); }
 .stack-layer__dot{
@@ -666,12 +668,10 @@ section{ padding-block:var(--section-py); position:relative; }
   font-size:clamp(1.75rem, 1.2rem + 1.6vw, 2.25rem); line-height:0.95;
   font-feature-settings:"tnum"; letter-spacing:-0.03em;
   white-space:nowrap; min-width:0;
-  background:var(--grad-lime-text);
-  -webkit-background-clip:text; background-clip:text;
-  -webkit-text-fill-color:transparent; color:transparent;
+  color:var(--accent);
 }
 .stat__num .stat__sup{
-  -webkit-text-fill-color:var(--text-secondary); color:var(--text-secondary);
+  color:var(--text-secondary);
   font-size:0.45em; font-weight:500; vertical-align:0.55em; margin-left:0.05em;
   letter-spacing:0;
 }
