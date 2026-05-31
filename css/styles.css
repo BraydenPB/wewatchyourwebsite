@@ -911,15 +911,16 @@ section{ padding-block:var(--section-py); position:relative; }
   background:repeating-linear-gradient(180deg, transparent 0 3px, rgba(105,255,18,0.035) 3px 4px);
 }
 .depth-zone--foundation > *{ position:relative; }
-.depth-plane__tier--safe{
-  position:static; display:block; color:var(--accent-2-text);
-  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.12em; text-transform:uppercase;
-  margin-bottom:var(--space-4);
-}
+
+/* Internals on a deliberate rhythm: ONE eyebrow, the name, the argument —
+   tight within the lockup, a generous gap before the spec row. The body holds
+   a readable measure so the lockup looks composed, not hugging the left edge. */
+.depth-foundation__body{ max-width:56ch; margin-bottom:var(--space-6); }
 .depth-foundation__eyebrow{
   display:flex; align-items:center; gap:var(--space-2);
-  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.08em; text-transform:uppercase;
-  color:var(--accent-2-text); margin-bottom:var(--space-3);
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--accent-2-text); margin-bottom:var(--space-4);
 }
 .depth-foundation__dot{
   width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:var(--glow-lime-sm);
@@ -927,37 +928,56 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 @keyframes depth-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
 .depth-foundation__name{
-  font-family:var(--font-display); font-weight:600;
-  font-size:var(--text-h2); color:var(--text-primary); line-height:1.05; margin:0 0 var(--space-4);
+  font-family:var(--font-display); font-weight:700;
+  font-size:var(--text-h2); color:var(--text-primary); line-height:1.02; letter-spacing:-0.02em;
+  margin:0 0 var(--space-3);
 }
 .depth-foundation__line{
-  color:var(--text-secondary); font-size:var(--text-body-lg); max-width:60ch; margin:0 0 var(--space-5);
+  color:var(--text-secondary); font-size:var(--text-body-lg); line-height:1.55; margin:0;
 }
 .depth-foundation__line strong{ color:var(--text-primary); font-weight:600; }
 
-/* Payoff roles — quiet, subordinate. "Seal" is the only non-redundant one, so
-   it carries the lime accent. Deliberately NOT a numbered stepper. */
+/* The spec row — the foundation's broad base. Full width, three equal cells
+   divided by hairlines (not floating ticks). Sharp label/value contrast per
+   "balance contrast in lockups": tiny mono caps label, larger primary value.
+   "Seal" is the only non-redundant role, so it alone carries the lime accent. */
 .depth-foundation__roles{
-  list-style:none; margin:0; padding:var(--space-4) 0 0;
-  border-top:1px solid var(--border-subtle);
-  display:grid; grid-template-columns:repeat(3, 1fr); gap:var(--space-5);
+  list-style:none; margin:0; padding:var(--space-5) 0 0;
+  border-top:1px solid var(--border-default);
+  display:grid; grid-template-columns:repeat(3, 1fr);
 }
-.depth-foundation__roles li{ position:relative; display:flex; flex-direction:column; gap:3px; min-width:0; padding-left:var(--space-4); }
-/* A short tick before each role — turns a bare list into a marked one. */
-.depth-foundation__roles li::before{
-  content:""; position:absolute; left:0; top:5px; width:2px; height:calc(100% - 4px);
-  border-radius:2px; background:var(--border-strong);
+.depth-foundation__roles li{
+  position:relative; display:flex; flex-direction:column; gap:var(--space-2);
+  min-width:0; padding:0 var(--space-5);
 }
-.depth-role--key::before{ background:var(--accent); box-shadow:var(--glow-lime-sm); }
+.depth-foundation__roles li:first-child{ padding-left:0; }
+.depth-foundation__roles li:last-child{ padding-right:0; }
+/* Hairline dividers between cells — a structured row, not floating items. */
+.depth-foundation__roles li + li::before{
+  content:""; position:absolute; left:0; top:2px; bottom:2px; width:1px;
+  background:var(--border-subtle);
+}
 .depth-role__k{
-  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.14em; text-transform:uppercase;
-  color:var(--text-faint);
+  display:flex; align-items:center; gap:var(--space-2);
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.16em; text-transform:uppercase; color:var(--text-faint);
 }
-.depth-role__v{ font-size:var(--text-small); color:var(--text-secondary); line-height:1.4; }
+/* A small marker dot on the label, lime only on the key role. */
+.depth-role__k::before{
+  content:""; width:5px; height:5px; border-radius:50%; flex:none;
+  background:var(--border-strong);
+}
 .depth-role--key .depth-role__k{ color:var(--accent-2-text); }
+.depth-role--key .depth-role__k::before{ background:var(--accent); box-shadow:var(--glow-lime-sm); }
+.depth-role__v{ font-size:var(--text-body); color:var(--text-primary); line-height:1.35; }
 .depth-role--key .depth-role__v{ color:var(--text-primary); }
 @media (max-width:559px){
-  .depth-foundation__roles{ grid-template-columns:1fr; gap:var(--space-4); }
+  .depth-foundation__roles{
+    grid-template-columns:1fr; gap:var(--space-4); padding-top:var(--space-4);
+  }
+  .depth-foundation__roles li{ padding:0; }
+  .depth-foundation__roles li + li{ padding-top:var(--space-4); border-top:1px solid var(--border-subtle); }
+  .depth-foundation__roles li + li::before{ display:none; }
 }
 
 @media (prefers-reduced-motion: reduce){
