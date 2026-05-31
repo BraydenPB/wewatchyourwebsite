@@ -397,17 +397,46 @@
           </div>
 
           <ul class="defense__roles" aria-label="What working below the breach buys you">
-            <li>
-              <span class="defense__role-k">Watch</span>
-              <span class="defense__role-v">Continuous integrity scans</span>
+            <li class="defense__role">
+              <span class="defense__role-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9" class="defense__mark-ring" />
+                  <circle cx="12" cy="12" r="4.5" class="defense__mark-ring" />
+                  <path d="M12 12 L20 8" class="defense__mark-sweep" />
+                  <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
+                </svg>
+              </span>
+              <span class="defense__role-text">
+                <span class="defense__role-k">Watch</span>
+                <span class="defense__role-v">Continuous integrity scans</span>
+              </span>
             </li>
-            <li>
-              <span class="defense__role-k">Clean</span>
-              <span class="defense__role-v">Auto-removal, no fee</span>
+            <li class="defense__role">
+              <span class="defense__role-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 19 L13.5 10.5" />
+                  <path d="M11 8 L16 13 L19.5 9.5 C20.3 8.7 20.3 7.5 19.5 6.7 L17.3 4.5 C16.5 3.7 15.3 3.7 14.5 4.5 Z" />
+                  <path d="M4 9 L5 11" class="defense__mark-sweep" />
+                  <path d="M7 6 L8 8" class="defense__mark-sweep" />
+                  <path d="M10 4 L11 6" class="defense__mark-sweep" />
+                </svg>
+              </span>
+              <span class="defense__role-text">
+                <span class="defense__role-k">Clean</span>
+                <span class="defense__role-v">Auto-removal, no fee</span>
+              </span>
             </li>
-            <li class="defense__role--key">
-              <span class="defense__role-k">Seal</span>
-              <span class="defense__role-v">Root cause found &amp; closed</span>
+            <li class="defense__role defense__role--key">
+              <span class="defense__role-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3 L19 6 V11 C19 15.5 16 19 12 21 C8 19 5 15.5 5 11 V6 Z" class="defense__mark-shield" />
+                  <path d="M9.5 12 L11.2 13.7 L14.8 10" />
+                </svg>
+              </span>
+              <span class="defense__role-text">
+                <span class="defense__role-k">Seal</span>
+                <span class="defense__role-v">Root cause found &amp; closed</span>
+              </span>
             </li>
           </ul>
         </div>

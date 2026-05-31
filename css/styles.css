@@ -871,26 +871,49 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 .defense__claim strong{ color:var(--text-primary); font-weight:600; }
 
-/* Payoff roles — a tight stacked spec list, hairline-separated. Sharp
-   label/value contrast; Seal (the only non-redundant role) carries the lime. */
+/* Payoff roles — a crafted spec list. Each role carries a custom glyph mark
+   (radar / clear / sealed-shield) echoing the brand's scan language, set in a
+   soft inset chip. Watch + Clean stay quiet (muted marks); Seal is the visual
+   climax — the only non-redundant role — and carries the lime + glow. */
 .defense__roles{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; }
-.defense__roles li{
-  position:relative; display:flex; flex-direction:column; gap:var(--space-1);
-  padding:var(--space-4) 0 var(--space-4) var(--space-4);
+.defense__role{
+  position:relative; display:flex; align-items:center; gap:var(--space-4);
+  padding:var(--space-4) 0;
 }
-.defense__roles li + li{ border-top:1px solid var(--border-subtle); }
-.defense__roles li:first-child{ padding-top:0; }
-/* a spine tick per role */
-.defense__roles li::before{
-  content:""; position:absolute; left:0; top:50%; transform:translateY(-50%);
-  width:2px; height:1.6em; border-radius:2px; background:var(--border-strong);
+.defense__role + .defense__role{ border-top:1px solid var(--border-subtle); }
+.defense__role:first-child{ padding-top:0; }
+.defense__role:last-child{ padding-bottom:0; }
+
+/* The glyph chip — inset square, hairline border, muted icon by default. */
+.defense__role-mark{
+  flex:none; width:44px; height:44px; display:grid; place-items:center;
+  border-radius:var(--radius-md);
+  background:var(--surface-inset);
+  border:1px solid var(--border-default);
+  color:var(--text-muted);
+  transition:color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
 }
-.defense__role--key::before{ background:var(--accent); box-shadow:var(--glow-lime-sm); }
+.defense__role-mark svg{ width:22px; height:22px; display:block; }
+.defense__mark-ring{ opacity:0.55; }
+.defense__mark-sweep{ color:var(--accent); opacity:0.9; }
+.defense__role:hover .defense__role-mark{ color:var(--text-secondary); border-color:var(--border-strong); }
+
+.defense__role-text{ display:flex; flex-direction:column; gap:2px; min-width:0; }
 .defense__role-k{
   font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
   letter-spacing:0.16em; text-transform:uppercase; color:var(--text-faint);
 }
 .defense__role-v{ font-size:var(--text-body); color:var(--text-primary); line-height:1.3; }
+
+/* Seal — the hero. Lime mark, accent chip, soft glow; the climax of the row. */
+.defense__role--key .defense__role-mark{
+  background:var(--accent-soft);
+  border-color:var(--accent-border);
+  color:var(--accent);
+  box-shadow:var(--glow-lime-sm);
+}
+.defense__role--key:hover .defense__role-mark{ border-color:var(--accent); }
+.defense__role--key .defense__mark-shield{ fill:rgba(105,255,18,0.10); }
 .defense__role--key .defense__role-k{ color:var(--accent-2-text); }
 
 @media (prefers-reduced-motion: reduce){
