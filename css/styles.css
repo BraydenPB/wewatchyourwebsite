@@ -487,13 +487,24 @@ section{ padding-block:var(--section-py); position:relative; }
 @media (min-width:768px){ .services-grid{ grid-template-columns:repeat(2,1fr); } }
 
 .card{
-  background:var(--surface-1); border:1px solid var(--border-subtle);
-  border-radius:var(--radius-lg); padding:var(--space-6);
+  position:relative; isolation:isolate;
+  border:1px solid var(--border-default); border-radius:var(--radius-lg); padding:var(--space-6);
+  background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
   transition:border-color var(--dur-slow) var(--ease-out),
-             background var(--dur-slow) var(--ease-out),
-             transform var(--dur-slow) var(--ease-out);
+             transform var(--dur-slow) var(--ease-out),
+             box-shadow var(--dur-slow) var(--ease-out);
 }
-.card--service:hover{ border-color:var(--accent-border); background:var(--surface-2); transform:translateY(-4px); }
+.card--service::before{
+  content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit;
+  background:radial-gradient(120% 70% at 50% -10%, var(--accent-soft), transparent 55%);
+  opacity:0; transition:opacity var(--dur-slow) var(--ease-out);
+}
+.card--service:hover{
+  border-color:var(--accent-border); transform:translateY(-4px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), 0 30px 60px -40px rgba(105,255,18,0.22);
+}
+@media (hover:hover){ .card--service:hover::before{ opacity:1; } }
 .card--service:hover .lottie-well{ box-shadow:inset 0 0 0 1px var(--accent-border); }
 
 .lottie-well{
@@ -556,27 +567,44 @@ section{ padding-block:var(--section-py); position:relative; }
    STATS BAND
    ============================================================ */
 .stats-grid{
-  display:grid; grid-template-columns:repeat(2,1fr); gap:var(--grid-gap);
+  display:grid; grid-template-columns:repeat(2,1fr);
+  gap:var(--space-6) var(--space-7);
 }
-@media (min-width:768px){ .stats-grid{ grid-template-columns:repeat(4,1fr); } }
+@media (min-width:768px){ .stats-grid{ grid-template-columns:repeat(4,1fr); gap:var(--space-7); } }
 
+/* Hairline-anchored stat (no box): a left rule with a lime cap, a mono data-tag,
+   the big number, then the label. Reads as a technical readout, not a card. */
 .stat{
-  text-align:center; padding:var(--space-5) var(--space-3);
-  border:1px solid var(--border-subtle); border-radius:var(--radius-lg);
-  background:var(--surface-1);
+  position:relative; padding-left:var(--space-5);
+  border-left:1px solid var(--border-default);
+}
+.stat::before{
+  content:""; position:absolute; left:-1px; top:0; width:2px; height:34px;
+  background:linear-gradient(180deg, var(--accent), transparent);
+  border-radius:2px;
+}
+.stat__tag{
+  font-family:var(--font-mono); font-size:10px; font-weight:500;
+  letter-spacing:0.22em; text-transform:uppercase; color:var(--text-faint);
+  display:block; margin-bottom:var(--space-3);
 }
 .stat__num{
   font-family:var(--font-display); font-weight:600;
-  font-size:clamp(2.25rem, 1.6rem + 2.8vw, 3.25rem); line-height:1;
-  font-feature-settings:"tnum"; letter-spacing:-0.02em;
+  font-size:clamp(2.5rem, 1.7rem + 3.4vw, 3.75rem); line-height:0.95;
+  font-feature-settings:"tnum"; letter-spacing:-0.03em;
   background:var(--grad-lime-text);
   -webkit-background-clip:text; background-clip:text;
   -webkit-text-fill-color:transparent; color:transparent;
 }
+.stat__num .stat__sup{
+  -webkit-text-fill-color:var(--text-secondary); color:var(--text-secondary);
+  font-size:0.45em; font-weight:500; vertical-align:0.55em; margin-left:0.05em;
+  letter-spacing:0;
+}
 .stat__label{
-  margin-top:var(--space-3); font-family:var(--font-mono);
+  margin-top:var(--space-4); font-family:var(--font-mono);
   font-size:var(--text-xs); letter-spacing:0.04em; color:var(--text-muted);
-  line-height:1.4; text-transform:uppercase;
+  line-height:1.5; text-transform:uppercase; max-width:22ch;
 }
 
 /* ============================================================
@@ -590,20 +618,50 @@ section{ padding-block:var(--section-py); position:relative; }
 
 .price-card{
   position:relative; display:flex; flex-direction:column;
-  background:var(--surface-1); border:1px solid var(--border-subtle);
-  border-radius:var(--radius-lg); padding:var(--space-6);
-  transition:border-color var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+  border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  padding:var(--space-6);
+  /* Glassmorphic surface: a top-lit gradient + an inset hairline highlight build
+     depth without a heavy drop-shadow (which reads dated / "floating"). */
+  background:
+    linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+  transition:border-color var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out), box-shadow var(--dur-slow) var(--ease-out);
+  isolation:isolate;
+}
+/* Accent bloom on hover (restrained — no scale): a faint lime wash from the top. */
+.price-card::before{
+  content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit;
+  background:radial-gradient(120% 80% at 50% -10%, var(--accent-soft), transparent 60%);
+  opacity:0; transition:opacity var(--dur-slow) var(--ease-out);
 }
 .price-card:hover{ border-color:var(--border-strong); transform:translateY(-4px); }
+@media (hover:hover){ .price-card:hover::before{ opacity:1; } }
+
 .price-card--featured{
-  border-color:var(--accent-border); background:var(--surface-2);
+  border-color:var(--accent-border);
+  background:linear-gradient(180deg, var(--surface-3) 0%, var(--surface-2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 40px 80px -44px rgba(105,255,18,0.28);
 }
+/* Extra top room on the featured card so the "Most Popular" pill clears the
+   content; the pill straddles the top edge. The lime border + glow + pill already
+   carry the emphasis, so no extra accent line (avoid over-decoration). */
+.price-card--featured{ padding-top:var(--space-7); }
 @media (min-width:880px){ .price-card--featured{ transform:translateY(-12px); } }
 @media (min-width:880px){ .price-card--featured:hover{ transform:translateY(-16px); } }
 
 .price-card__pill{
-  position:absolute; top:0; left:50%; transform:translate(-50%,-50%);
+  position:absolute; top:0; left:50%; transform:translate(-50%,-50%); z-index:2;
 }
+/* Solid lime badge w/ dark text for the featured pill — far higher contrast and a
+   more "premium product badge" feel than a translucent tinted chip. */
+.price-card__pill .badge{
+  background:var(--accent); color:var(--text-on-accent);
+  border-color:transparent; box-shadow:var(--glow-lime-sm); font-weight:600;
+  padding:0.4rem 0.85rem;
+}
+.price-card__pill .badge .status-dot{ background:var(--text-on-accent); box-shadow:none; }
 .price-card__name{
   font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
   letter-spacing:0.06em; text-transform:uppercase; color:var(--text-accent);
@@ -640,11 +698,21 @@ section{ padding-block:var(--section-py); position:relative; }
    ============================================================ */
 .faq-list{ display:flex; flex-direction:column; gap:var(--space-3); max-width:var(--container-narrow); }
 .faq-item{
-  background:var(--surface-1); border:1px solid var(--border-subtle);
+  position:relative;
+  background:linear-gradient(180deg, var(--surface-1) 0%, var(--bg-base-2) 100%);
+  border:1px solid var(--border-subtle);
   border-radius:var(--radius-md); overflow:hidden;
-  transition:border-color var(--dur-base) var(--ease-out);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
+  transition:border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
 }
-.faq-item[open]{ border-color:var(--border-default); background:var(--surface-2); }
+/* Lime spine on the open item — a quiet "this one's active" marker. */
+.faq-item::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:var(--accent); opacity:0;
+  transition:opacity var(--dur-base) var(--ease-out);
+}
+.faq-item[open]{ border-color:var(--border-default); background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%); }
+.faq-item[open]::before{ opacity:1; }
 .faq-item:hover{ border-color:var(--border-default); }
 .faq-item__q{
   display:flex; align-items:center; justify-content:space-between; gap:var(--space-4);
@@ -770,10 +838,18 @@ section{ padding-block:var(--section-py); position:relative; }
 /* ============================================================
    SCROLL REVEAL
    ============================================================ */
-.reveal{ opacity:0; transform:translateY(16px); transition:opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
+.reveal{ opacity:0; transform:translateY(18px); transition:opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
 .reveal.is-visible{ opacity:1; transform:none; }
+/* Staggered children: each successive item delays by --i * step so a group reads
+   as one choreographed gesture rather than N independent pops. JS sets --i. */
+.reveal-group > *{
+  opacity:0; transform:translateY(18px);
+  transition:opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+  transition-delay:calc(var(--i, 0) * 70ms);
+}
+.reveal-group.is-visible > *{ opacity:1; transform:none; }
 @media (prefers-reduced-motion: reduce){
-  .reveal{ opacity:1; transform:none; transition:none; }
+  .reveal, .reveal-group > *{ opacity:1; transform:none; transition:none; }
 }
 
 /* ============================================================

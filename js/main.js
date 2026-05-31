@@ -143,12 +143,19 @@
     });
   }
 
-  /* ---------- Scroll reveal ---------- */
+  /* ---------- Scroll reveal (+ staggered groups) ---------- */
   function scrollReveal() {
-    var items = document.querySelectorAll(".reveal");
+    // Assign a stagger index to each child of a reveal-group so CSS can delay them.
+    Array.prototype.forEach.call(document.querySelectorAll(".reveal-group"), function (g) {
+      Array.prototype.forEach.call(g.children, function (child, i) {
+        child.style.setProperty("--i", i);
+      });
+    });
+
+    var items = document.querySelectorAll(".reveal, .reveal-group");
     if (!items.length) return;
     if (prefersReduced || !("IntersectionObserver" in window)) {
-      items.forEach(function (el) { el.classList.add("is-visible"); });
+      Array.prototype.forEach.call(items, function (el) { el.classList.add("is-visible"); });
       return;
     }
     var io = new IntersectionObserver(function (entries, obs) {
@@ -159,7 +166,46 @@
         }
       });
     }, { rootMargin: "0px 0px -10% 0px", threshold: 0.08 });
-    items.forEach(function (el) { io.observe(el); });
+    Array.prototype.forEach.call(items, function (el) { io.observe(el); });
+  }
+
+  /* ---------- Count-up for stats ---------- */
+  function countUp() {
+    var nums = document.querySelectorAll("[data-count]");
+    if (!nums.length) return;
+
+    function render(el, value) {
+      // Format with thousands separators; re-append any suffix markup (+, /yr…).
+      var sup = el.getAttribute("data-sup") || "";
+      var formatted = Math.round(value).toLocaleString("en-US");
+      el.innerHTML = formatted + (sup ? '<span class="stat__sup">' + sup + "</span>" : "");
+    }
+
+    function run(el) {
+      var target = parseFloat(el.getAttribute("data-count"));
+      if (isNaN(target)) return;
+      if (prefersReduced) { render(el, target); return; }
+      var dur = 1500, start = null;
+      var ease = function (t) { return 1 - Math.pow(1 - t, 3); }; // out-cubic
+      function step(ts) {
+        if (start === null) start = ts;
+        var t = Math.min(1, (ts - start) / dur);
+        render(el, target * ease(t));
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      Array.prototype.forEach.call(nums, function (el) { run(el); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { run(entry.target); obs.unobserve(entry.target); }
+      });
+    }, { threshold: 0.4 });
+    Array.prototype.forEach.call(nums, function (el) { io.observe(el); });
   }
 
   function init() {
@@ -169,6 +215,7 @@
     mobileMenu();
     scrollSpy();
     scrollReveal();
+    countUp();
     document.documentElement.classList.add("js-ready");
   }
 
