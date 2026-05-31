@@ -30,6 +30,8 @@
 
   var LIME = [105, 255, 18];
   var TEAL = [61, 214, 232];
+  var SURFACE = "rgba(13,16,24,0.98)"; // --surface-1, opaque (site body)
+  var INK = "rgba(5,6,10,1)";          // --bg-base (the secured-badge check)
 
   function rgba(c, a) { return "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + a + ")"; }
 
@@ -41,6 +43,8 @@
     var ctx = canvas.getContext("2d");
 
     var w = 0, h = 0, dpr = 1, bound = 0; // bound = y of the defended line
+    var topY = 0, frontH = 0, persp = 0;  // foundation slab: top-surface y, front-face height, perspective inset
+    var siteX = 0, siteY = 0, siteW = 0, siteH = 0; // protected website glyph
     var raf = 0, running = false, last = 0;
 
     // Vectors: each falls from above toward the boundary along a fixed angle,
@@ -77,44 +81,204 @@
       canvas.style.width = w + "px";
       canvas.style.height = h + "px";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      bound = Math.round(h * 0.62); // boundary sits ~62% down
+      bound = Math.round(h * 0.40);          // the shield line where attacks burst
+      // Foundation slab seen in slight 3/4: a top surface receding from the
+      // shield line down to topY, then a front face of height frontH. The site
+      // rests ON the top surface, fully BELOW the shield — protected.
+      persp = Math.round(w * 0.10);          // horizontal inset of the far (top) edge
+      topY = Math.round(h * 0.82);           // front edge of the top surface
+      frontH = Math.round(h * 0.13);         // thickness of the slab's front face
+      // Protected website glyph, centred, resting on the slab's top surface —
+      // its TOP sits clearly below the shield line so attacks never touch it.
+      siteW = Math.min(Math.round(w * 0.32), 250);
+      siteH = Math.round(siteW * 0.58);
+      siteX = Math.round(w / 2 - siteW / 2);
+      siteY = Math.max(bound + Math.round(h * 0.06), Math.round(topY - siteH - h * 0.04));
     }
 
     // --- drawing ---------------------------------------------------------
-    function vx(v, p) { return (v.x + v.lean * p) * w; }      // x at progress p
+    // Vectors start spread across the top and CONVERGE toward the protected
+    // site's column as they fall — so the attack is visibly aimed at the site,
+    // then bursts on the shield before it can reach it.
+    function vx(v, p) {
+      var startX = (v.x + v.lean * 0.2) * w;
+      var aimX = (w / 2) + (v.x - 0.5) * w * 0.34; // toward centre (the site), but fanned
+      return startX + (aimX - startX) * p;
+    }
     function vy(p) { return p * bound; }                       // y at progress p
 
+    // Map an x at the FAR edge (y=bound) inward by the perspective inset, and
+    // interpolate toward the full-width near edge (y=topY). Lets us draw a
+    // receding grid on the slab's top surface.
+    function topEdgeX(xFrac, depth) {
+      // depth 0 = far (at bound), 1 = near (at topY)
+      var far = persp + xFrac * (w - 2 * persp);
+      var near = xFrac * w;
+      return far + (near - far) * depth;
+    }
+
     function drawFoundation(now, animated) {
-      // solid base fill below the line
-      var g = ctx.createLinearGradient(0, bound, 0, h);
-      g.addColorStop(0, rgba(LIME, 0.07));
-      g.addColorStop(0.5, rgba(LIME, 0.02));
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, bound, w, h - bound);
+      // ---- TOP SURFACE: a trapezoid receding from the shield line to topY.
+      ctx.beginPath();
+      ctx.moveTo(persp, bound);
+      ctx.lineTo(w - persp, bound);
+      ctx.lineTo(w, topY);
+      ctx.lineTo(0, topY);
+      ctx.closePath();
+      var topFill = ctx.createLinearGradient(0, bound, 0, topY);
+      topFill.addColorStop(0, rgba(LIME, 0.035));   // far = dimmer (atmospheric)
+      topFill.addColorStop(1, rgba(LIME, 0.11));    // near = brighter
+      ctx.fillStyle = topFill;
+      ctx.fill();
 
-      // faint hash grid — "solid ground"
-      ctx.strokeStyle = rgba(LIME, 0.06);
-      ctx.lineWidth = 1;
-      var step = 26, x;
-      for (x = (w % step) / 2; x < w; x += step) {
-        ctx.beginPath(); ctx.moveTo(x, bound); ctx.lineTo(x, h); ctx.stroke();
+      // dim receding grid ON the top surface (backdrop only — kept quiet).
+      ctx.save();
+      ctx.clip();
+      var i, depthLines = 6, d, gy, gx;
+      // lines parallel to the shield (constant depth), brighter toward the front
+      for (i = 1; i <= depthLines; i++) {
+        d = i / depthLines;
+        gy = bound + (topY - bound) * d * d;        // ease so they bunch toward the back
+        ctx.strokeStyle = rgba(LIME, 0.04 + d * 0.06);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(topEdgeX(0, d * d), gy);
+        ctx.lineTo(topEdgeX(1, d * d), gy);
+        ctx.stroke();
       }
-      for (var y = bound + step; y < h; y += step) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      // converging depth lines (toward a vanishing region)
+      for (i = 0; i <= 8; i++) {
+        gx = i / 8;
+        ctx.strokeStyle = rgba(LIME, 0.05);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(topEdgeX(gx, 0), bound);
+        ctx.lineTo(topEdgeX(gx, 1), topY);
+        ctx.stroke();
       }
-
-      // subtle horizontal scan band (kept quiet — NOT a radar sweep)
+      // subtle scan sweeping ACROSS the top surface toward the viewer (depth),
+      // not rotating — distinct from the radar.
       if (animated) {
-        var sp = ((now * 0.00007) % 1);
-        var sy = bound + sp * (h - bound);
-        var sg = ctx.createLinearGradient(0, sy - 18, 0, sy + 18);
+        var sp = (now * 0.00009) % 1;
+        var sy = bound + (topY - bound) * sp * sp;
+        var sg = ctx.createLinearGradient(0, sy - 16, 0, sy + 16);
         sg.addColorStop(0, rgba(LIME, 0));
-        sg.addColorStop(0.5, rgba(LIME, 0.09));
+        sg.addColorStop(0.5, rgba(LIME, 0.10));
         sg.addColorStop(1, rgba(LIME, 0));
         ctx.fillStyle = sg;
-        ctx.fillRect(0, sy - 18, w, 36);
+        ctx.fillRect(0, sy - 16, w, 32);
       }
+      ctx.restore();
+
+      // ---- FRONT FACE: the slab's thickness, darker (in shadow). Reads solid.
+      var faceFill = ctx.createLinearGradient(0, topY, 0, topY + frontH);
+      faceFill.addColorStop(0, rgba(LIME, 0.10));
+      faceFill.addColorStop(1, "rgba(0,0,0,0.0)");
+      ctx.fillStyle = faceFill;
+      ctx.fillRect(0, topY, w, frontH);
+      // a darkening so the face reads as a vertical plane, not more floor
+      ctx.fillStyle = "rgba(0,0,0,0.35)";
+      ctx.fillRect(0, topY, w, frontH);
+      // bright top lip where top surface meets front face — catches the light
+      ctx.strokeStyle = rgba(LIME, 0.28);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(0, topY); ctx.lineTo(w, topY); ctx.stroke();
+    }
+
+    // The protected website — a small browser glyph resting on the slab's top
+    // surface, BELOW the shield line. Soft shadow + a faint "safe" pulse.
+    function drawSite(now, animated) {
+      var x = siteX, y = siteY, sw = siteW, sh = siteH;
+      var cx2 = x + sw / 2;
+
+      // protective shield dome — a faint arc arcing from the boundary down and
+      // around the site, making the "covered / protected" relationship explicit.
+      var domeR = sw * 0.78;
+      var domeCy = y + sh * 0.5;
+      var dg = ctx.createRadialGradient(cx2, domeCy, domeR * 0.55, cx2, domeCy, domeR);
+      dg.addColorStop(0, rgba(LIME, 0));
+      dg.addColorStop(0.82, rgba(LIME, 0));
+      dg.addColorStop(1, rgba(LIME, 0.05));
+      ctx.fillStyle = dg;
+      ctx.beginPath(); ctx.arc(cx2, domeCy, domeR, Math.PI, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = rgba(LIME, 0.16);
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(cx2, domeCy, domeR, Math.PI * 1.04, Math.PI * 1.96); ctx.stroke();
+
+      // contact shadow on the top surface
+      var shY = y + sh + 6;
+      var shg = ctx.createRadialGradient(x + sw / 2, shY, 2, x + sw / 2, shY, sw * 0.7);
+      shg.addColorStop(0, "rgba(0,0,0,0.45)");
+      shg.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = shg;
+      ctx.beginPath(); ctx.ellipse(x + sw / 2, shY, sw * 0.6, 9, 0, 0, Math.PI * 2); ctx.fill();
+
+      // safe-pulse halo
+      var pulse = animated ? 0.5 + 0.5 * Math.sin(now * 0.0022) : 0.7;
+      ctx.strokeStyle = rgba(LIME, 0.10 + pulse * 0.10);
+      ctx.lineWidth = 1;
+      roundRect(x - 6, y - 6, sw + 12, sh + 12, 10);
+      ctx.stroke();
+
+      // body
+      ctx.fillStyle = SURFACE;
+      roundRect(x, y, sw, sh, 7);
+      ctx.fill();
+      ctx.strokeStyle = rgba(LIME, 0.62);
+      ctx.lineWidth = 1.5;
+      roundRect(x, y, sw, sh, 7);
+      ctx.stroke();
+
+      // title bar + traffic-light dots
+      var barH = Math.max(12, Math.round(sh * 0.22));
+      ctx.fillStyle = rgba(LIME, 0.10);
+      roundRectTop(x, y, sw, barH, 7);
+      ctx.fill();
+      var dotY = y + barH / 2, dr = 2.2, dx = x + 12, k;
+      for (k = 0; k < 3; k++) {
+        ctx.fillStyle = rgba(LIME, 0.5 - k * 0.12);
+        ctx.beginPath(); ctx.arc(dx + k * 9, dotY, dr, 0, Math.PI * 2); ctx.fill();
+      }
+      // content lines
+      ctx.strokeStyle = rgba(LIME, 0.22);
+      ctx.lineWidth = 2;
+      var ly = y + barH + 12, lx = x + 12, lw = sw - 24, n2;
+      for (n2 = 0; n2 < 3; n2++) {
+        ctx.beginPath();
+        ctx.moveTo(lx, ly + n2 * 9);
+        ctx.lineTo(lx + lw * (n2 === 1 ? 0.6 : 0.85), ly + n2 * 9);
+        ctx.stroke();
+      }
+      // a small lime check/lock badge — "secured"
+      var bx = x + sw - 16, by = y + sh - 14;
+      ctx.fillStyle = rgba(LIME, 0.9);
+      ctx.beginPath(); ctx.arc(bx, by, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = INK;
+      ctx.lineWidth = 1.5; ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(bx - 2.6, by); ctx.lineTo(bx - 0.6, by + 2.2); ctx.lineTo(bx + 3, by - 2.4);
+      ctx.stroke();
+      ctx.lineCap = "butt";
+    }
+
+    function roundRect(x, y, rw, rh, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + rw, y, x + rw, y + rh, r);
+      ctx.arcTo(x + rw, y + rh, x, y + rh, r);
+      ctx.arcTo(x, y + rh, x, y, r);
+      ctx.arcTo(x, y, x + rw, y, r);
+      ctx.closePath();
+    }
+    function roundRectTop(x, y, rw, rh, r) {
+      ctx.beginPath();
+      ctx.moveTo(x, y + rh);
+      ctx.lineTo(x, y + r);
+      ctx.arcTo(x, y, x + r, y, r);
+      ctx.lineTo(x + rw - r, y);
+      ctx.arcTo(x + rw, y, x + rw, y + r, r);
+      ctx.lineTo(x + rw, y + rh);
+      ctx.closePath();
     }
 
     function drawBoundary(now, animated) {
@@ -210,15 +374,15 @@
 
     function render(animated, now) {
       ctx.clearRect(0, 0, w, h);
-      drawFoundation(now, animated);
-
-      // vectors + bursts
+      drawFoundation(now, animated);   // the deep slab (top surface + front face)
+      drawSite(now, animated);         // the protected website, resting on it
+      // attacks fall from the exposed surface above and burst on the shield
       for (var i = 0; i < vectors.length; i++) {
         var v = vectors[i];
         if (v.hot > 0.02) drawBurst(v);
         drawVector(v);
       }
-      drawBoundary(now, animated);
+      drawBoundary(now, animated);     // the shield line + impact ripples, on top
     }
 
     function step(dt, now) {
@@ -261,7 +425,10 @@
     }
 
     // --- static (reduced-motion) frame: STILL tells the story ------------
+    // Idempotent: resets all transient state so repeated calls (e.g. on resize)
+    // paint an identical frame — no accumulating ripples.
     function staticFrame() {
+      ripples.length = 0;
       // freeze every vector just short of the line, one mid-burst at impact,
       // so the figure reads "attacks stopped at the boundary" without motion.
       for (var i = 0; i < vectors.length; i++) {
