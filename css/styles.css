@@ -614,8 +614,9 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 .monitor__viz{ position:relative; display:flex; flex-direction:column; align-items:center; }
 .monitor__radar{
-  position:relative; width:100%; max-width:440px; aspect-ratio:1; margin-inline:auto;
+  position:relative; width:100%; max-width:340px; aspect-ratio:1; margin-inline:auto;
 }
+@media (min-width:960px){ .monitor__radar{ max-width:440px; } }
 .scan-radar__canvas{ display:block; }
 /* "live" readout under the dial */
 .monitor__readout{
@@ -634,13 +635,15 @@ section{ padding-block:var(--section-py); position:relative; }
    STATS GRID (inside the monitor body)
    ============================================================ */
 .stats-grid{
-  display:grid; grid-template-columns:repeat(2,1fr);
-  gap:var(--space-6) var(--space-7);
+  display:grid; grid-template-columns:1fr;
+  gap:var(--space-6) var(--space-6);
 }
-/* The hero stat (re-infection rate) spans both columns and sits larger. */
-.stat--hero{ grid-column:1 / -1; }
-.stat--hero .stat__num{ font-size:clamp(3rem, 2rem + 4vw, 4.5rem); }
-.stat--hero .stat__label{ max-width:34ch; }
+/* Hero stat (re-infection rate) full-width on top; the three supporting stats
+   sit in an even row below — no lopsided 1-2-1. */
+@media (min-width:480px){ .stats-grid{ grid-template-columns:repeat(3, minmax(0,1fr)); } }
+.stat--hero{ grid-column:1 / -1; padding-bottom:var(--space-5); border-bottom:1px solid var(--border-subtle); }
+.stat--hero .stat__num{ font-size:clamp(3.25rem, 2rem + 5vw, 5rem); }
+.stat--hero .stat__label{ max-width:38ch; }
 
 /* Hairline-anchored stat (no box): a left rule with a lime cap, a mono data-tag,
    the big number, then the label. Reads as a technical readout, not a card. */
@@ -660,8 +663,9 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 .stat__num{
   font-family:var(--font-display); font-weight:600;
-  font-size:clamp(2.5rem, 1.7rem + 3.4vw, 3.75rem); line-height:0.95;
+  font-size:clamp(1.75rem, 1.2rem + 1.6vw, 2.25rem); line-height:0.95;
   font-feature-settings:"tnum"; letter-spacing:-0.03em;
+  white-space:nowrap; min-width:0;
   background:var(--grad-lime-text);
   -webkit-background-clip:text; background-clip:text;
   -webkit-text-fill-color:transparent; color:transparent;
