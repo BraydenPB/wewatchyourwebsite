@@ -91,11 +91,13 @@
   --gutter:           clamp(1.25rem, 4vw, 2.5rem);
   --z-header: 100; --z-overlay: 200; --z-modal: 300;
 
-  /* --- Fluid type scale --- */
-  --text-display: clamp(3rem, 1.6rem + 6.2vw, 5rem);
-  --text-h1:      clamp(2.5rem, 1.7rem + 3.6vw, 3.75rem);
-  --text-h2:      clamp(2rem, 1.5rem + 2.2vw, 2.75rem);
-  --text-h3:      clamp(1.5rem, 1.25rem + 1.1vw, 1.875rem);
+  /* --- Fluid type scale ---
+     Tightened display max (5rem felt oversized and forced ragged hero wraps).
+     h1/h2 nudged closer so section heads read as one consistent family. */
+  --text-display: clamp(2.75rem, 1.5rem + 5.4vw, 4.5rem);
+  --text-h1:      clamp(2.25rem, 1.6rem + 3.0vw, 3.25rem);
+  --text-h2:      clamp(1.875rem, 1.45rem + 1.9vw, 2.5rem);
+  --text-h3:      clamp(1.375rem, 1.2rem + 0.9vw, 1.75rem);
   --text-h4:      clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);
   --text-h5:      clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
   --text-h6:      clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
@@ -157,8 +159,12 @@ h1,h2,h3,h4,h5,h6{
   color:var(--text-primary);
   line-height:1.1;
   letter-spacing:-0.02em;
+  /* Balance every headline by default so multi-line headings break evenly
+     instead of orphaning a single word on the last line. */
+  text-wrap:balance;
 }
-p{ margin:0; }
+/* pretty avoids a lone last word (orphan/widow) on body + lede paragraphs */
+p{ margin:0; text-wrap:pretty; }
 a{ color:var(--text-link); text-decoration:none; transition:color var(--dur-base) var(--ease-out); }
 a:hover{ color:var(--text-link-hover); }
 img,svg,canvas{ display:block; max-width:100%; }
@@ -218,11 +224,13 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 .section-head--center .eyebrow{ justify-content:center; }
 
-.section-title{ font-size:var(--text-h2); line-height:1.1; }
+.section-title{ font-size:var(--text-h2); line-height:1.08; max-width:20ch; }
+.section-head--center .section-title{ margin-inline:auto; }
 .section-lede{
-  margin-top:var(--space-4); font-size:var(--text-body-lg);
-  color:var(--text-muted); line-height:1.6;
+  margin-top:var(--space-5); font-size:var(--text-body-lg);
+  color:var(--text-muted); line-height:1.6; max-width:52ch;
 }
+.section-head--center .section-lede{ margin-inline:auto; }
 
 .text-grad{
   background:var(--grad-lime-text);
@@ -423,8 +431,16 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 
 .hero__title{
-  font-size:var(--text-display); line-height:1.02; letter-spacing:-0.03em;
-  margin-block:var(--space-5) var(--space-5); text-wrap:balance;
+  font-size:var(--text-display); line-height:1.05; letter-spacing:-0.025em;
+  margin-block:var(--space-5) var(--space-6); text-wrap:balance; max-width:24ch;
+}
+/* Controlled break: keep the two phrases ("Real Security." / "Built From Real
+   Attacks.") on their own lines on wide screens rather than letting balance split
+   mid-phrase. Collapses to natural wrapping below the breakpoint. */
+.hero__title .brk{ display:none; }
+@media (min-width:720px){
+  .hero__title{ text-wrap:nowrap; max-width:none; }
+  .hero__title .brk{ display:block; }
 }
 .hero__body{
   max-width:600px; font-size:var(--text-body-lg);
@@ -684,7 +700,7 @@ section{ padding-block:var(--section-py); position:relative; }
 /* Eyebrow is inline-flex; center its inner content to match the centered CTA
    (replaces a former inline justify-content style). */
 .final-cta__inner .eyebrow{ justify-content:center; }
-.final-cta__title{ font-size:var(--text-h1); margin-block:var(--space-5) var(--space-5); text-wrap:balance; }
+.final-cta__title{ font-size:var(--text-h1); margin-block:0 var(--space-5); text-wrap:balance; }
 .final-cta__body{ font-size:var(--text-body-lg); color:var(--text-secondary); margin-bottom:var(--space-7); }
 .final-cta__cta{ display:flex; flex-wrap:wrap; gap:var(--space-4); justify-content:center; }
 .final-cta .proof-line{ justify-content:center; }
