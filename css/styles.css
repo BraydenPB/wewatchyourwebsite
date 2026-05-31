@@ -787,57 +787,68 @@ section{ padding-block:var(--section-py); position:relative; }
    HOW IT WORKS — one argument, one diagram.
    The watch console above already lists the operational passes; this
    section's only job is the plugin-vs-infrastructure / "one layer below"
-   argument. So it is NOT a two-column list — it is a single dominant
-   "depth field" read top-to-bottom: attack pressure descends, stops dead at a
-   hard boundary, and WWYW is the foundation everything rests on.
+   argument. So it is NOT a two-column list — it is a single continuous
+   vertical structure: thin, fragile slabs on the exposed surface; a hard
+   seam where the attacker's reach ends; and a heavy, load-bearing
+   foundation block beneath it. Depth comes from WEIGHT CONTRAST (thin
+   above, thick below), not perspective — keeps it restrained, not flashy.
    ============================================================ */
-.how__inner{ max-width:780px; margin-inline:auto; }
+.how__inner{ max-width:760px; margin-inline:auto; }
 .how__inner .section-head{ margin-bottom:var(--space-8); }
 
-/* The depth field — one centered vertical diagram. */
-.depth-field{ margin:0; display:flex; flex-direction:column; }
+/* The depth field — ONE framed column. The single outer border is what makes
+   the exposed surface and the foundation read as one structure rather than
+   stacked tiles. */
+.depth-field{
+  margin:0; position:relative;
+  border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  background:var(--bg-base-2);
+  overflow:hidden;
+}
 
-/* Tier marker — labels each element by WHAT IT IS (external / application /
-   infrastructure), inline so it always aligns. */
+/* ---- Exposed surface — thin, fragile plates within reach. ---------------- */
+.depth-zone--exposed{
+  position:relative; padding:var(--space-5);
+  background:
+    /* hatch intensifies toward the boundary — pressure building at the floor */
+    linear-gradient(180deg, transparent 40%, rgba(255,255,255,0.018) 100%),
+    repeating-linear-gradient(135deg, transparent 0 13px, rgba(255,255,255,0.012) 13px 14px),
+    linear-gradient(180deg, var(--surface-inset), var(--bg-base-2));
+}
+/* Header row for the zone — a label on a hairline, so the group looks composed. */
+.depth-zone__label{
+  display:flex; align-items:center; gap:var(--space-3);
+  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--text-faint); margin-bottom:var(--space-4);
+}
+.depth-zone__label::after{
+  content:""; flex:1; height:1px;
+  background:linear-gradient(90deg, var(--border-subtle), transparent);
+}
+
+/* The plates — thin slabs. Less padding than the foundation, lighter borders,
+   flatter fill: they must read as fragile relative to the block below. */
+.depth-plane{
+  position:relative; display:flex; flex-direction:column; gap:3px;
+  padding:var(--space-3) var(--space-4); border-radius:var(--radius-sm);
+  border:1px solid var(--border-subtle);
+  background:var(--surface-1);
+}
+.depth-plane--threat{ opacity:0.8; }
 .depth-plane__tier{
   position:absolute; top:var(--space-3); right:var(--space-4);
   font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.12em; text-transform:uppercase;
   color:var(--text-faint);
 }
-.depth-plane__tier--safe{ position:static; display:block; color:var(--accent-2-text); margin-bottom:var(--space-4); }
-
-/* Exposed zone — a recessed, inset surface holding the attack + the site.
-   Reads as "the danger zone": darker inset, a faint hatch, all within reach. */
-.depth-zone{ position:relative; border-radius:var(--radius-lg); }
-.depth-zone--exposed{
-  padding:var(--space-6) var(--space-5) var(--space-5);
-  border:1px solid var(--border-default);
-  background:
-    repeating-linear-gradient(135deg, transparent 0 11px, rgba(255,255,255,0.015) 11px 12px),
-    linear-gradient(180deg, var(--surface-inset), var(--bg-base-2));
-}
-.depth-zone__label{
-  position:absolute; top:var(--space-4); left:var(--space-5);
-  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.12em; text-transform:uppercase;
-  color:var(--text-faint);
-}
-
-/* The two exposed planes — flat slabs, muted, clearly "above the line". */
-.depth-plane{
-  position:relative; display:flex; flex-direction:column; gap:3px;
-  padding:var(--space-4) var(--space-5); border-radius:var(--radius-md);
-  border:1px solid var(--border-subtle);
-  background:linear-gradient(180deg, var(--surface-1), var(--bg-base-2));
-}
-.depth-plane--threat{ margin-top:var(--space-5); opacity:0.82; }
 .depth-plane__kicker{ font-family:var(--font-display); font-weight:600; font-size:var(--text-h6); color:var(--text-primary); line-height:1.2; }
 .depth-plane__detail{ font-size:var(--text-xs); color:var(--text-muted); font-family:var(--font-mono); letter-spacing:0.01em; max-width:52ch; }
 .depth-plane--threat .depth-plane__kicker{ color:var(--text-secondary); }
 
-/* Pressure — the attack flowing DOWN from the threat into the site. */
+/* Pressure — the attack falling DOWN from the threat into the site. Tighter
+   now (the plates are closer together), so the descent reads as compression. */
 .depth-pressure{
   display:flex; justify-content:center; gap:var(--space-5);
-  padding:var(--space-3) 0; height:var(--space-7);
+  padding:var(--space-2) 0; height:var(--space-6);
 }
 .depth-pressure__arrow{
   width:1px; height:100%; position:relative;
@@ -852,51 +863,59 @@ section{ padding-block:var(--section-py); position:relative; }
 .depth-pressure__arrow:nth-child(3){ animation:depth-fall 2.4s var(--ease-in-out) 0.4s infinite; opacity:0.6; }
 @keyframes depth-fall{ 0%,100%{ opacity:0.35; } 50%{ opacity:0.9; } }
 
-/* The boundary — the focal moment. A hard, full-width demarcation that the
-   attack pressure dies against and the foundation sits beneath. It overlaps
-   both zones (negative margins + z-index) so it reads as a seam, not a gap. */
+/* ---- The seam — where the attacker's reach ends. ------------------------- */
+/* A full-bleed band spanning the whole frame: the hard floor the exposed
+   surface rests on and the foundation bears up against. No gaps — it is the
+   joint between the two, not a divider floating in space. */
 .depth-boundary{
-  display:flex; align-items:center; gap:var(--space-4);
   position:relative; z-index:2;
-  margin:calc(var(--space-4) * -1) var(--space-5) calc(var(--space-4) * -1);
-  padding:var(--space-2) 0;
+  display:flex; align-items:center; justify-content:center;
+  padding:var(--space-3) var(--space-5);
+  background:var(--bg-base);
+  border-top:1px solid var(--accent-border);
+  border-bottom:1px solid var(--accent-border);
 }
-.depth-boundary__rule{
-  flex:1; height:2px; border-radius:2px;
+/* The dashed lime rule sits behind the centered tag, edge to edge. */
+.depth-boundary::before{
+  content:""; position:absolute; left:var(--space-5); right:var(--space-5); top:50%;
+  height:2px; transform:translateY(-50%);
   background:repeating-linear-gradient(90deg, var(--accent) 0 8px, transparent 8px 16px);
-  opacity:0.85;
+  opacity:0.7;
 }
 .depth-boundary__tag{
-  flex:none; font-family:var(--font-mono); font-size:var(--text-xs);
-  letter-spacing:0.1em; text-transform:uppercase; color:var(--accent-2-text);
-  padding:var(--space-1) var(--space-3); border-radius:var(--radius-pill);
+  position:relative;
+  font-family:var(--font-mono); font-size:var(--text-xs);
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--accent-2-text);
+  padding:var(--space-1) var(--space-4); border-radius:var(--radius-pill);
   border:1px solid var(--accent-border); background:var(--bg-base);
-  box-shadow:0 0 0 5px var(--bg-base);
+  box-shadow:0 0 0 6px var(--bg-base);
 }
 
-/* The foundation — wide, lime-edged, load-bearing. The heaviest element on the
-   vertical: where the eye lands. The ARGUMENT dominates; the roles below are
-   quiet supporting detail, not a co-equal column. */
+/* ---- The foundation — the heavy, load-bearing block. --------------------- */
+/* Butts directly under the seam (no margin). Visibly heavier than the plates:
+   far more padding, a solid lime top edge it appears to bear, a denser fill
+   and the deep drop shadow. THIS is where the eye lands. */
 .depth-zone--foundation{
-  margin-top:var(--space-6);
-  padding:var(--space-7) var(--space-6) var(--space-6);
-  border:1px solid var(--accent-border);
-  background:linear-gradient(180deg, var(--surface-2), var(--surface-1));
+  position:relative;
+  padding:var(--space-6) var(--space-6) var(--space-6);
+  background:
+    linear-gradient(180deg, var(--surface-2), var(--surface-1));
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.06),
-    0 36px 72px -40px rgba(105,255,18,0.36);
+    inset 0 2px 0 var(--accent),                 /* solid bearing edge */
+    inset 0 3px 24px -6px rgba(105,255,18,0.20),  /* lime light pooling at the top */
+    0 -1px 0 var(--accent-border);
   overflow:hidden;
 }
 .depth-foundation__scan{
   position:absolute; inset:0; pointer-events:none; opacity:0.5;
   background:repeating-linear-gradient(180deg, transparent 0 3px, rgba(105,255,18,0.035) 3px 4px);
 }
-.depth-zone--foundation::before{
-  content:""; position:absolute; inset:0 auto 0 0; width:3px;
-  background:linear-gradient(180deg, var(--accent), var(--accent-2));
-  box-shadow:var(--glow-lime-sm);
-}
 .depth-zone--foundation > *{ position:relative; }
+.depth-plane__tier--safe{
+  position:static; display:block; color:var(--accent-2-text);
+  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.12em; text-transform:uppercase;
+  margin-bottom:var(--space-4);
+}
 .depth-foundation__eyebrow{
   display:flex; align-items:center; gap:var(--space-2);
   font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.08em; text-transform:uppercase;
@@ -912,19 +931,24 @@ section{ padding-block:var(--section-py); position:relative; }
   font-size:var(--text-h2); color:var(--text-primary); line-height:1.05; margin:0 0 var(--space-4);
 }
 .depth-foundation__line{
-  color:var(--text-secondary); font-size:var(--text-body-lg); max-width:62ch; margin:0 0 var(--space-6);
+  color:var(--text-secondary); font-size:var(--text-body-lg); max-width:60ch; margin:0 0 var(--space-5);
 }
 .depth-foundation__line strong{ color:var(--text-primary); font-weight:600; }
 
-/* The payoff roles — quiet, subordinate supporting detail. A compact strip of
-   three; "Seal" is the only non-redundant one, so it carries the lime accent.
-   This is deliberately NOT a numbered stepper — that's the console's job. */
+/* Payoff roles — quiet, subordinate. "Seal" is the only non-redundant one, so
+   it carries the lime accent. Deliberately NOT a numbered stepper. */
 .depth-foundation__roles{
-  list-style:none; margin:0; padding:var(--space-5) 0 0;
+  list-style:none; margin:0; padding:var(--space-4) 0 0;
   border-top:1px solid var(--border-subtle);
   display:grid; grid-template-columns:repeat(3, 1fr); gap:var(--space-5);
 }
-.depth-foundation__roles li{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.depth-foundation__roles li{ position:relative; display:flex; flex-direction:column; gap:3px; min-width:0; padding-left:var(--space-4); }
+/* A short tick before each role — turns a bare list into a marked one. */
+.depth-foundation__roles li::before{
+  content:""; position:absolute; left:0; top:5px; width:2px; height:calc(100% - 4px);
+  border-radius:2px; background:var(--border-strong);
+}
+.depth-role--key::before{ background:var(--accent); box-shadow:var(--glow-lime-sm); }
 .depth-role__k{
   font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.14em; text-transform:uppercase;
   color:var(--text-faint);
