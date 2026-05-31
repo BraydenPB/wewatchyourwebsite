@@ -175,9 +175,12 @@
     if (!nums.length) return;
 
     function render(el, value) {
-      // Format with thousands separators; re-append any suffix markup (+, /yr…).
+      // Format with thousands separators; re-append any suffix markup (+, %, /yr…).
       var sup = el.getAttribute("data-sup") || "";
-      var formatted = Math.round(value).toLocaleString("en-US");
+      var dec = parseInt(el.getAttribute("data-decimals") || "0", 10);
+      var formatted = dec > 0
+        ? value.toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec })
+        : Math.round(value).toLocaleString("en-US");
       el.innerHTML = formatted + (sup ? '<span class="stat__sup">' + sup + "</span>" : "");
     }
 

@@ -9,6 +9,10 @@ Building **wewatchyourwebsite.com** (project dir `wwyw2`) as a clean static site
 
 **Design formula: WWYW brand palette × Cloudflare structural vibe × lime-themed LetterGlitch accents.** Brief says "similar (NOT same)" to the May 2026 Cloudflare redesign — a low-precision target, so borrow STRUCTURE, not Cloudflare's palette.
 
+**REFERENCE RULES (user-stated):** (1) The REAL wewatchyourwebsite.com = CONTENT reference ONLY — its design is bad (red-on-navy, flat/cramped), IGNORE its visuals. Use its substance: 6 hero stats incl. killer 0.047% re-infection rate, 8M cleaned since 2007, 2.9M monitored today, 300k malware samples; real 2025 incident examples (inotify rootkit on PanelAlpha, casino SEO spam in Elementor JSON, webanalytics-cdn.sbs on GridPane, GLASSWORM Unicode steganography); second product = Code Analyzer (8-stage pipeline: secrets, static/Semgrep, dependency/OSV, LLM review, bundle, unicode-stego, adversarial verify, attack-chain); 72.8% of 2096 AI apps had a vuln; hosting partners (GridPane/PanelAlpha/RunCloud/xCloud/Hetzner). (2) DESIGN caliber reference = ChameleonLanding (`../ChameleonLanding`) + Cloudflare — esp. CUSTOM ANIMATED OBJECTS (Chameleon's hero is a dependency-free WebGL radar shader in radar.js — GLSL fragment shader, IntersectionObserver pause, reduced-motion fallback to static SVG rings). That caliber = the bar.
+
+**User feedback trajectory (why iterations happened):** floor-raising (type→surfaces→motion) wasn't enough; root issue was COMPOSITION (every section same vertical rhythm) + BASIC content (generic invented copy vs real specifics). Fix = real substance + bold asymmetric composition + genuine custom animated centerpiece(s). User: "idea is great, needs many small improvements to be top-tier, you're the expert — you decide." NOT a teardown; an execution-quality pass.
+
 **Brand palette (from logo SVG `assets/img/*.svg`, ground truth):**
 - Lime/chartreuse `#69ff12` (primary accent — the shield scanline glyph)
 - Green radial gradient `#bed143` → `#3d6f3c`

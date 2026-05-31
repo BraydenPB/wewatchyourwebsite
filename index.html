@@ -317,34 +317,47 @@
     <!-- ============================================================
          STATS
          ============================================================ -->
-    <section id="stats" aria-labelledby="stats-title">
-      <div class="container">
-        <div class="section-head section-head--center reveal">
-          <p class="eyebrow">By The Numbers</p>
-          <h2 class="section-title" id="stats-title">The numbers behind the watch.</h2>
-          <p class="section-lede">Eighteen years of cleaning real sites means we've already seen the attack hitting yours.</p>
+    <section id="stats" class="monitor" aria-labelledby="stats-title">
+      <div class="container monitor__grid">
+        <!-- Left: the live scan radar centerpiece -->
+        <div class="monitor__viz reveal">
+          <div class="monitor__radar" data-scan-radar></div>
+          <div class="monitor__readout">
+            <span class="monitor__pulse" aria-hidden="true"></span>
+            <span class="monitor__readout-num" data-count="2900000">2,900,000</span>
+            <span class="monitor__readout-label">sites under watch right now</span>
+          </div>
         </div>
 
-        <div class="stats-grid reveal-group">
-          <div class="stat">
-            <span class="stat__tag">S/01</span>
-            <div class="stat__num" data-count="8000000" data-sup="+">8,000,000<span class="stat__sup">+</span></div>
-            <div class="stat__label">Sites cleaned since 2007</div>
+        <!-- Right: heading + the real numbers -->
+        <div class="monitor__body">
+          <div class="section-head reveal">
+            <p class="eyebrow">By The Numbers</p>
+            <h2 class="section-title" id="stats-title">Eighteen years of real attacks, distilled.</h2>
+            <p class="section-lede">Every signature was written because we saw something real and had to stop it. The proof is in the numbers — and the re-infection rate.</p>
           </div>
-          <div class="stat">
-            <span class="stat__tag">S/02</span>
-            <div class="stat__num" data-count="4" data-sup="sec">4<span class="stat__sup">sec</span></div>
-            <div class="stat__label">Average file-integrity scan</div>
-          </div>
-          <div class="stat">
-            <span class="stat__tag">S/03</span>
-            <div class="stat__num">$0</div>
-            <div class="stat__label">Per-clean fees — automated, always</div>
-          </div>
-          <div class="stat">
-            <span class="stat__tag">S/04</span>
-            <div class="stat__num">24/7</div>
-            <div class="stat__label">Continuous monitoring &amp; intrusion detection</div>
+
+          <div class="stats-grid reveal-group">
+            <div class="stat stat--hero">
+              <span class="stat__tag">S/01</span>
+              <div class="stat__num" data-count="0.047" data-sup="%" data-decimals="3">0.047<span class="stat__sup">%</span></div>
+              <div class="stat__label">Re-infection rate — a fraction of the industry average</div>
+            </div>
+            <div class="stat">
+              <span class="stat__tag">S/02</span>
+              <div class="stat__num" data-count="8000000" data-sup="+">8,000,000<span class="stat__sup">+</span></div>
+              <div class="stat__label">Sites cleaned since 2007</div>
+            </div>
+            <div class="stat">
+              <span class="stat__tag">S/03</span>
+              <div class="stat__num" data-count="300000" data-sup="+">300,000<span class="stat__sup">+</span></div>
+              <div class="stat__label">Malware samples in our intelligence set</div>
+            </div>
+            <div class="stat">
+              <span class="stat__tag">S/04</span>
+              <div class="stat__num" data-count="4" data-sup="sec">4<span class="stat__sup">sec</span></div>
+              <div class="stat__label">Average file-integrity scan, zero server impact</div>
+            </div>
           </div>
         </div>
       </div>
@@ -570,6 +583,7 @@
   <!-- lottie-web player (CDN) -->
   <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js" defer></script>
   <script src="js/letter-glitch.js" defer></script>
+  <script src="js/scan-radar.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>
