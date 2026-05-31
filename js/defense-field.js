@@ -53,6 +53,9 @@
     var COLS = 9;
     var vectors = [];
     function seedVectors() {
+      // fewer vectors on a narrow (mobile) canvas — density that suits desktop
+      // reads as clutter on a small stage.
+      COLS = w && w < 460 ? 6 : 9;
       vectors.length = 0;
       for (var i = 0; i < COLS; i++) {
         var frac = (i + 0.5) / COLS;            // column position 0..1

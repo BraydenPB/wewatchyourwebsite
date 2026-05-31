@@ -798,11 +798,13 @@ section{ padding-block:var(--section-py); position:relative; }
 /* ---- The figure: a framed canvas stage with overlaid zone labels. ------- */
 .defense{ margin:0 0 var(--space-7); }
 .defense__stage{
-  position:relative; width:100%; aspect-ratio:16 / 11;
+  position:relative; width:100%; aspect-ratio:4 / 5;   /* tall on mobile so the
+    zones breathe: boundary at 40% leaves real room above AND below the line */
   border:1px solid var(--border-default); border-radius:var(--radius-lg);
   background:linear-gradient(180deg, var(--surface-inset), var(--bg-base-2));
   overflow:hidden;
 }
+@media (min-width:560px){ .defense__stage{ aspect-ratio:16 / 11; } }
 @media (min-width:720px){ .defense__stage{ aspect-ratio:16 / 9; } }
 .defense__canvas{ display:block; width:100%; height:100%; }
 
@@ -835,12 +837,19 @@ section{ padding-block:var(--section-py); position:relative; }
   content:""; width:5px; height:5px; border-radius:50%; flex:none;
   background:var(--accent); box-shadow:var(--glow-lime-sm);
 }
+.defense__label-short{ display:none; }
 .defense__label--floor{ bottom:var(--space-4); left:var(--space-5); color:var(--accent-2-text); }
 .defense__label--floor .defense__label-v{ color:var(--text-muted); letter-spacing:0.06em; }
 @media (max-width:519px){
   .defense__label-v{ display:none; }              /* keep mobile uncluttered */
   .defense__label--surface, .defense__label--floor{ left:var(--space-4); }
-  .defense__label--boundary{ right:var(--space-4); }
+  /* swap to the short label and lift it INTO the empty band above the line,
+     right-aligned and clear of the central burst + the site below it. */
+  .defense__label-full{ display:none; }
+  .defense__label-short{ display:inline; }
+  .defense__label--boundary{
+    top:calc(var(--defense-bound) - 2.4em); right:var(--space-4);
+  }
 }
 
 /* ---- The statement: argument (left) + payoff spec row (right/below). ----- */
