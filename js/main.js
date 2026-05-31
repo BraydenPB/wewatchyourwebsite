@@ -30,10 +30,12 @@
      - Lazy-loads all 4 Lottie animations (lottie-web CDN), but only the
        ACTIVE pass plays — the rest are paused (perf + the "same screen,
        four passes" concept).
-     - Auto-cycles through the 4 passes; pauses on hover/focus/off-screen.
-     - Real tablist: arrow-key nav, aria-selected, panels toggle hidden.
-     - prefers-reduced-motion: no autoplay, no auto-cycle, holds a static
-       frame; user can still click between passes.
+     - Auto-cycles the live HIGHLIGHT through the 4 passes; pauses on
+       hover/focus/off-screen. All copy is ALWAYS readable (a list, not a
+       tablist) — the active row is a visual + aria-current highlight.
+     - Panels reveal with a staggered scan-sweep on scroll-in, then stay open.
+     - prefers-reduced-motion: no autoplay/cycle/reveal — all copy open + a
+       static frame; clicking a pass still moves the highlight + screen.
   ------------------------------------------------------------------- */
   var READOUTS = [
     { label: "scanning · malware signatures", status: "removing" },
@@ -48,7 +50,8 @@
 
     var mounts = Array.prototype.slice.call(root.querySelectorAll("[data-lottie]"));
     var tabs = Array.prototype.slice.call(root.querySelectorAll("[data-pass-btn]"));
-    var panels = Array.prototype.slice.call(root.querySelectorAll("[data-pass-panel]"));
+    var items = Array.prototype.slice.call(root.querySelectorAll("[data-pass-item]"));
+    var passes = root.querySelector("[data-passes]");
     var screen = root.querySelector(".console__screen");
     var readoutLabel = root.querySelector("[data-readout-label]");
     var readoutStatus = root.querySelector("[data-readout-status]");
@@ -89,17 +92,17 @@
       });
     }
 
-    function select(i, focusTab) {
+    function select(i, focusBtn) {
       if (i === active) return;
-      // swap tab state
-      tabs.forEach(function (t, n) {
-        var on = n === i;
-        t.classList.toggle("is-active", on);
-        t.setAttribute("aria-selected", on ? "true" : "false");
-        t.tabIndex = on ? 0 : -1;
+      // Highlight the active row (visual + aria-current). Panels stay open —
+      // this is a list, not a tablist; the "active" pass is just the one the
+      // live scan is on right now.
+      items.forEach(function (li, n) { li.classList.toggle("is-active", n === i); });
+      tabs.forEach(function (b, n) {
+        if (n === i) b.setAttribute("aria-current", "true");
+        else b.removeAttribute("aria-current");
       });
-      panels.forEach(function (p, n) { p.hidden = n !== i; });
-      // swap screen: hide+stop old, show+play new
+      // swap which single Lottie plays on the screen
       mounts.forEach(function (m, n) { m.hidden = n !== i; });
       if (anims[active]) anims[active].stop();
       active = i;
@@ -108,7 +111,7 @@
       if (readoutLabel) readoutLabel.textContent = READOUTS[i].label;
       if (readoutStatus) readoutStatus.textContent = READOUTS[i].status;
       restartBar();
-      if (focusTab) tabs[i].focus();
+      if (focusBtn) tabs[i].focus();
     }
 
     // re-trigger the active pass's progress-bar fill animation
@@ -123,23 +126,19 @@
 
     function advance() { select((active + 1) % tabs.length); }
 
-    // Mobile only: when the screen is pinned (sticky) above the rail, tapping a
-    // pass can collapse the panel above it and yank the tapped tab up behind the
-    // screen. Settle the tapped tab into the readable zone just below the pinned
-    // screen — but only if it's actually clipped. Click path only (never on
-    // auto-advance, which would scroll the page every cycle).
-    function settleTab(i) {
-      // desktop lays the screen beside the rail — no pinned-over-rail collision
-      if (typeof matchMedia === "function" && matchMedia("(min-width: 900px)").matches) return;
-      var tab = tabs[i];
-      var rect = tab.getBoundingClientRect();
-      var sc = screen ? screen.getBoundingClientRect() : null;
-      var coverBottom = sc ? sc.bottom : 72; // bottom edge of the pinned screen
-      var vh = document.documentElement.clientHeight;
-      var clipped = rect.top < coverBottom + 8 || rect.bottom > vh;
-      if (!clipped) return;
-      var target = window.scrollY + rect.top - coverBottom - 12; // land just under the screen
-      window.scrollTo({ top: target, behavior: prefersReduced ? "auto" : "smooth" });
+    // Staggered "scan sweep" reveal: panels open one-by-one on scroll-in, then
+    // STAY open (accumulate) so all copy is readable without a click. Fast
+    // (~110ms/row, ~1s total) and decoupled from the 5.2s highlight loop. Under
+    // reduced-motion / no-JS the CSS renders everything open, so this only runs
+    // as a progressive enhancement.
+    var revealed = false;
+    function revealPasses() {
+      if (revealed || prefersReduced) return;
+      revealed = true;
+      passes.classList.add("is-revealing");
+      items.forEach(function (li, n) {
+        window.setTimeout(function () { li.classList.add("is-revealed"); }, 120 + n * 110);
+      });
     }
 
     function startCycle() {
@@ -186,10 +185,9 @@
     tabs.forEach(function (tab, i) {
       tab.addEventListener("click", function () {
         // On touch (no hover), a tap is the user taking control — pause stickily
-        // so a reader is never yanked off the pass they just chose.
+        // so the live highlight doesn't move off the pass they just picked.
         if (!canHover && !userPaused) setUserPaused(true);
         select(i, false);
-        settleTab(i);
       });
       tab.addEventListener("keydown", function (e) {
         var key = e.key;
@@ -227,10 +225,22 @@
     load(active);
 
     if ("IntersectionObserver" in window) {
+      // 1) play/pause the Lottie based on the screen being on-screen
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) { onVisible(entry.isIntersecting); });
       }, { rootMargin: "0px", threshold: 0.25 });
       io.observe(screen || root);
+
+      // 2) fire the scan-sweep reveal only when the RAIL itself scrolls into
+      //    view, so the staggered open actually happens in front of the user
+      //    (not while the panels are still below the fold). rootMargin pulls the
+      //    trigger up so it starts just as the first rows appear.
+      var revealIo = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) { revealPasses(); revealIo.disconnect(); }
+        });
+      }, { rootMargin: "0px 0px -20% 0px", threshold: 0.15 });
+      revealIo.observe(passes);
     } else {
       onVisible(true);
     }

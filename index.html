@@ -222,105 +222,118 @@
                 <span class="console__toggle-label" data-console-toggle-label>Pause</span>
               </button>
             </div>
-            <div class="passes" role="tablist" aria-label="Site protection scan passes" aria-orientation="vertical" data-passes>
+            <!-- A list of scan passes. Each pass's copy is ALWAYS rendered (no
+                 click required to read); the active row is a visual + aria-current
+                 highlight, NOT a tab. The button is a "jump to / pause here"
+                 control. Panels reveal with a staggered scan-sweep on scroll-in
+                 (JS), and are fully open + static under reduced-motion. -->
+            <ul class="passes" aria-label="Site protection scan passes" data-passes>
 
-              <button class="pass is-active" role="tab" id="pass-tab-0" aria-selected="true" aria-controls="pass-panel-0" data-pass-btn="0">
-                <span class="pass__status" aria-hidden="true">
-                  <span class="pass__num">01</span>
-                  <span class="pass__indicator"></span>
-                </span>
-                <span class="pass__main">
-                  <span class="pass__title">Malware Removal</span>
-                  <span class="pass__verb">Remove</span>
-                </span>
-                <span class="pass__result" aria-hidden="true">
-                  <span class="pass__result-state">scanning</span>
-                  <span class="pass__result-value">0 threats</span>
-                </span>
-                <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
-              </button>
-              <div class="pass-panel" role="tabpanel" id="pass-panel-0" aria-labelledby="pass-tab-0" data-pass-panel="0" tabindex="0">
-                <p class="pass__body">Infected? We clean it — automatically, completely, with no surprise invoice.</p>
-                <ul class="feature-list">
-                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Automated removal, not a manual ticket queue</li>
-                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>No per-clean fees, ever</li>
-                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Backed by our money-back guarantee</li>
-                </ul>
-              </div>
+              <li class="pass-item is-active" data-pass-item="0">
+                <button class="pass" aria-current="true" data-pass-btn="0">
+                  <span class="pass__status" aria-hidden="true">
+                    <span class="pass__num">01</span>
+                    <span class="pass__indicator"></span>
+                  </span>
+                  <span class="pass__main">
+                    <span class="pass__title">Malware Removal</span>
+                    <span class="pass__verb">Remove</span>
+                  </span>
+                  <span class="pass__result" aria-hidden="true">
+                    <span class="pass__result-state">scanning</span>
+                    <span class="pass__result-value">0 threats</span>
+                  </span>
+                  <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
+                </button>
+                <div class="pass-panel">
+                  <p class="pass__body">Infected? We clean it — automatically, completely, with no surprise invoice.</p>
+                  <ul class="feature-list">
+                    <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Automated removal, not a manual ticket queue</li>
+                    <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>No per-clean fees, ever</li>
+                    <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Backed by our money-back guarantee</li>
+                  </ul>
+                </div>
+              </li>
 
-              <button class="pass" role="tab" id="pass-tab-1" aria-selected="false" aria-controls="pass-panel-1" tabindex="-1" data-pass-btn="1">
-                <span class="pass__status" aria-hidden="true">
-                  <span class="pass__num">02</span>
-                  <span class="pass__indicator"></span>
-                </span>
-                <span class="pass__main">
-                  <span class="pass__title">File Integrity Monitoring</span>
-                  <span class="pass__verb">Verify</span>
-                </span>
-                <span class="pass__result" aria-hidden="true">
-                  <span class="pass__result-state">scanning</span>
-                  <span class="pass__result-value">files verified</span>
-                </span>
-                <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
-              </button>
-              <div class="pass-panel" role="tabpanel" id="pass-panel-1" aria-labelledby="pass-tab-1" data-pass-panel="1" tabindex="0" hidden>
-                <p class="pass__body">We hash your files and verify them against known-good WordPress core, so unauthorized changes surface the moment they appear.</p>
-                <ul class="feature-list">
-                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>4-second average scan</li>
-                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>WP core hash verification</li>
-                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Catches changes you would never see in cPanel</li>
-                </ul>
-              </div>
+              <li class="pass-item" data-pass-item="1">
+                <button class="pass" data-pass-btn="1">
+                  <span class="pass__status" aria-hidden="true">
+                    <span class="pass__num">02</span>
+                    <span class="pass__indicator"></span>
+                  </span>
+                  <span class="pass__main">
+                    <span class="pass__title">File Integrity Monitoring</span>
+                    <span class="pass__verb">Verify</span>
+                  </span>
+                  <span class="pass__result" aria-hidden="true">
+                    <span class="pass__result-state">scanning</span>
+                    <span class="pass__result-value">files verified</span>
+                  </span>
+                  <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
+                </button>
+                <div class="pass-panel">
+                  <p class="pass__body">We hash your files and verify them against known-good WordPress core, so unauthorized changes surface the moment they appear.</p>
+                  <ul class="feature-list">
+                    <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>4-second average scan</li>
+                    <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>WP core hash verification</li>
+                    <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Catches changes you would never see in cPanel</li>
+                  </ul>
+                </div>
+              </li>
 
-              <button class="pass" role="tab" id="pass-tab-2" aria-selected="false" aria-controls="pass-panel-2" tabindex="-1" data-pass-btn="2">
-                <span class="pass__status" aria-hidden="true">
-                  <span class="pass__num">03</span>
-                  <span class="pass__indicator"></span>
-                </span>
-                <span class="pass__main">
-                  <span class="pass__title">Root-Cause Determination</span>
-                  <span class="pass__verb">Investigate</span>
-                </span>
-                <span class="pass__result" aria-hidden="true">
-                  <span class="pass__result-state">scanning</span>
-                  <span class="pass__result-value">entry sealed</span>
-                </span>
-                <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
-              </button>
-              <div class="pass-panel" role="tabpanel" id="pass-panel-2" aria-labelledby="pass-tab-2" data-pass-panel="2" tabindex="0" hidden>
-                <p class="pass__body">A clean site that stays vulnerable gets reinfected. We find HOW the attacker got in — not just the file they left behind.</p>
-                <ul class="feature-list">
-                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Traces the entry point, not just the symptom</li>
-                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Closes the door reinfections walk through</li>
-                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Real analysis from a security expert</li>
-                </ul>
-              </div>
+              <li class="pass-item" data-pass-item="2">
+                <button class="pass" data-pass-btn="2">
+                  <span class="pass__status" aria-hidden="true">
+                    <span class="pass__num">03</span>
+                    <span class="pass__indicator"></span>
+                  </span>
+                  <span class="pass__main">
+                    <span class="pass__title">Root-Cause Determination</span>
+                    <span class="pass__verb">Investigate</span>
+                  </span>
+                  <span class="pass__result" aria-hidden="true">
+                    <span class="pass__result-state">scanning</span>
+                    <span class="pass__result-value">entry sealed</span>
+                  </span>
+                  <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
+                </button>
+                <div class="pass-panel">
+                  <p class="pass__body">A clean site that stays vulnerable gets reinfected. We find HOW the attacker got in — not just the file they left behind.</p>
+                  <ul class="feature-list">
+                    <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Traces the entry point, not just the symptom</li>
+                    <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Closes the door reinfections walk through</li>
+                    <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Real analysis from a security expert</li>
+                  </ul>
+                </div>
+              </li>
 
-              <button class="pass" role="tab" id="pass-tab-3" aria-selected="false" aria-controls="pass-panel-3" tabindex="-1" data-pass-btn="3">
-                <span class="pass__status" aria-hidden="true">
-                  <span class="pass__num">04</span>
-                  <span class="pass__indicator"></span>
-                </span>
-                <span class="pass__main">
-                  <span class="pass__title">Total Protection</span>
-                  <span class="pass__verb">Protect</span>
-                </span>
-                <span class="pass__result" aria-hidden="true">
-                  <span class="pass__result-state">scanning</span>
-                  <span class="pass__result-value">monitored 24/7</span>
-                </span>
-                <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
-              </button>
-              <div class="pass-panel" role="tabpanel" id="pass-panel-3" aria-labelledby="pass-tab-3" data-pass-panel="3" tabindex="0" hidden>
-                <p class="pass__body">Continuous monitoring and intrusion detection watching your site around the clock — so threats are caught while they are still small.</p>
-                <ul class="feature-list">
-                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Continuous, always-on monitoring</li>
-                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Intrusion detection at the infrastructure level</li>
-                  <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Alerts before a problem becomes an outage</li>
-                </ul>
-              </div>
+              <li class="pass-item" data-pass-item="3">
+                <button class="pass" data-pass-btn="3">
+                  <span class="pass__status" aria-hidden="true">
+                    <span class="pass__num">04</span>
+                    <span class="pass__indicator"></span>
+                  </span>
+                  <span class="pass__main">
+                    <span class="pass__title">Total Protection</span>
+                    <span class="pass__verb">Protect</span>
+                  </span>
+                  <span class="pass__result" aria-hidden="true">
+                    <span class="pass__result-state">scanning</span>
+                    <span class="pass__result-value">monitored 24/7</span>
+                  </span>
+                  <span class="pass__bar" aria-hidden="true"><span class="pass__bar-fill"></span></span>
+                </button>
+                <div class="pass-panel">
+                  <p class="pass__body">Continuous monitoring and intrusion detection watching your site around the clock — so threats are caught while they are still small.</p>
+                  <ul class="feature-list">
+                    <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Continuous, always-on monitoring</li>
+                    <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Intrusion detection at the infrastructure level</li>
+                    <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Alerts before a problem becomes an outage</li>
+                  </ul>
+                </div>
+              </li>
 
-            </div>
+            </ul>
           </div>
         </div>
       </div>

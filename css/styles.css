@@ -632,10 +632,15 @@ section{ padding-block:var(--section-py); position:relative; }
    surface that slides to the active row. */
 .passes{
   position:relative; display:flex; flex-direction:column;
+  list-style:none; margin:0; padding:0;
   border:1px solid var(--border-subtle); border-radius:var(--radius-md);
   background:linear-gradient(180deg, var(--surface-1), var(--bg-base-2, var(--surface-1)));
   overflow:hidden;
 }
+
+/* each pass is a list item: header button + its always-rendered copy panel */
+.pass-item{ position:relative; border-top:1px solid var(--border-subtle); }
+.passes .pass-item:first-child{ border-top:0; }
 
 .pass{
   position:relative; z-index:1; display:grid;
@@ -644,10 +649,9 @@ section{ padding-block:var(--section-py); position:relative; }
   grid-template-columns:auto minmax(0,1fr) auto; align-items:center;
   gap:var(--space-4); width:100%; text-align:left; cursor:pointer;
   padding:var(--space-4) var(--space-5); background:none; border:0;
-  border-top:1px solid var(--border-subtle); color:var(--text-secondary);
+  color:var(--text-secondary);
   transition:color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
 }
-.passes .pass:first-of-type{ border-top:0; }
 .pass:hover{ color:var(--text-primary); background:rgba(255,255,255,0.015); }
 .pass:focus-visible{ outline:none; box-shadow:inset var(--focus-ring-on-surface); border-radius:var(--radius-sm); }
 
@@ -704,27 +708,27 @@ section{ padding-block:var(--section-py); position:relative; }
   background:linear-gradient(90deg, var(--accent), var(--accent-2, var(--accent)));
 }
 
-/* ---- ACTIVE pass: the row being scanned right now ---- */
-.pass.is-active{ color:var(--text-primary); background:var(--surface-inset); }
-.pass.is-active::before{
-  content:""; position:absolute; left:0; top:0; bottom:0; width:2px;
+/* ---- ACTIVE pass: the row being scanned right now (visual + aria-current) ---- */
+.pass-item.is-active .pass{ color:var(--text-primary); background:var(--surface-inset); }
+.pass-item.is-active::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:2px; z-index:2;
   background:linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent) 30%, transparent));
 }
-.pass.is-active .pass__num{ opacity:0; }
-.pass.is-active .pass__indicator{
+.pass-item.is-active .pass__num{ opacity:0; }
+.pass-item.is-active .pass__indicator{
   opacity:1; transform:scale(1); background:var(--accent);
   box-shadow:0 0 0 0 rgba(105,255,18,0.5); animation:pass-scan 2s var(--ease-out) infinite;
 }
-.pass.is-active .pass__verb{ color:var(--text-accent); }
-.pass.is-active .pass__result-state{ opacity:1; height:auto; color:var(--text-accent); }
-.pass.is-active .pass__result-value{ color:var(--text-primary); }
-.pass.is-active .pass__bar{ background:var(--border-subtle); }
+.pass-item.is-active .pass__verb{ color:var(--text-accent); }
+.pass-item.is-active .pass__result-state{ opacity:1; height:auto; color:var(--text-accent); }
+.pass-item.is-active .pass__result-value{ color:var(--text-primary); }
+.pass-item.is-active .pass__bar{ background:var(--border-subtle); }
 /* fill animates over the auto-cycle interval; paused/instant per JS + reduced-motion */
-.pass.is-active .pass__bar-fill{
+.pass-item.is-active .pass__bar-fill{
   animation:pass-fill var(--pass-dwell, 5200ms) linear forwards;
 }
-.console[data-paused="true"] .pass.is-active .pass__bar-fill{ animation-play-state:paused; }
-.console[data-paused="true"] .pass.is-active .pass__indicator{ animation-play-state:paused; }
+.console[data-paused="true"] .pass-item.is-active .pass__bar-fill{ animation-play-state:paused; }
+.console[data-paused="true"] .pass-item.is-active .pass__indicator{ animation-play-state:paused; }
 @keyframes pass-fill{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
 @keyframes pass-scan{
   0%{ box-shadow:0 0 0 0 rgba(105,255,18,0.5); }
@@ -732,25 +736,40 @@ section{ padding-block:var(--section-py); position:relative; }
   100%{ box-shadow:0 0 0 0 rgba(105,255,18,0); }
 }
 
-@media (prefers-reduced-motion: reduce){
-  .screen-stage__scanline,
-  .screen-chrome__pulse,
-  .pass.is-active .pass__indicator{ animation:none; }
-  .screen-stage__scanline{ opacity:0; }
-  .pass.is-active .pass__bar-fill{ animation:none; transform:scaleX(1); }
-}
-
-/* the expanding copy panel — continues the active row's inset surface */
+/* the copy panel — ALWAYS rendered (no click to read). Continues the active
+   row's inset surface; the active panel reads as part of the lit row. */
 .pass-panel{
   position:relative; z-index:1;
-  background:var(--surface-inset);
   padding:0 var(--space-5) var(--space-5) calc(1.75rem + var(--space-4) + var(--space-5));
 }
-.pass-panel::before{
+.pass-item.is-active .pass-panel{ background:var(--surface-inset); }
+.pass-item.is-active .pass-panel::before{
   content:""; position:absolute; left:0; top:0; bottom:0; width:2px;
   background:linear-gradient(180deg, color-mix(in oklab, var(--accent) 30%, transparent), transparent);
 }
-.pass-panel[hidden]{ display:none; }
+
+/* ---- "scan sweep" reveal: panels animate open as the scan sweeps down on
+   scroll-in, then STAY open (accumulate). Gated by .is-revealing on .passes so
+   no-JS and reduced-motion render everything open by default. ~110ms stagger,
+   completes in ~1s — fast, not tied to the 5.2s highlight loop. ---- */
+.passes.is-revealing .pass-panel{
+  overflow:hidden;
+  max-height:0; opacity:0; transform:translateY(-6px);
+  transition:max-height 420ms var(--ease-out), opacity 300ms var(--ease-out), transform 300ms var(--ease-out);
+}
+.passes.is-revealing .pass-item.is-revealed .pass-panel{
+  max-height:360px; opacity:1; transform:none;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .screen-stage__scanline,
+  .screen-chrome__pulse,
+  .pass-item.is-active .pass__indicator{ animation:none; }
+  .screen-stage__scanline{ opacity:0; }
+  .pass-item.is-active .pass__bar-fill{ animation:none; transform:scaleX(1); }
+  /* never gate content behind a disabled animation: all panels open + static */
+  .passes.is-revealing .pass-panel{ max-height:none; opacity:1; transform:none; overflow:visible; transition:none; }
+}
 .pass__body{ color:var(--text-secondary); margin-bottom:var(--space-4); }
 
 @media (max-width:560px){
