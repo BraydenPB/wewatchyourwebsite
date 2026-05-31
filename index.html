@@ -361,77 +361,56 @@
           </p>
         </div>
 
-        <!-- The depth field: one architectural diagram read top-to-bottom.
-             Attack pressure descends from the surface, through your site, and
-             stops dead at a hard boundary. Below it, out of reach, WWYW is the
-             foundation the whole stack rests on. -->
-        <figure class="depth-field reveal" aria-label="Diagram: a threat actor and your website both sit inside the attacker's reach. That reach stops at a hard boundary. WeWatchYourWebsite operates at the infrastructure level below the boundary — out of reach, where it can't be switched off — and seals the entry point the attacker came through.">
-          <!-- Exposed zone: everything the attacker can touch. -->
-          <div class="depth-zone depth-zone--exposed">
-            <span class="depth-zone__label">Exposed surface</span>
-
-            <div class="depth-plane depth-plane--threat">
-              <span class="depth-plane__tier" aria-hidden="true">External</span>
-              <span class="depth-plane__kicker">Threat actor</span>
-              <span class="depth-plane__detail">Probes, injects, defaces — from anywhere</span>
-            </div>
-
-            <span class="depth-pressure" aria-hidden="true">
-              <span class="depth-pressure__arrow"></span>
-              <span class="depth-pressure__arrow"></span>
-              <span class="depth-pressure__arrow"></span>
+        <!-- The custom figure carries the SPATIAL METAPHOR: attack vectors rain
+             down from the exposed surface, burst against a defended boundary
+             (none get through), and below it our infrastructure layer scans on
+             solid ground. The canvas is decorative (aria-hidden); the figure's
+             aria-label states the argument for assistive tech. Annotation
+             labels are positioned over the three zones. -->
+        <figure class="defense reveal" aria-label="An attacker's probes and injections rain down on your website from the exposed surface, but every one of them bursts and is deflected at a defended boundary — none get through. Below that boundary, out of the attacker's reach, WeWatchYourWebsite runs at the infrastructure level on solid ground, continuously scanning.">
+          <div class="defense__stage" data-defense-field>
+            <span class="defense__label defense__label--surface" aria-hidden="true">
+              <span class="defense__label-k">Exposed surface</span>
+              <span class="defense__label-v">probes · injections · defacement</span>
             </span>
-
-            <div class="depth-plane depth-plane--site">
-              <span class="depth-plane__tier" aria-hidden="true">Application</span>
-              <span class="depth-plane__kicker">Your website</span>
-              <span class="depth-plane__detail">WordPress · plugins · the dashboard — and any plugin running inside it</span>
-            </div>
-          </div>
-
-          <!-- The seam: where the attacker's reach ends. A full-bleed band that
-               joins the exposed surface to the foundation below it. -->
-          <div class="depth-boundary" role="separator" aria-label="The attacker's reach ends here">
-            <span class="depth-boundary__tag">Attacker’s reach ends here</span>
-          </div>
-
-          <!-- The foundation: WWYW, below the line, bearing the load. The
-               ARGUMENT dominates (can't be switched off); the roles are quiet
-               supporting detail, with the only non-redundant one — Seal — last. -->
-          <div class="depth-zone depth-zone--foundation">
-            <span class="depth-foundation__scan" aria-hidden="true"></span>
-
-            <div class="depth-foundation__body">
-              <span class="depth-foundation__eyebrow">
-                <span class="depth-foundation__dot" aria-hidden="true"></span>Infrastructure layer · one below
-              </span>
-              <h3 class="depth-foundation__name">WeWatchYourWebsite</h3>
-              <p class="depth-foundation__line">
-                We operate at the infrastructure level — out of the attacker’s reach, so we
-                <strong>can’t be switched off the way a plugin can</strong>. We watch, we clean, and
-                then we close the door the attacker walked through.
-              </p>
-            </div>
-
-            <!-- Full-width spec row — the foundation's broad base. Each role is a
-                 crafted micro-stat: mono label, strong value. Seal carries the
-                 lime accent (the only idea not already covered above). -->
-            <ul class="depth-foundation__roles" aria-label="What working below the breach buys you">
-              <li>
-                <span class="depth-role__k">Watch</span>
-                <span class="depth-role__v">Continuous integrity scans</span>
-              </li>
-              <li>
-                <span class="depth-role__k">Clean</span>
-                <span class="depth-role__v">Auto-removal, no fee</span>
-              </li>
-              <li class="depth-role--key">
-                <span class="depth-role__k">Seal</span>
-                <span class="depth-role__v">Root cause found &amp; closed</span>
-              </li>
-            </ul>
+            <span class="defense__label defense__label--boundary" aria-hidden="true">Attacker’s reach ends here</span>
+            <span class="defense__label defense__label--floor" aria-hidden="true">
+              <span class="defense__label-k">Infrastructure · one layer below</span>
+              <span class="defense__label-v">out of reach · always watching</span>
+            </span>
           </div>
         </figure>
+
+        <!-- The argument + payoff stay as REAL TEXT (substance the canvas can't
+             carry): the "can't be switched off" claim and the Watch/Clean/Seal
+             spec row that distinguish this section from the watch console. -->
+        <div class="defense__statement reveal">
+          <div class="defense__lede">
+            <span class="defense__eyebrow">
+              <span class="defense__dot" aria-hidden="true"></span>WeWatchYourWebsite
+            </span>
+            <p class="defense__claim">
+              A plugin runs inside the breach, so the moment an attacker is in they can switch it off.
+              We run one layer below — <strong>at the infrastructure level they never reach</strong> —
+              watching, cleaning, and sealing the door they came through.
+            </p>
+          </div>
+
+          <ul class="defense__roles" aria-label="What working below the breach buys you">
+            <li>
+              <span class="defense__role-k">Watch</span>
+              <span class="defense__role-v">Continuous integrity scans</span>
+            </li>
+            <li>
+              <span class="defense__role-k">Clean</span>
+              <span class="defense__role-v">Auto-removal, no fee</span>
+            </li>
+            <li class="defense__role--key">
+              <span class="defense__role-k">Seal</span>
+              <span class="defense__role-v">Root cause found &amp; closed</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -701,6 +680,7 @@
   <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js" defer></script>
   <script src="js/letter-glitch.js" defer></script>
   <script src="js/scan-radar.js" defer></script>
+  <script src="js/defense-field.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>
