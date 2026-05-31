@@ -1,0 +1,10 @@
+{
+  "name": "wwyw2",
+  "version": "0.1.0",
+  "private": true,
+  "description": "We Watch Your Website — clean static rebuild (exact design, refactored architecture)",
+  "scripts": {
+    "dev": "node serve.js",
+    "serve": "node serve.js"
+  }
+}
