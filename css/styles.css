@@ -1,0 +1,770 @@
+/* ============================================================
+   WeWatchYourWebsite — Landing page styles
+   Dark security-grade base, lime accent. Mobile-first.
+   Tokens are the LOCKED design anchor — consume, never redefine inline.
+   ============================================================ */
+
+:root{
+  /* --- Brand source-of-truth (from logo SVG, do not alter) --- */
+  --brand-lime:        #69ff12;
+  --brand-lime-grad-a: #bed143;
+  --brand-lime-grad-b: #3d6f3c;
+  --brand-teal:        #1aa6b7;
+  --brand-navy:        #000033;
+  --brand-ink:         #0c0c0c;
+
+  /* --- Accent scale --- */
+  --accent:            #69ff12;
+  --accent-hover:      #7bff33;
+  --accent-press:      #5ee300;
+  --accent-soft:       rgba(105,255,18,0.12);
+  --accent-border:     rgba(105,255,18,0.40);
+  --accent-ring:       #69ff12;
+  --accent-2:          #1aa6b7;
+  --accent-2-text:     #3dd6e8;
+
+  /* --- Surfaces --- */
+  --bg-base:           #05060a;
+  --bg-base-2:         #080a11;
+  --surface-1:         #0d1018;
+  --surface-2:         #141925;
+  --surface-3:         #1b2130;
+  --surface-inset:     #04050a;
+
+  /* --- Borders & hairlines --- */
+  --border-subtle:     rgba(255,255,255,0.06);
+  --border-default:    rgba(255,255,255,0.10);
+  --border-strong:     rgba(255,255,255,0.16);
+  --border-accent:     rgba(105,255,18,0.40);
+
+  /* --- Text --- */
+  --text-primary:      #e8ecf2;
+  --text-secondary:    #b3bccb;
+  --text-muted:        #8a94a6;
+  --text-faint:        #7b8499;
+  --text-on-accent:    #000033;
+  --text-accent:       #69ff12;
+  --text-link:         #69ff12;
+  --text-link-hover:   #84ff45;
+
+  /* --- Gradients --- */
+  /* Bright-bodied lime: keep glyph bodies luminous on the largest type
+     (olive only past 100%, so it never muddies the headline / stat numbers). */
+  --grad-lime-text:    linear-gradient(180deg, #9bff63 0%, #69ff12 70%, #4f9a3a 130%);
+  --grad-hero-vignette: radial-gradient(120% 90% at 50% 35%, transparent 0%, rgba(5,6,10,0.55) 55%, var(--bg-base) 80%);
+
+  /* --- Radii --- */
+  --radius-xs:  4px;
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  24px;
+  --radius-pill: 999px;
+
+  /* --- Shadows (minimal — elevation via surface step + hairline) --- */
+  --shadow-none:   none;
+  --shadow-sm:     0 1px 2px rgba(0,0,0,0.40);
+  --glow-lime:     0 0 24px rgba(105,255,18,0.25);
+  --glow-lime-sm:  0 0 12px rgba(105,255,18,0.18);
+
+  /* --- Focus ring (two-layer) --- */
+  --focus-ring-w:    2px;
+  --focus-ring:      0 0 0 2px var(--bg-base), 0 0 0 4px var(--accent-ring);
+  --focus-ring-on-surface: 0 0 0 2px var(--surface-1), 0 0 0 4px var(--accent-ring);
+
+  /* --- Typography stacks --- */
+  --font-display: "Space Grotesk", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body:    "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono:    "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* --- Motion / easing --- */
+  --ease-out:      cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast:      120ms;
+  --dur-base:      160ms;
+  --dur-slow:      260ms;
+
+  /* --- Layout --- */
+  --container-max:    1240px;
+  --container-narrow: 760px;
+  --gutter:           clamp(1.25rem, 4vw, 2.5rem);
+  --z-header: 100; --z-overlay: 200; --z-modal: 300;
+
+  /* --- Fluid type scale --- */
+  --text-display: clamp(3rem, 1.6rem + 6.2vw, 5rem);
+  --text-h1:      clamp(2.5rem, 1.7rem + 3.6vw, 3.75rem);
+  --text-h2:      clamp(2rem, 1.5rem + 2.2vw, 2.75rem);
+  --text-h3:      clamp(1.5rem, 1.25rem + 1.1vw, 1.875rem);
+  --text-h4:      clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);
+  --text-h5:      clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --text-h6:      clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+  --text-body-lg: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  --text-body:    clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --text-small:   0.875rem;
+  --text-xs:      0.75rem;
+
+  /* --- Spacing scale --- */
+  --space-0:  0;
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.5rem;
+  --space-6:  2rem;
+  --space-7:  3rem;
+  --space-8:  4rem;
+  --space-9:  6rem;
+  --space-10: 8rem;
+
+  --section-py:       clamp(4rem, 6vw, 8rem);
+  --section-py-tight: clamp(3rem, 4vw, 5rem);
+  --section-gap:      clamp(2rem, 4vw, 4rem);
+  --hero-py-top:      clamp(6rem, 9vw, 11rem);
+  --grid-gap:         clamp(1.25rem, 2.5vw, 2rem);
+  --stack-gap:        1rem;
+}
+
+@media (prefers-reduced-motion: reduce){
+  :root{ --dur-fast:0ms; --dur-base:0ms; --dur-slow:0ms; }
+}
+
+/* ============================================================
+   RESET / BASE
+   ============================================================ */
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:72px; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+body{
+  margin:0;
+  background:var(--bg-base);
+  color:var(--text-secondary);
+  font-family:var(--font-body);
+  font-size:var(--text-body);
+  line-height:1.65;
+  font-feature-settings:"cv11","ss01";
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+
+h1,h2,h3,h4,h5,h6{
+  margin:0;
+  font-family:var(--font-display);
+  font-weight:600;
+  color:var(--text-primary);
+  line-height:1.1;
+  letter-spacing:-0.02em;
+}
+p{ margin:0; }
+a{ color:var(--text-link); text-decoration:none; transition:color var(--dur-base) var(--ease-out); }
+a:hover{ color:var(--text-link-hover); }
+img,svg,canvas{ display:block; max-width:100%; }
+ul{ margin:0; padding:0; list-style:none; }
+button{ font-family:inherit; }
+
+::selection{ background:rgba(105,255,18,0.24); color:#fff; }
+
+:focus-visible{ outline:none; box-shadow:var(--focus-ring); border-radius:var(--radius-sm); }
+
+/* Forced-colors / Windows High Contrast strips box-shadow, so the ring-based
+   focus indicators vanish. Restore a real system-color outline for every
+   focusable element in that mode. */
+@media (forced-colors: active){
+  :focus-visible{ outline:3px solid Highlight; outline-offset:2px; }
+  /* .btn:focus-visible sets `outline:none` at higher specificity, so without
+     this it would still have no indicator once box-shadow is stripped. Covers
+     both primary and secondary CTAs (both carry .btn). */
+  .btn:focus-visible{ outline:3px solid Highlight; outline-offset:2px; }
+}
+
+.visually-hidden{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+.skip-link{
+  position:absolute; left:var(--space-4); top:-3rem; z-index:var(--z-modal);
+  background:var(--accent); color:var(--text-on-accent);
+  padding:var(--space-2) var(--space-4); border-radius:var(--radius-md);
+  font-weight:600; transition:top var(--dur-base) var(--ease-out);
+}
+.skip-link:focus{ top:var(--space-4); color:var(--text-on-accent); }
+
+/* ============================================================
+   LAYOUT PRIMITIVES
+   ============================================================ */
+.container{
+  width:100%; max-width:var(--container-max);
+  margin-inline:auto; padding-inline:var(--gutter);
+}
+
+section{ padding-block:var(--section-py); position:relative; }
+.section--alt{ background:var(--bg-base-2); }
+
+.section-head{ max-width:640px; margin-bottom:var(--space-7); }
+.section-head--center{ margin-inline:auto; text-align:center; }
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--text-accent); margin-bottom:var(--space-4);
+}
+.eyebrow::before{
+  content:""; width:18px; height:1px; background:var(--accent-border);
+}
+.section-head--center .eyebrow{ justify-content:center; }
+
+.section-title{ font-size:var(--text-h2); line-height:1.1; }
+.section-lede{
+  margin-top:var(--space-4); font-size:var(--text-body-lg);
+  color:var(--text-muted); line-height:1.6;
+}
+
+.text-grad{
+  background:var(--grad-lime-text);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; color:transparent;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:var(--space-2);
+  padding:0.875rem 1.5rem; min-height:48px;
+  border-radius:var(--radius-md); border:1px solid transparent;
+  font-family:var(--font-body); font-size:1rem; font-weight:600;
+  line-height:1; cursor:pointer; white-space:nowrap;
+  transition:background var(--dur-base) var(--ease-out),
+             border-color var(--dur-base) var(--ease-out),
+             color var(--dur-base) var(--ease-out),
+             transform var(--dur-base) var(--ease-out),
+             box-shadow var(--dur-base) var(--ease-out);
+}
+.btn:focus-visible{ outline:none; box-shadow:var(--focus-ring); }
+
+.btn--primary{ background:var(--accent); color:var(--text-on-accent); border-color:var(--accent); }
+.btn--primary:hover{ background:var(--accent-hover); border-color:var(--accent-hover); color:var(--text-on-accent); transform:translateY(-2px); box-shadow:var(--glow-lime); }
+.btn--primary:active{ background:var(--accent-press); border-color:var(--accent-press); transform:translateY(0); }
+.btn--primary[disabled],.btn--primary:disabled{ background:rgba(105,255,18,0.30); color:rgba(0,0,51,0.55); cursor:not-allowed; transform:none; box-shadow:none; }
+
+.btn--secondary{ background:transparent; color:var(--text-primary); border-color:var(--border-strong); }
+.btn--secondary:hover{ border-color:var(--accent-border); color:var(--text-accent); background:var(--accent-soft); transform:translateY(-2px); }
+.btn--secondary:active{ background:rgba(105,255,18,0.18); transform:translateY(0); }
+.btn--secondary:focus-visible{ box-shadow:var(--focus-ring-on-surface); }
+
+.btn--compact{ padding:0.625rem 1.125rem; min-height:auto; font-size:0.9375rem; }
+.btn--block{ width:100%; }
+.btn--lg{ padding:1rem 1.75rem; font-size:1.0625rem; }
+
+/* ============================================================
+   BADGE / PILL
+   ============================================================ */
+.badge{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  padding:0.375rem 0.75rem; border-radius:var(--radius-pill);
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.04em; text-transform:uppercase;
+  background:var(--accent-soft); color:var(--text-accent);
+  border:1px solid var(--accent-border);
+}
+
+.status-dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--accent); box-shadow:var(--glow-lime-sm); flex:none;
+}
+.status-dot--pulse{ animation:pulse 2s var(--ease-in-out) infinite; }
+@keyframes pulse{
+  0%,100%{ box-shadow:0 0 0 0 rgba(105,255,18,0.45); }
+  50%{ box-shadow:0 0 0 5px rgba(105,255,18,0); }
+}
+@media (prefers-reduced-motion: reduce){ .status-dot--pulse{ animation:none; } }
+
+/* ============================================================
+   HEADER / NAV
+   ============================================================ */
+.site-header{
+  position:sticky; top:0; z-index:var(--z-header);
+  background:rgba(5,6,10,0.72);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  backdrop-filter:blur(14px) saturate(140%);
+  border-bottom:1px solid var(--border-subtle);
+  transition:background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+}
+.site-header.is-scrolled{ background:rgba(5,6,10,0.92); border-bottom-color:var(--border-default); }
+
+.nav{
+  display:flex; align-items:center; gap:var(--space-5);
+  height:64px; max-width:var(--container-max); margin-inline:auto;
+  padding-inline:var(--gutter);
+}
+.nav__brand{ display:inline-flex; align-items:center; flex:none; border-radius:var(--radius-sm); }
+.nav__brand:focus-visible{ box-shadow:var(--focus-ring); }
+.brand-logo{ height:30px; width:auto; }
+
+.nav__links{
+  display:none; align-items:center; gap:var(--space-2);
+  margin-inline-start:var(--space-4);
+}
+.nav__link{
+  position:relative; padding:var(--space-2) var(--space-3);
+  font-size:0.9375rem; font-weight:500; color:var(--text-muted);
+  border-radius:var(--radius-sm);
+  transition:color var(--dur-base) var(--ease-out);
+}
+.nav__link::after{
+  content:""; position:absolute; left:var(--space-3); right:var(--space-3); bottom:4px;
+  height:2px; background:var(--accent); border-radius:2px;
+  transform:scaleX(0); transform-origin:left;
+  transition:transform var(--dur-base) var(--ease-out);
+}
+.nav__link:hover,.nav__link[aria-current="true"]{ color:var(--text-primary); }
+.nav__link:hover::after,.nav__link[aria-current="true"]::after{ transform:scaleX(1); }
+.nav__link:focus-visible{ box-shadow:var(--focus-ring); }
+
+.nav__cta{ display:none; align-items:center; gap:var(--space-3); margin-inline-start:auto; }
+
+.nav__toggle{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px; margin-inline-start:auto; padding:0;
+  background:transparent; border:1px solid var(--border-default);
+  border-radius:var(--radius-sm); color:var(--text-primary); cursor:pointer;
+  transition:border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
+}
+.nav__toggle:hover{ border-color:var(--accent-border); }
+.nav__toggle:focus-visible{ box-shadow:var(--focus-ring); }
+.nav__toggle .icon-close{ display:none; }
+.nav__toggle[aria-expanded="true"] .icon-open{ display:none; }
+.nav__toggle[aria-expanded="true"] .icon-close{ display:block; }
+
+/* Mobile menu panel */
+.mobile-menu{
+  position:fixed; inset:64px 0 0; z-index:var(--z-overlay);
+  background:var(--bg-base);
+  border-top:1px solid var(--border-subtle);
+  padding:var(--space-6) var(--gutter) var(--space-8);
+  display:flex; flex-direction:column; gap:var(--space-2);
+  transform:translateX(100%); visibility:hidden;
+  transition:transform var(--dur-slow) var(--ease-out), visibility var(--dur-slow);
+  overflow-y:auto;
+}
+.mobile-menu.is-open{ transform:translateX(0); visibility:visible; }
+.mobile-menu__link{
+  padding:var(--space-4) var(--space-2); font-family:var(--font-display);
+  font-size:var(--text-h4); font-weight:600; color:var(--text-primary);
+  border-bottom:1px solid var(--border-subtle);
+}
+.mobile-menu__link:hover{ color:var(--text-accent); }
+.mobile-menu__cta{ display:flex; flex-direction:column; gap:var(--space-3); margin-top:var(--space-6); }
+@media (min-width:768px){ .mobile-menu{ display:none; } }
+
+@media (min-width:768px){
+  .nav__links,.nav__cta{ display:flex; }
+  .nav__toggle{ display:none; }
+  .brand-logo{ height:32px; }
+}
+
+/* ============================================================
+   LETTERGLITCH BACKDROP
+   ============================================================ */
+/* SOURCE-ORDER WARNING (latent fragility — do not "tidy" by moving this):
+   `.glitch` is z-index:0 (positioned, so it establishes a paint level). The
+   hero/final-cta/footer `__bg` backdrops sit at z-index:-2 and `__bg-fade` /
+   localized scrims at z-index:-1. Those negative z-indexes only paint BEHIND
+   the section content because this `.glitch` block is declared BEFORE the
+   section rules below — equal-specificity source order is what keeps the
+   backdrop stack winning. If you relocate this block beneath the hero/footer
+   section rules, the layering inverts and the glitch covers the copy. Keep it
+   here, above the section blocks. */
+.glitch{ position:absolute; inset:0; z-index:0; overflow:hidden; background:#000; pointer-events:none; }
+.glitch canvas{ display:block; width:100%; height:100%; }
+.glitch__vignette{
+  position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,1) 100%);
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  position:relative; isolation:isolate;
+  padding-block:var(--hero-py-top) var(--section-py);
+  min-height:clamp(560px, 86vh, 900px);
+  display:flex; align-items:center;
+  overflow:hidden;
+}
+.hero__bg{ position:absolute; inset:0; z-index:-2; background:#000; }
+.hero__bg-fade{
+  position:absolute; inset:0; z-index:-1;
+  background:var(--grad-hero-vignette);
+}
+.hero__bg-fade::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(5,6,10,0.35) 0%, transparent 22%, transparent 70%, var(--bg-base) 100%);
+}
+.hero__inner{
+  position:relative; z-index:1; max-width:880px;
+  /* Localized opaque scrim so legibility never depends on which glyph lands
+     behind the type. Focal point biased left (headline is left-aligned in the
+     880px inner) and a high 0.88 mid-stop holds an effective alpha >=0.85
+     across the full text width; falls to transparent only at the edges so the
+     glitch still reads as texture at the section margins. */
+  background:radial-gradient(120% 140% at 30% 50%,
+    rgba(5,6,10,0.92) 0%,
+    rgba(5,6,10,0.88) 52%,
+    rgba(5,6,10,0.62) 78%,
+    transparent 100%);
+  padding:var(--space-7) var(--space-6);
+  border-radius:var(--radius-xl);
+}
+
+.hero__title{
+  font-size:var(--text-display); line-height:1.02; letter-spacing:-0.03em;
+  margin-block:var(--space-5) var(--space-5); text-wrap:balance;
+}
+.hero__body{
+  max-width:600px; font-size:var(--text-body-lg);
+  color:var(--text-secondary); line-height:1.6;
+}
+.hero__cta{
+  display:flex; flex-wrap:wrap; gap:var(--space-4);
+  margin-top:var(--space-7);
+}
+.proof-line{
+  display:flex; flex-wrap:wrap; gap:var(--space-2) var(--space-5);
+  margin-top:var(--space-6); font-size:var(--text-small); color:var(--text-muted);
+}
+.proof-line li{ display:inline-flex; align-items:center; gap:var(--space-2); }
+.tick{ color:var(--accent); flex:none; }
+
+/* ============================================================
+   PROOF RIBBON
+   ============================================================ */
+.ribbon{
+  border-block:1px solid var(--border-subtle);
+  background:var(--bg-base-2);
+  padding-block:var(--space-5);
+}
+.ribbon__list{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:center;
+  gap:var(--space-3) var(--space-5); text-align:center;
+}
+.ribbon__item{
+  display:inline-flex; align-items:center; gap:var(--space-3);
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted);
+}
+.ribbon__item .dot{ width:5px; height:5px; border-radius:50%; background:var(--accent); flex:none; }
+.ribbon__sep{ width:1px; height:14px; background:var(--border-default); }
+@media (max-width:560px){ .ribbon__sep{ display:none; } }
+
+/* ============================================================
+   SERVICES GRID
+   ============================================================ */
+.services-grid{
+  display:grid; grid-template-columns:1fr; gap:var(--grid-gap);
+}
+@media (min-width:768px){ .services-grid{ grid-template-columns:repeat(2,1fr); } }
+
+.card{
+  background:var(--surface-1); border:1px solid var(--border-subtle);
+  border-radius:var(--radius-lg); padding:var(--space-6);
+  transition:border-color var(--dur-slow) var(--ease-out),
+             background var(--dur-slow) var(--ease-out),
+             transform var(--dur-slow) var(--ease-out);
+}
+.card--service:hover{ border-color:var(--accent-border); background:var(--surface-2); transform:translateY(-4px); }
+.card--service:hover .lottie-well{ box-shadow:inset 0 0 0 1px var(--accent-border); }
+
+.lottie-well{
+  position:relative; background:var(--surface-inset);
+  border:1px solid var(--border-subtle); border-radius:var(--radius-md);
+  margin-bottom:var(--space-5); overflow:hidden;
+  aspect-ratio:600 / 400;
+  transition:box-shadow var(--dur-slow) var(--ease-out);
+}
+.lottie-well .lottie-mount{ position:absolute; inset:0; }
+.lottie-well .lottie-mount svg{ width:100% !important; height:100% !important; }
+
+.card__eyebrow{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--text-accent);
+  margin-bottom:var(--space-3); display:block;
+}
+.card__title{ font-size:var(--text-h3); margin-bottom:var(--space-3); }
+.card__body{ color:var(--text-secondary); margin-bottom:var(--space-5); }
+
+.feature-list{ display:flex; flex-direction:column; gap:var(--space-3); }
+.feature-list li{
+  display:flex; align-items:flex-start; gap:var(--space-3);
+  font-size:var(--text-small); color:var(--text-muted); line-height:1.5;
+}
+.feature-list .tick{ margin-top:2px; }
+
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+.steps{
+  display:grid; grid-template-columns:1fr; gap:var(--grid-gap);
+  counter-reset:step;
+}
+@media (min-width:768px){ .steps{ grid-template-columns:repeat(3,1fr); } }
+
+.step{ position:relative; padding-top:var(--space-5); }
+.step::before{
+  content:""; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, var(--accent-border), transparent);
+}
+.step__num{
+  font-family:var(--font-mono); font-size:var(--text-h3); font-weight:500;
+  /* Lone, deliberate use of the teal accent (--accent-2-text, legible on dark)
+     to establish a restrained two-accent system: lime stays dominant across the
+     UI; teal marks the procedural step numerals only. */
+  color:var(--accent-2-text); letter-spacing:0; line-height:1;
+  display:block; margin-bottom:var(--space-4);
+}
+.step__title{ font-size:var(--text-h4); margin-bottom:var(--space-3); }
+.step__body{ color:var(--text-secondary); font-size:var(--text-body); }
+
+.how__closer{
+  margin-top:var(--space-7); padding-top:var(--space-5);
+  border-top:1px solid var(--border-subtle);
+  font-size:var(--text-small); color:var(--text-muted); max-width:640px;
+}
+
+/* ============================================================
+   STATS BAND
+   ============================================================ */
+.stats-grid{
+  display:grid; grid-template-columns:repeat(2,1fr); gap:var(--grid-gap);
+}
+@media (min-width:768px){ .stats-grid{ grid-template-columns:repeat(4,1fr); } }
+
+.stat{
+  text-align:center; padding:var(--space-5) var(--space-3);
+  border:1px solid var(--border-subtle); border-radius:var(--radius-lg);
+  background:var(--surface-1);
+}
+.stat__num{
+  font-family:var(--font-display); font-weight:600;
+  font-size:clamp(2.25rem, 1.6rem + 2.8vw, 3.25rem); line-height:1;
+  font-feature-settings:"tnum"; letter-spacing:-0.02em;
+  background:var(--grad-lime-text);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; color:transparent;
+}
+.stat__label{
+  margin-top:var(--space-3); font-family:var(--font-mono);
+  font-size:var(--text-xs); letter-spacing:0.04em; color:var(--text-muted);
+  line-height:1.4; text-transform:uppercase;
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+.pricing-grid{
+  display:grid; grid-template-columns:1fr; gap:var(--grid-gap);
+  align-items:start;
+}
+@media (min-width:880px){ .pricing-grid{ grid-template-columns:repeat(3,1fr); } }
+
+.price-card{
+  position:relative; display:flex; flex-direction:column;
+  background:var(--surface-1); border:1px solid var(--border-subtle);
+  border-radius:var(--radius-lg); padding:var(--space-6);
+  transition:border-color var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+}
+.price-card:hover{ border-color:var(--border-strong); transform:translateY(-4px); }
+.price-card--featured{
+  border-color:var(--accent-border); background:var(--surface-2);
+}
+@media (min-width:880px){ .price-card--featured{ transform:translateY(-12px); } }
+@media (min-width:880px){ .price-card--featured:hover{ transform:translateY(-16px); } }
+
+.price-card__pill{
+  position:absolute; top:0; left:50%; transform:translate(-50%,-50%);
+}
+.price-card__name{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--text-accent);
+  margin-bottom:var(--space-4);
+}
+.price-card__price{
+  display:flex; align-items:baseline; gap:var(--space-2); flex-wrap:wrap;
+  margin-bottom:var(--space-2);
+}
+.price-card__amount{
+  font-family:var(--font-display); font-weight:600;
+  font-size:var(--text-h2); color:var(--text-primary);
+  font-feature-settings:"tnum"; letter-spacing:-0.02em; line-height:1;
+}
+.price-card__suffix{ font-size:var(--text-small); color:var(--text-muted); }
+.price-card__note{
+  display:inline-block; font-family:var(--font-mono); font-size:var(--text-xs);
+  color:var(--text-faint); text-transform:uppercase; letter-spacing:0.04em;
+  margin-bottom:var(--space-2);
+}
+.price-card__for{ color:var(--text-muted); font-size:var(--text-small); margin-bottom:var(--space-5); }
+.price-card .feature-list{ margin-bottom:var(--space-6); flex:1; }
+.price-card .feature-list li{ color:var(--text-secondary); }
+
+.pricing__note{
+  margin-top:var(--space-7); text-align:center;
+  font-size:var(--text-small); color:var(--text-muted);
+}
+.pricing__note a{ color:var(--text-accent); }
+.pricing__note a:hover{ color:var(--text-link-hover); text-decoration:underline; }
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq-list{ display:flex; flex-direction:column; gap:var(--space-3); max-width:var(--container-narrow); }
+.faq-item{
+  background:var(--surface-1); border:1px solid var(--border-subtle);
+  border-radius:var(--radius-md); overflow:hidden;
+  transition:border-color var(--dur-base) var(--ease-out);
+}
+.faq-item[open]{ border-color:var(--border-default); background:var(--surface-2); }
+.faq-item:hover{ border-color:var(--border-default); }
+.faq-item__q{
+  display:flex; align-items:center; justify-content:space-between; gap:var(--space-4);
+  padding:var(--space-5); cursor:pointer; list-style:none;
+  font-family:var(--font-display); font-weight:600; font-size:var(--text-h5);
+  color:var(--text-primary); line-height:1.3;
+}
+.faq-item__q::-webkit-details-marker{ display:none; }
+/* The ancestor .faq-item has overflow:hidden, which clips an outset box-shadow
+   focus ring. A real outline with a NEGATIVE offset draws inside the clip box,
+   so the keyboard focus indicator stays visible. */
+.faq-item__q:focus-visible{ outline:2px solid var(--accent-ring); outline-offset:-2px; border-radius:var(--radius-sm); }
+.faq-item__icon{
+  flex:none; width:22px; height:22px; color:var(--text-accent);
+  transition:transform var(--dur-base) var(--ease-out);
+}
+.faq-item[open] .faq-item__icon{ transform:rotate(45deg); }
+.faq-item__a{
+  padding:0 var(--space-5) var(--space-5);
+  color:var(--text-secondary); font-size:var(--text-body); line-height:1.65;
+  max-width:64ch;
+}
+
+/* ============================================================
+   FINAL CTA
+   ============================================================ */
+.final-cta{
+  position:relative; isolation:isolate; overflow:hidden;
+  text-align:center;
+}
+.final-cta__bg{ position:absolute; inset:0; z-index:-2; background:#000; }
+.final-cta__bg-fade{
+  position:absolute; inset:0; z-index:-1;
+  background:var(--grad-hero-vignette);
+}
+.final-cta__bg-fade::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, var(--bg-base) 0%, transparent 30%, transparent 70%, var(--bg-base) 100%);
+}
+.final-cta__inner{
+  position:relative; z-index:1; max-width:720px; margin-inline:auto;
+  /* Mirror of the hero scrim — centered focal point since the CTA is centered.
+     High 0.88 mid-stop keeps effective alpha >=0.85 across the copy; edges fade
+     to transparent so the glitch stays visible as texture, not characters. */
+  background:radial-gradient(120% 120% at 50% 50%,
+    rgba(5,6,10,0.9) 0%,
+    rgba(5,6,10,0.88) 55%,
+    rgba(5,6,10,0.6) 80%,
+    transparent 100%);
+  padding:var(--space-7) var(--space-6);
+  border-radius:var(--radius-xl);
+}
+/* Eyebrow is inline-flex; center its inner content to match the centered CTA
+   (replaces a former inline justify-content style). */
+.final-cta__inner .eyebrow{ justify-content:center; }
+.final-cta__title{ font-size:var(--text-h1); margin-block:var(--space-5) var(--space-5); text-wrap:balance; }
+.final-cta__body{ font-size:var(--text-body-lg); color:var(--text-secondary); margin-bottom:var(--space-7); }
+.final-cta__cta{ display:flex; flex-wrap:wrap; gap:var(--space-4); justify-content:center; }
+.final-cta .proof-line{ justify-content:center; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer{
+  position:relative; isolation:isolate; overflow:hidden;
+  border-top:1px solid var(--border-subtle);
+  padding-block:var(--section-py) var(--space-6);
+}
+.site-footer__bg{ position:absolute; inset:0; z-index:-2; background:#000; }
+.site-footer__bg-fade{
+  position:absolute; inset:0; z-index:-1;
+  /* Dark stop pushed to the TOP, where the brand, tagline, and column titles
+     render — they previously sat over the transparent center of the old
+     radial and failed AA. Near-opaque from 0% so the top text zone is legible. */
+  background:radial-gradient(120% 140% at 50% 0%, rgba(5,6,10,0.92) 0%, rgba(5,6,10,0.85) 45%, var(--bg-base) 85%);
+}
+.footer-grid{
+  position:relative; z-index:1;
+  display:grid; grid-template-columns:1fr; gap:var(--space-7);
+}
+@media (min-width:680px){ .footer-grid{ grid-template-columns:1.5fr 1fr 1fr 1fr; gap:var(--space-6); } }
+
+.footer-brand__logo{ height:30px; width:auto; margin-bottom:var(--space-4); }
+.footer-brand__tag{ color:var(--text-muted); font-size:var(--text-small); max-width:34ch; margin-bottom:var(--space-4); }
+
+.footer-col__title{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--text-faint);
+  margin-bottom:var(--space-4);
+}
+.footer-col__list{ display:flex; flex-direction:column; gap:var(--space-3); }
+.footer-col__list a{ color:var(--text-muted); font-size:var(--text-small); }
+.footer-col__list a:hover{ color:var(--text-primary); }
+.footer-get a{ display:inline-flex; }
+
+.footer-legal{
+  position:relative; z-index:1;
+  margin-top:var(--space-8); padding-top:var(--space-5);
+  border-top:1px solid var(--border-subtle);
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+  gap:var(--space-3); font-size:var(--text-xs); color:var(--text-faint);
+}
+.footer-legal__links{ display:flex; gap:var(--space-5); }
+.footer-legal__links a{ color:var(--text-faint); }
+.footer-legal__links a:hover{ color:var(--text-muted); }
+.footer-legal__guarantee{ width:100%; color:var(--text-faint); font-family:var(--font-mono); letter-spacing:0.04em; }
+@media (min-width:680px){ .footer-legal__guarantee{ width:auto; order:1; } }
+
+/* ============================================================
+   SECTION DIVIDER (thin glitch strip)
+   ============================================================ */
+.divider{
+  position:relative; height:64px; overflow:hidden; background:#000;
+  border-block:1px solid var(--border-subtle);
+}
+.divider .glitch{ z-index:0; }
+.divider__fade{
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(180deg, var(--bg-base) 0%, transparent 50%, var(--bg-base) 100%);
+}
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.reveal{ opacity:0; transform:translateY(16px); transition:opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
+.reveal.is-visible{ opacity:1; transform:none; }
+@media (prefers-reduced-motion: reduce){
+  .reveal{ opacity:1; transform:none; transition:none; }
+}
+
+/* ============================================================
+   REVERSED WORDMARK
+   The dark-on-light logo is recolored for the dark surface INSIDE the
+   inline <symbol>'s own <style> (index.html). That is required: <use>
+   clones the symbol into a shadow tree, so document rules here would not
+   reach the cloned paths — only the symbol's own styles (and inherited
+   custom properties) cross the boundary. The lime shield glyph
+   (.wm-cls-21) and radial gradient are intentionally left untouched.
+   ============================================================ */

@@ -3,3 +3,8 @@ node_modules/
 *.log
 .wrangler/
 .reference/
+
+# Claude Code — personal/local state (keep .mcp.json tracked, ignore local approvals)
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+.workflow-landing.js
