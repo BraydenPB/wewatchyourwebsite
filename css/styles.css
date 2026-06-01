@@ -455,9 +455,9 @@ body::after{
 }
 .nav__brand{ display:inline-flex; align-items:center; flex:none; border-radius:var(--radius-sm); }
 .nav__brand:focus-visible{ box-shadow:var(--focus-ring); }
-/* Logo height. Base governs MOBILE (bigger here for legibility); the desktop
-   override below pins it back to 32px. The header bar is a fixed 64px (.nav),
-   independent of this, so a taller mobile logo does NOT grow the header. */
+/* Logo height. Base governs MOBILE; the desktop override below sets its own size.
+   The header bar is a fixed 64px (.nav), independent of this, so the logo height
+   does NOT grow the header (40px clears 64px with 12px breathing room each side). */
 .brand-logo{ height:40px; width:auto; }
 
 .nav__links{
@@ -711,7 +711,7 @@ body::after{
 @media (min-width:768px){
   .nav__links,.nav__cta{ display:flex; }
   .nav__toggle{ display:none; }
-  .brand-logo{ height:32px; }
+  .brand-logo{ height:40px; }
 }
 
 /* Reduced motion: no slide/stagger/pulse — instant, static reveal. */
