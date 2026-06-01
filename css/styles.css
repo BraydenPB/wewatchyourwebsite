@@ -1462,11 +1462,7 @@ section{ padding-block:var(--section-py); position:relative; }
    finding readout), and a verified report assembles at the output. The beam is
    the one moving part; everything settles lit/processed and holds. Readable with
    no JS — nodes quiet, findings hidden until lit, copy always present. */
-.pipeline{
-  position:relative; max-width:780px; margin-inline:auto;
-  /* Beam vertical position, driven by JS (0 = top of rail, 1 = bottom). */
-  --beam-y:0;
-}
+.pipeline{ position:relative; max-width:780px; margin-inline:auto; }
 
 /* The single rail spine the beam rides — drawn once on the column so the beam
    can traverse the whole figure continuously rather than per-stage segments. */
@@ -1478,7 +1474,7 @@ section{ padding-block:var(--section-py); position:relative; }
 .pipeline.is-scanning .pipeline__beam{
   height:64px;
   top:var(--beam-top, 0);
-  background:linear-gradient(180deg, transparent, var(--accent) 60%, #d6ffbf);
+  background:linear-gradient(180deg, transparent, var(--accent) 60%, var(--accent-hover));
   box-shadow:0 0 16px 2px rgba(105,255,18,0.55);
   opacity:0.95;
 }
@@ -1538,8 +1534,9 @@ section{ padding-block:var(--section-py); position:relative; }
 
 /* Finding readout — a mono chip that reveals as the beam passes. "hit" findings
    read in lime (the scanline catching something); "clean"/"verify" read quiet
-   teal. Hidden until lit so the figure tells a story as it scans; with no JS the
-   stages light immediately (see no-js fallback) so findings stay visible. */
+   teal/muted. Hidden until the stage is lit so the figure tells a story as it
+   scans. These chips are aria-hidden decorative; with JS off they stay hidden,
+   but each stage's title + description remain fully readable. */
 .pipeline-stage__find{
   flex:none; font-family:var(--font-mono); font-size:var(--text-xs); font-weight:600;
   letter-spacing:0.02em; line-height:1; padding:0.3em 0.55em; border-radius:var(--radius-pill);
