@@ -1827,12 +1827,18 @@ section{ padding-block:var(--section-py); position:relative; }
   box-shadow:var(--glow-lime-sm); animation:pulse 2.4s var(--ease-in-out) infinite;
 }
 @media (prefers-reduced-motion: reduce){ .platform__dot{ animation:none; } }
-/* On narrow widths the wall wraps to a 2-up; drop the left rules (they break
-   across wrapped rows) and let the row gaps separate the items. */
+/* On narrow widths a wrapping horizontal wall scatters and strands the odd item.
+   Rotate the band signature vertical instead: a single tight column where each
+   platform is one row (name left · state right) divided by HORIZONTAL hairlines,
+   still bracketed top and bottom. Reads as one cohesive ruled band, no orphan. */
 @media (max-width:620px){
-  .partner-wall{ gap:var(--space-5) var(--space-4); }
-  .platform{ flex:1 1 40%; padding-inline:var(--space-3); }
-  .platform + .platform{ border-left:0; }
+  .partner-wall{ flex-direction:column; padding:0; gap:0; }
+  .platform{
+    flex:none; width:100%;
+    flex-direction:row; align-items:center; justify-content:space-between;
+    gap:var(--space-4); padding:var(--space-4) var(--space-1); text-align:left;
+  }
+  .platform + .platform{ border-left:0; border-top:1px solid var(--border-subtle); }
 }
 
 /* The API / white-label offer — one quiet line, set apart from the wall so it
