@@ -1124,11 +1124,12 @@ section{ padding-block:var(--section-py); position:relative; }
   }
 }
 
-/* Sticky rail — stays in view while the log scrolls past on desktop. */
+/* Left-column rail (head). NOT sticky: the head and the escalation card share
+   the left column but are separate grid rows, so pinning the head let the
+   static esc card scroll up and paint over the transparent heading text. The
+   whole artifact fits one viewport anyway, so there's nothing to keep in view —
+   plain grid flow, no overlap. */
 .faq-rail{ display:flex; flex-direction:column; gap:var(--space-6); }
-@media (min-width:920px){
-  .faq-rail{ position:sticky; top:96px; }
-}
 .faq-rail .section-head{ margin-bottom:0; }
 /* Escalation card — deliberately NOT another data-card. The log / ledger /
    status board are read-only surfaces (raised, surface-1→bg-base-2). This is
