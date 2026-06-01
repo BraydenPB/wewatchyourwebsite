@@ -554,117 +554,137 @@
           </li>
         </ul>
 
-        <!-- The pipeline: eight stages on a vertical conveyor. A scan packet
-             travels the line on scroll-in; stages light as it passes. The line
-             and packet are decorative (aria-hidden); each stage's text is real
-             content, always present, readable with no JS. -->
-        <div class="pipeline reveal" data-pipeline>
-          <!-- Travelling scan beam: a glowing packet that physically descends the
-               rail as the figure enters view, lighting each stage and revealing its
-               finding as it passes. Decorative (aria-hidden); the JS moves it via a
-               CSS custom property (--beam-y). Reduced-motion hides it entirely and
-               the stages settle lit immediately. -->
-          <span class="pipeline__beam" aria-hidden="true"></span>
+        <!-- The inspection: the figure IS the artifact under analysis. A real-
+             looking vibe-coded auth file sits on the left, clean at a glance. As
+             the analyzer runs, a scan sweeps the code and HIDDEN THREATS SURFACE
+             in place — a hardcoded key, an injection sink, a zero-width GLASSWORM
+             character, a smuggled bundle import — each wired to a finding in the
+             ledger on the right. The eight analysis stages are real DOM content in
+             that ledger (readable with no JS); the code, sweep, and threat reveals
+             are decorative (aria-hidden). The ledger tells the same eight-stage
+             story the conveyor did, but now you SEE what each stage catches. -->
+        <div class="inspect reveal" data-inspect>
 
-          <div class="pipeline__source" aria-hidden="true">
-            <span class="pipeline__source-label">input</span>
-            <span class="pipeline__source-val">your repo · plugin · bundle</span>
-          </div>
+          <!-- LEFT: the artifact. A code editor panel. Threat tokens carry
+               data-threat (the ledger stage index they feed) and surface as the
+               sweep passes their line. aria-hidden — the ledger carries meaning. -->
+          <figure class="inspect__code" aria-hidden="true">
+            <figcaption class="inspect__chrome">
+              <span class="inspect__dots"><i></i><i></i><i></i></span>
+              <span class="inspect__file">auth.middleware.js</span>
+              <span class="inspect__lang">vibe-coded · unreviewed</span>
+            </figcaption>
+            <div class="inspect__scan" data-scan></div>
+            <pre class="inspect__pre"><code><span class="cl"><span class="ln">1</span><span class="k">import</span> jwt <span class="k">from</span> <span class="s">"jsonwebtoken"</span></span>
+<span class="cl" data-line="2"><span class="ln">2</span><span class="k">import</span> <span class="threat" data-threat="2">"./vendor/analytics.min.js"</span></span>
+<span class="cl"><span class="ln">3</span></span>
+<span class="cl" data-line="4"><span class="ln">4</span><span class="k">const</span> API_KEY <span class="o">=</span> <span class="threat" data-threat="0"><span class="s">"sk_live_4e9a2f8c1b…"</span></span></span>
+<span class="cl"><span class="ln">5</span></span>
+<span class="cl"><span class="ln">6</span><span class="k">export function</span> <span class="fn">verifyToken</span>(req) {</span>
+<span class="cl" data-line="7"><span class="ln">7</span>  <span class="k">const</span> ok <span class="o">=</span> <span class="fn">verify</span>(req.token<span class="threat threat--glyph" data-threat="5" title="zero-width character"></span>)</span>
+<span class="cl"><span class="ln">8</span>  <span class="k">if</span> (!ok) <span class="k">return</span> <span class="lit">false</span></span>
+<span class="cl" data-line="9"><span class="ln">9</span>  <span class="k">return</span> <span class="threat" data-threat="1"><span class="fn">eval</span>(req.claims)</span></span>
+<span class="cl"><span class="ln">10</span>}</span>
+<span class="cl"><span class="ln">11</span></span>
+<span class="cl" data-line="12"><span class="ln">12</span>app.<span class="fn">get</span>(<span class="s">"/admin"</span>, (req,res) <span class="o">=&gt;</span> <span class="threat" data-threat="3"><span class="fn">runQuery</span>(req.query.id)</span>)</span></code></pre>
+          </figure>
 
-          <ol class="pipeline__stages" aria-label="Eight-stage code analysis pipeline">
-            <li class="pipeline-stage" data-stage="0" data-find="hit">
-              <span class="pipeline-stage__rail" aria-hidden="true"></span>
-              <span class="pipeline-stage__num">01</span>
-              <span class="pipeline-stage__body">
-                <span class="pipeline-stage__head">
-                  <span class="pipeline-stage__title">Secrets Detection</span>
-                  <span class="pipeline-stage__find" aria-hidden="true"><span class="pipeline-stage__find-n" data-find-to="3">0</span> found</span>
-                </span>
-                <span class="pipeline-stage__desc">API keys, tokens, and credentials across all file types.</span>
-              </span>
-            </li>
-            <li class="pipeline-stage" data-stage="1" data-find="clean">
-              <span class="pipeline-stage__rail" aria-hidden="true"></span>
-              <span class="pipeline-stage__num">02</span>
-              <span class="pipeline-stage__body">
-                <span class="pipeline-stage__head">
-                  <span class="pipeline-stage__title">Static Analysis</span>
-                  <span class="pipeline-stage__find" aria-hidden="true">clean</span>
-                </span>
-                <span class="pipeline-stage__desc">AST parsing combined with Semgrep rule sets.</span>
-              </span>
-            </li>
-            <li class="pipeline-stage" data-stage="2" data-find="hit">
-              <span class="pipeline-stage__rail" aria-hidden="true"></span>
-              <span class="pipeline-stage__num">03</span>
-              <span class="pipeline-stage__body">
-                <span class="pipeline-stage__head">
-                  <span class="pipeline-stage__title">Dependency Audit</span>
-                  <span class="pipeline-stage__find" aria-hidden="true"><span class="pipeline-stage__find-n" data-find-to="1">0</span> high</span>
-                </span>
-                <span class="pipeline-stage__desc">npm audit and OSV database cross-reference.</span>
-              </span>
-            </li>
-            <li class="pipeline-stage" data-stage="3" data-find="hit">
-              <span class="pipeline-stage__rail" aria-hidden="true"></span>
-              <span class="pipeline-stage__num">04</span>
-              <span class="pipeline-stage__body">
-                <span class="pipeline-stage__head">
-                  <span class="pipeline-stage__title">LLM Deep Review</span>
-                  <span class="pipeline-stage__find" aria-hidden="true"><span class="pipeline-stage__find-n" data-find-to="2">0</span> flagged</span>
-                </span>
-                <span class="pipeline-stage__desc">Logic-level analysis catching what static tools miss.</span>
-              </span>
-            </li>
-            <li class="pipeline-stage" data-stage="4" data-find="clean">
-              <span class="pipeline-stage__rail" aria-hidden="true"></span>
-              <span class="pipeline-stage__num">05</span>
-              <span class="pipeline-stage__body">
-                <span class="pipeline-stage__head">
-                  <span class="pipeline-stage__title">Bundle Analysis</span>
-                  <span class="pipeline-stage__find" aria-hidden="true">clean</span>
-                </span>
-                <span class="pipeline-stage__desc">Compiled output inspected for embedded threats.</span>
-              </span>
-            </li>
-            <li class="pipeline-stage" data-stage="5" data-find="hit">
-              <span class="pipeline-stage__rail" aria-hidden="true"></span>
-              <span class="pipeline-stage__num">06</span>
-              <span class="pipeline-stage__body">
-                <span class="pipeline-stage__head">
-                  <span class="pipeline-stage__title">Unicode Steganography</span>
-                  <span class="pipeline-stage__find" aria-hidden="true"><span class="pipeline-stage__find-n" data-find-to="1">0</span> hidden</span>
-                </span>
-                <span class="pipeline-stage__desc">GLASSWORM hidden-character detection.</span>
-              </span>
-            </li>
-            <li class="pipeline-stage" data-stage="6" data-find="verify">
-              <span class="pipeline-stage__rail" aria-hidden="true"></span>
-              <span class="pipeline-stage__num">07</span>
-              <span class="pipeline-stage__body">
-                <span class="pipeline-stage__head">
-                  <span class="pipeline-stage__title">Adversarial Verification</span>
-                  <span class="pipeline-stage__find" aria-hidden="true">7 confirmed</span>
-                </span>
-                <span class="pipeline-stage__desc">A red-team agent challenges every finding before your report.</span>
-              </span>
-            </li>
-            <li class="pipeline-stage" data-stage="7" data-find="verify">
-              <span class="pipeline-stage__rail" aria-hidden="true"></span>
-              <span class="pipeline-stage__num">08</span>
-              <span class="pipeline-stage__body">
-                <span class="pipeline-stage__head">
-                  <span class="pipeline-stage__title">Attack Chain Construction</span>
-                  <span class="pipeline-stage__find" aria-hidden="true">2 chains</span>
-                </span>
-                <span class="pipeline-stage__desc">Individual findings synthesized into attack narratives.</span>
-              </span>
-            </li>
-          </ol>
+          <!-- RIGHT: the findings ledger. The eight real analysis stages; each
+               resolves to a finding as its threat surfaces (or reports clean). -->
+          <div class="inspect__panel">
+            <p class="inspect__panel-head" aria-hidden="true">
+              <span class="inspect__panel-title">Analysis</span>
+              <span class="inspect__progress"><span class="inspect__progress-n" data-prog-to="8">0</span>/8 stages</span>
+            </p>
 
-          <div class="pipeline__output" aria-hidden="true">
-            <span class="pipeline__output-label">output</span>
-            <span class="pipeline__output-val">verified vulnerability report</span>
+            <ol class="inspect__stages" aria-label="Eight-stage code analysis pipeline">
+              <li class="inspect-stage" data-stage="0" data-find="hit">
+                <span class="inspect-stage__num">01</span>
+                <span class="inspect-stage__body">
+                  <span class="inspect-stage__head">
+                    <span class="inspect-stage__title">Secrets Detection</span>
+                    <span class="inspect-stage__find" aria-hidden="true">L4 · <span class="inspect-stage__find-n" data-find-to="1">0</span> key</span>
+                  </span>
+                  <span class="inspect-stage__desc">API keys, tokens, and credentials across all file types.</span>
+                </span>
+              </li>
+              <li class="inspect-stage" data-stage="1" data-find="hit">
+                <span class="inspect-stage__num">02</span>
+                <span class="inspect-stage__body">
+                  <span class="inspect-stage__head">
+                    <span class="inspect-stage__title">Static Analysis</span>
+                    <span class="inspect-stage__find" aria-hidden="true">L9 · eval()</span>
+                  </span>
+                  <span class="inspect-stage__desc">AST parsing combined with Semgrep rule sets.</span>
+                </span>
+              </li>
+              <li class="inspect-stage" data-stage="2" data-find="hit">
+                <span class="inspect-stage__num">03</span>
+                <span class="inspect-stage__body">
+                  <span class="inspect-stage__head">
+                    <span class="inspect-stage__title">Dependency Audit</span>
+                    <span class="inspect-stage__find" aria-hidden="true">L2 · <span class="inspect-stage__find-n" data-find-to="1">0</span> high</span>
+                  </span>
+                  <span class="inspect-stage__desc">npm audit and OSV database cross-reference.</span>
+                </span>
+              </li>
+              <li class="inspect-stage" data-stage="3" data-find="hit">
+                <span class="inspect-stage__num">04</span>
+                <span class="inspect-stage__body">
+                  <span class="inspect-stage__head">
+                    <span class="inspect-stage__title">LLM Deep Review</span>
+                    <span class="inspect-stage__find" aria-hidden="true">L12 · SQLi</span>
+                  </span>
+                  <span class="inspect-stage__desc">Logic-level analysis catching what static tools miss.</span>
+                </span>
+              </li>
+              <li class="inspect-stage" data-stage="4" data-find="clean">
+                <span class="inspect-stage__num">05</span>
+                <span class="inspect-stage__body">
+                  <span class="inspect-stage__head">
+                    <span class="inspect-stage__title">Bundle Analysis</span>
+                    <span class="inspect-stage__find" aria-hidden="true">clean</span>
+                  </span>
+                  <span class="inspect-stage__desc">Compiled output inspected for embedded threats.</span>
+                </span>
+              </li>
+              <li class="inspect-stage" data-stage="5" data-find="hit">
+                <span class="inspect-stage__num">06</span>
+                <span class="inspect-stage__body">
+                  <span class="inspect-stage__head">
+                    <span class="inspect-stage__title">Unicode Steganography</span>
+                    <span class="inspect-stage__find" aria-hidden="true">L7 · <span class="inspect-stage__find-n" data-find-to="1">0</span> hidden</span>
+                  </span>
+                  <span class="inspect-stage__desc">GLASSWORM hidden-character detection.</span>
+                </span>
+              </li>
+              <li class="inspect-stage" data-stage="6" data-find="verify">
+                <span class="inspect-stage__num">07</span>
+                <span class="inspect-stage__body">
+                  <span class="inspect-stage__head">
+                    <span class="inspect-stage__title">Adversarial Verification</span>
+                    <span class="inspect-stage__find" aria-hidden="true">5 confirmed</span>
+                  </span>
+                  <span class="inspect-stage__desc">A red-team agent challenges every finding before your report.</span>
+                </span>
+              </li>
+              <li class="inspect-stage" data-stage="7" data-find="verify">
+                <span class="inspect-stage__num">08</span>
+                <span class="inspect-stage__body">
+                  <span class="inspect-stage__head">
+                    <span class="inspect-stage__title">Attack Chain Construction</span>
+                    <span class="inspect-stage__find" aria-hidden="true">2 chains</span>
+                  </span>
+                  <span class="inspect-stage__desc">Individual findings synthesized into attack narratives.</span>
+                </span>
+              </li>
+            </ol>
+
+            <p class="inspect__verdict" aria-hidden="true">
+              <span class="inspect__verdict-icon" aria-hidden="true"></span>
+              <span class="inspect__verdict-text">verified vulnerability report</span>
+              <span class="inspect__verdict-sub">5 confirmed · 2 attack chains · ready</span>
+            </p>
           </div>
         </div>
 

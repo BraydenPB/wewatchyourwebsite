@@ -1,18 +1,20 @@
 /* ============================================================
-   WWYW — Code Analyzer Pipeline (live scan engine)
-   A glowing scan beam descends the rail when the figure enters view, igniting
-   each of the eight stages in turn: the node lights, the rail segment flows, and
-   the stage's finding readout reveals (counting up where it's a number). When the
-   beam clears the last stage the output node ignites — the verified report has
-   been assembled. The scan runs once and settles in its fully-processed state
-   (it accumulates, it does not loop).
+   WWYW — Code Analyzer Inspection
+   The figure is the artifact under analysis. A scan sweep descends the code
+   panel; as it crosses a line that hides a threat, that threat SURFACES in place
+   (a hardcoded key, an injection sink, a smuggled bundle import, a zero-width
+   GLASSWORM character) and the matching stage in the findings ledger resolves —
+   lighting its node and revealing its finding. Stages with no single line (static
+   = clean, adversarial verification, attack-chain construction) resolve in order
+   as the sweep completes. When all eight are resolved the verdict assembles: a
+   verified vulnerability report.
 
    Discipline (mirrors scan-radar.js / defense-field.js): mounts by
-   [data-pipeline]; runs once on first intersection; honors
-   prefers-reduced-motion by lighting every stage immediately with findings shown
-   and no travelling beam. The beam is positioned by writing --beam-top onto the
-   host; class toggles drive the lit/finding/complete states. One short rAF pass
-   per mount — no persistent loop.
+   [data-inspect]; runs once on first intersection; honors prefers-reduced-motion
+   by surfacing every threat and resolving every stage immediately with no sweep.
+   The sweep is positioned by writing --scan-y onto the code figure; class toggles
+   drive flagged / lit / complete states. One short rAF pass per mount — measure
+   geometry once up front (no per-frame layout reads), no persistent loop.
    ============================================================ */
 (function () {
   "use strict";
@@ -21,21 +23,20 @@
     typeof matchMedia === "function" &&
     matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  var hosts = document.querySelectorAll("[data-pipeline]");
+  var hosts = document.querySelectorAll("[data-inspect]");
   if (!hosts.length) return;
 
-  var SCAN_MS = 2200; // total beam travel time across the figure
+  var SCAN_MS = 2600; // sweep travel time across the code panel
 
   function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 
-  // Count a finding number up to its target as its stage lights.
+  // Count a finding number up to its target as its stage resolves.
   function countFind(stage) {
     var el = stage.querySelector("[data-find-to]");
     if (!el) return;
     var to = parseInt(el.getAttribute("data-find-to"), 10) || 0;
     if (prefersReduced || to <= 0) { el.textContent = String(to); return; }
-    var start = null,
-      dur = 420;
+    var start = null, dur = 420;
     function step(ts) {
       if (start === null) start = ts;
       var p = Math.min(1, (ts - start) / dur);
@@ -45,39 +46,49 @@
     requestAnimationFrame(step);
   }
 
-  function lightStage(stage) {
+  // Resolve a ledger stage: light it, count its finding, bump the progress
+  // counter. Deliberately decoupled from the code-line flagging below — the
+  // ledger always fills 01→08 in listed order, while threats surface in the code
+  // by the sweep's vertical position. (No connector is drawn between a ledger row
+  // and its line, so the two cadences need not be synchronised; keeping them
+  // independent is what makes the ledger read cleanly top-to-bottom.)
+  function resolveStage(stage, progEl, progState) {
     if (stage.classList.contains("is-lit")) return;
     stage.classList.add("is-lit");
     countFind(stage);
-  }
-
-  function settleAll(host, stages) {
-    Array.prototype.forEach.call(stages, lightStage);
-    host.classList.add("is-complete");
+    progState.n += 1;
+    if (progEl) progEl.textContent = String(progState.n);
   }
 
   function run(host) {
-    var stages = host.querySelectorAll(".pipeline-stage");
+    var stages = host.querySelectorAll(".inspect-stage");
     if (!stages.length) return;
 
-    if (prefersReduced || !("requestAnimationFrame" in window)) {
-      settleAll(host, stages);
+    var lines = host.querySelectorAll(".cl[data-line]");
+    var scan = host.querySelector("[data-scan]");
+    var codeBody = host.querySelector(".inspect__pre");
+    var progEl = host.querySelector("[data-prog-to]");
+    var progState = { n: 0 };
+    var n = stages.length;
+
+    function lightAll() {
+      Array.prototype.forEach.call(stages, function (s) { resolveStage(s, progEl, progState); });
+      Array.prototype.forEach.call(lines, function (l) { l.classList.add("is-flagged"); });
+    }
+
+    if (prefersReduced || !("requestAnimationFrame" in window) || !scan || !codeBody) {
+      lightAll();
+      host.classList.add("is-complete");
       return;
     }
 
-    // Geometry: the beam travels from the first node's center to the last node's
-    // center, in coordinates relative to the host. Each stage lights when the
-    // beam reaches its node center. Measured once up front; the figure is static
-    // in layout during the brief scan.
-    var hostTop = host.getBoundingClientRect().top;
-    var centers = Array.prototype.map.call(stages, function (s) {
-      var n = s.querySelector(".pipeline-stage__num");
-      var r = (n || s).getBoundingClientRect();
-      return r.top - hostTop + r.height / 2;
+    // Measure code-line offsets once up front (no per-frame layout reads): each
+    // threatened line gets the sweep-Y at which it should surface.
+    var codeTop = codeBody.getBoundingClientRect().top;
+    var codeH = codeBody.offsetHeight;
+    var lineYs = Array.prototype.map.call(lines, function (l) {
+      return l.getBoundingClientRect().top - codeTop + 10;
     });
-    var startY = centers[0];
-    var endY = centers[centers.length - 1];
-    var span = Math.max(1, endY - startY);
 
     host.classList.add("is-scanning");
 
@@ -85,18 +96,23 @@
     function frame(ts) {
       if (begin === null) begin = ts;
       var p = Math.min(1, (ts - begin) / SCAN_MS);
-      var y = startY + easeOut(p) * span;
-      // Center the 64px beam on its leading edge.
-      host.style.setProperty("--beam-top", (y - 48) + "px");
+      var y = easeOut(p) * codeH;
+      host.style.setProperty("--scan-y", y + "px");
 
-      for (var i = 0; i < centers.length; i++) {
-        if (y >= centers[i] - 2) lightStage(stages[i]);
+      // Ledger fills strictly in order, paced by overall progress.
+      var resolved = Math.round(p * n);
+      for (var s = 0; s < resolved && s < n; s++) {
+        resolveStage(stages[s], progEl, progState);
+      }
+      // Threats surface in the code as the sweep crosses their line.
+      for (var i = 0; i < lineYs.length; i++) {
+        if (y >= lineYs[i] - 4) lines[i].classList.add("is-flagged");
       }
 
       if (p < 1) {
         requestAnimationFrame(frame);
       } else {
-        // Fade the beam out and mark the report assembled.
+        lightAll(); // seal: every stage resolved, every threat surfaced
         host.classList.remove("is-scanning");
         host.classList.add("is-complete");
       }
@@ -110,7 +126,7 @@
       entries.forEach(function (entry) {
         if (entry.isIntersecting) { run(entry.target); obs.unobserve(entry.target); }
       });
-    }, { threshold: 0.25 });
+    }, { threshold: 0.3 });
     io.observe(host);
   });
 })();
