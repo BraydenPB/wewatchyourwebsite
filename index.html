@@ -218,31 +218,79 @@
 
           <!-- RIGHT: the NETWORK operations panel — the aggregate story (the
                per-site watch console lives further down; this one is global on
-               purpose, so the two custom objects never read as duplicates). A
-               live ops readout: sites under watch ticking up, both products
-               armed, a rolling event feed. Decorative → aria-hidden; the real
-               numbers live in the stat band below. -->
+               purpose, so the two custom objects never read as duplicates).
+               Signature object: a live defense WAVEFORM (network "heartbeat" of
+               blocked threats) scrolling right→left, over the under-watch count
+               and two armed channels, then a rolling event tape. Decorative →
+               aria-hidden; the real numbers live in the stat band below. The
+               motif (scrolling EKG trace) is intentionally NOT the radar sweep,
+               code editor, case ledger, or glitch terminal used elsewhere. -->
           <aside class="netops" aria-hidden="true" data-netops>
+            <!-- corner ticks: the bezel of an instrument, not a web card -->
+            <span class="netops__corner netops__corner--tl" aria-hidden="true"></span>
+            <span class="netops__corner netops__corner--tr" aria-hidden="true"></span>
+            <span class="netops__corner netops__corner--bl" aria-hidden="true"></span>
+            <span class="netops__corner netops__corner--br" aria-hidden="true"></span>
+
             <div class="netops__head">
-              <span class="netops__title">Network Operations</span>
+              <span class="netops__title">Network Defense Monitor</span>
               <span class="netops__live"><span class="netops__live-dot"></span>LIVE</span>
             </div>
 
+            <!-- THE WAVEFORM — global threat-activity trace. The paths carry a
+                 real, representative baseline frame as markup, so the scope is
+                 drawn even with NO JS (and seeds the first painted frame); the
+                 stop colors live in CSS, not as var() presentation attributes,
+                 so the fill resolves in every browser. netops.js then animates
+                 the trace by scrolling its points left and injecting attack
+                 spikes. The viewBox is a fixed 300×80 grid stretched to fit
+                 (preserveAspectRatio:none), so the JS only deals in grid units.
+                 The d= seeds below are js/netops.js's deterministic static
+                 frame (buildPaths(66)); keep them in sync if that math changes. -->
+            <div class="netops__wave" data-netops-wave>
+              <svg class="netops__wave-svg" viewBox="0 0 300 80" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="netops-wave-fill" x1="0" y1="0" x2="0" y2="1">
+                    <stop class="netops__wave-stop netops__wave-stop--top" offset="0" />
+                    <stop class="netops__wave-stop netops__wave-stop--bot" offset="1" />
+                  </linearGradient>
+                </defs>
+                <!-- area under the trace -->
+                <path class="netops__wave-area" data-netops-wave-area d="M0.0 44.2 L5.1 45.4 L10.2 47.2 L15.3 49.0 L20.3 30.1 L25.4 37.7 L30.5 45.6 L35.6 46.1 L40.7 44.8 L45.8 44.3 L50.8 44.8 L55.9 45.7 L61.0 46.5 L66.1 47.0 L71.2 47.4 L76.3 24.3 L81.4 35.1 L86.4 47.7 L91.5 51.2 L96.6 50.5 L101.7 48.3 L106.8 45.7 L111.9 43.5 L116.9 42.5 L122.0 42.5 L127.1 43.0 L132.2 15.4 L137.3 26.6 L142.4 40.0 L147.5 44.3 L152.5 46.0 L157.6 47.4 L162.7 48.1 L167.8 47.4 L172.9 45.6 L178.0 43.5 L183.1 41.9 L188.1 25.5 L193.2 32.5 L198.3 41.2 L203.4 44.1 L208.5 45.0 L213.6 45.9 L218.6 47.2 L223.7 49.0 L228.8 50.8 L233.9 51.6 L239.0 51.1 L244.1 29.3 L249.2 34.9 L254.2 42.6 L259.3 44.5 L264.4 45.0 L269.5 45.7 L274.6 46.2 L279.7 46.3 L284.7 46.5 L289.8 47.3 L294.9 48.5 L300.0 25.6 L300.0 80 L0.0 80 Z" />
+                <!-- the trace itself -->
+                <path class="netops__wave-line" data-netops-wave-line d="M0.0 44.2 L5.1 45.4 L10.2 47.2 L15.3 49.0 L20.3 30.1 L25.4 37.7 L30.5 45.6 L35.6 46.1 L40.7 44.8 L45.8 44.3 L50.8 44.8 L55.9 45.7 L61.0 46.5 L66.1 47.0 L71.2 47.4 L76.3 24.3 L81.4 35.1 L86.4 47.7 L91.5 51.2 L96.6 50.5 L101.7 48.3 L106.8 45.7 L111.9 43.5 L116.9 42.5 L122.0 42.5 L127.1 43.0 L132.2 15.4 L137.3 26.6 L142.4 40.0 L147.5 44.3 L152.5 46.0 L157.6 47.4 L162.7 48.1 L167.8 47.4 L172.9 45.6 L178.0 43.5 L183.1 41.9 L188.1 25.5 L193.2 32.5 L198.3 41.2 L203.4 44.1 L208.5 45.0 L213.6 45.9 L218.6 47.2 L223.7 49.0 L228.8 50.8 L233.9 51.6 L239.0 51.1 L244.1 29.3 L249.2 34.9 L254.2 42.6 L259.3 44.5 L264.4 45.0 L269.5 45.7 L274.6 46.2 L279.7 46.3 L284.7 46.5 L289.8 47.3 L294.9 48.5 L300.0 25.6" />
+                <!-- leading scan head -->
+                <circle class="netops__wave-head" data-netops-wave-head cx="300" cy="25.6" r="2.4" />
+              </svg>
+              <span class="netops__wave-grid" aria-hidden="true"></span>
+              <span class="netops__wave-rate" data-netops-wave-rate>138</span>
+              <span class="netops__wave-cap">threats blocked / min</span>
+            </div>
+
             <div class="netops__primary">
-              <span class="netops__primary-num" data-netops-count>2,900,000</span>
+              <span class="netops__primary-row">
+                <span class="netops__primary-num" data-netops-count>2,900,000</span>
+                <span class="netops__primary-delta" aria-hidden="true"><span class="netops__primary-delta-caret"></span>live</span>
+              </span>
               <span class="netops__primary-label">sites under watch right now</span>
             </div>
 
-            <div class="netops__meters">
-              <div class="netops__meter">
-                <span class="netops__meter-k">WordPress Security</span>
-                <span class="netops__meter-bar"><span class="netops__meter-fill" style="--w:100%"></span></span>
-                <span class="netops__meter-v">armed</span>
+            <!-- the two products as armed signal channels (segmented strength
+                 readout, not a generic progress bar) -->
+            <div class="netops__channels">
+              <div class="netops__channel">
+                <span class="netops__channel-k">WordPress Security</span>
+                <span class="netops__channel-bars" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </span>
+                <span class="netops__channel-v">armed</span>
               </div>
-              <div class="netops__meter">
-                <span class="netops__meter-k">Code Analyzer</span>
-                <span class="netops__meter-bar"><span class="netops__meter-fill" style="--w:100%"></span></span>
-                <span class="netops__meter-v">armed</span>
+              <div class="netops__channel">
+                <span class="netops__channel-k">Code Analyzer</span>
+                <span class="netops__channel-bars" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </span>
+                <span class="netops__channel-v">armed</span>
               </div>
             </div>
 
