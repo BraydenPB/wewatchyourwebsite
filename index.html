@@ -979,43 +979,89 @@
           </p>
         </div>
 
-        <div class="pricing-grid pricing-grid--duo reveal-group">
-          <!-- Product 1: WordPress Protection -->
-          <article class="price-card price-card--featured">
-            <span class="badge price-card__pill"><span class="status-dot status-dot--pulse" aria-hidden="true"></span>For site owners</span>
-            <p class="price-card__name">WordPress Protection</p>
-            <span class="price-card__note">from</span>
-            <div class="price-card__price">
-              <span class="price-card__amount">$59.95</span>
-              <span class="price-card__suffix">/year</span>
-            </div>
-            <p class="price-card__for">For a single site owner. No per-clean fees, ever.</p>
-            <ul class="feature-list">
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Automated malware removal, no per-clean fees</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>File integrity monitoring + WP core hash verification</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Root-cause determination on every incident</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Continuous intrusion detection at the infrastructure level</li>
-            </ul>
-            <a class="btn btn--primary btn--block" href="#final-cta">Get Started</a>
-          </article>
+        <!-- ============================================================
+             PRICING — "Two products, one engine."
+             The section's weak point used to be two near-symmetric cards
+             differentiated only by a border, with NO visible relationship —
+             while the lede (and the brand's own source copy: "…powered by the
+             SAME threat intelligence that has removed malware from over 8M
+             sites since 2007") promises ONE engine behind both. So the cards
+             are reframed as two DOORS that visibly converge into a single
+             shared threat-intelligence core below them.
 
-          <!-- Product 2: Code Analyzer -->
-          <article class="price-card">
-            <p class="price-card__name">Code Analyzer</p>
-            <span class="price-card__note">starting at</span>
-            <div class="price-card__price">
-              <span class="price-card__amount">Free</span>
-              <span class="price-card__suffix">first scan</span>
-            </div>
-            <p class="price-card__for">Your first scan is free. See exactly what an attacker would.</p>
-            <ul class="feature-list">
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Eight-stage vulnerability analysis pipeline</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>OWASP Top 10 2025 mapped with CWE classification</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Adversarially verified, attack-chain reports</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>API access for automated, on‑demand scans</li>
-            </ul>
-            <a class="btn btn--secondary btn--block" href="#final-cta">Run a Free Scan</a>
-          </article>
+             FORM DISCIPLINE (whole-page anti-clone rule): partners ABOVE = open
+             horizontal band; FAQ BELOW = framed console panel. Pricing must be a
+             THIRD distinct form — so the core is CONNECTIVE TISSUE (a node +
+             hairline converging lines), deliberately NOT a fourth bordered panel
+             (that would clone the adjacent FAQ console). The core is lighter than
+             the cards: no card surface/border, just a lime engine node the two
+             doors plug into. Lime is the unifying engine through-line; teal stays
+             reserved for the Enterprise band below (two-accent lock).
+             Desktop: doors side-by-side → drop-lines converge on a centered node.
+             Mobile: a single vertical spine threads door → node → door (a
+             horizontal "converge" can't survive a stack — partners-pass lesson).
+             Connectors are pure-CSS + aria-hidden; all real content is DOM text. -->
+        <div class="pricing-engine reveal">
+          <div class="pricing-engine__doors reveal-group">
+            <!-- Product 1: WordPress Protection -->
+            <article class="price-card price-card--featured price-card--door">
+              <span class="badge price-card__pill"><span class="status-dot status-dot--pulse" aria-hidden="true"></span>For site owners</span>
+              <p class="price-card__name">WordPress Protection</p>
+              <span class="price-card__note">from</span>
+              <div class="price-card__price">
+                <span class="price-card__amount">$59.95</span>
+                <span class="price-card__suffix">/year</span>
+              </div>
+              <p class="price-card__for">For a single site owner. No per-clean fees, ever.</p>
+              <ul class="feature-list">
+                <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Automated malware removal, no per-clean fees</li>
+                <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>File integrity monitoring + WP core hash verification</li>
+                <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Root-cause determination on every incident</li>
+                <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Continuous intrusion detection at the infrastructure level</li>
+              </ul>
+              <a class="btn btn--primary btn--block" href="#final-cta">Get Started</a>
+            </article>
+
+            <!-- Product 2: Code Analyzer -->
+            <article class="price-card price-card--door">
+              <p class="price-card__name">Code Analyzer</p>
+              <span class="price-card__note">starting at</span>
+              <div class="price-card__price">
+                <span class="price-card__amount">Free</span>
+                <span class="price-card__suffix">first scan</span>
+              </div>
+              <p class="price-card__for">Your first scan is free. See exactly what an attacker would.</p>
+              <ul class="feature-list">
+                <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Eight-stage vulnerability analysis pipeline</li>
+                <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>OWASP Top 10 2025 mapped with CWE classification</li>
+                <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Adversarially verified, attack-chain reports</li>
+                <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>API access for automated, on‑demand scans</li>
+              </ul>
+              <a class="btn btn--secondary btn--block" href="#final-cta">Run a Free Scan</a>
+            </article>
+          </div>
+
+          <!-- Shared engine — connective tissue, NOT a panel. The two doors plug
+               into one core: a centered lime node carrying the brand's real "one
+               engine" identity + a single line of sourced proof (8M+ sites since
+               2007 — the source thesis), deliberately NOT a 4-up stat grid (the
+               hero already owns the 18/8M+/300k+/2,096 track-record band; a stat
+               grid here would be a third scoreboard AND force a panel). The
+               converging connector lines are drawn in CSS on this element's
+               ::before/::after; the node sits centered on the rail. -->
+          <div class="pricing-engine__core reveal" aria-label="One shared threat-intelligence engine powers both products">
+            <span class="pricing-core__node" aria-hidden="true">
+              <span class="pricing-core__pulse"></span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 7v5c0 5 3.5 8 8 10 4.5-2 8-5 8-10V7z"/><path d="M9 12l2 2 4-4"/></svg>
+            </span>
+            <p class="pricing-core__kicker">Both run on one engine</p>
+            <p class="pricing-core__title">One threat-intelligence core</p>
+            <p class="pricing-core__proof">
+              The same engine that has removed malware from <strong>8M+ sites since 2007</strong>
+              now reads your code the way an attacker would. Two products, one source of truth —
+              not two tools bolted together.
+            </p>
+          </div>
         </div>
 
         <!-- Enterprise & Platform band: NOT a third card. A full-width hairline-ruled

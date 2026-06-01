@@ -2640,14 +2640,115 @@ body::after{
 .link-arrow--inline{ margin-top:0; }
 
 /* ============================================================
-   PRICING — two-product duo override
+   PRICING — "Two products, one engine."
+   ------------------------------------------------------------
+   Hallmark · component: pricing-engine · genre: connector-diagram
+   theme: project tokens · motion: reveal-only (no rAF; #stats owns the
+   animated beat) · contrast: pass · a11y: connectors aria-hidden, all
+   copy is DOM text · form: THIRD distinct shape on the lower page
+   (partners=open band · pricing=converging doors+core · faq=console panel)
    ============================================================ */
+.pricing-engine{ position:relative; isolation:isolate; }
+
+/* The two product "doors". Single column on mobile (they STACK and the spine
+   threads through them); two co-equal columns on desktop. Reuses .price-card
+   wholesale — only the relationship around them is new. */
+.pricing-engine__doors{
+  display:grid; grid-template-columns:1fr; gap:var(--grid-gap);
+  align-items:stretch;
+}
+
+/* ---- The shared engine core: CONNECTIVE TISSUE, never a panel ----
+   A bordered box here would clone the FAQ console directly below it (the exact
+   box-stack the redesign exists to remove). So the core has NO card surface and
+   NO full border — just a centered lime node the two doors plug into, plus one
+   line of sourced proof. It reads as the thing BETWEEN the cards, not a third
+   card. The connector geometry lives on ::before (the spine) so it scales from
+   the stacked spine (mobile) to the converging funnel (desktop) with no JS. */
+.pricing-engine__core{
+  position:relative;
+  margin-top:var(--space-6);
+  padding-top:var(--space-7);
+  text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:var(--space-2);
+}
+/* The spine: a vertical hairline rising from the node up into the door stack,
+   fading out at the top so it reads as "current flowing down into the core"
+   rather than a hard rule. On mobile this threads the stacked doors → node. */
+.pricing-engine__core::before{
+  content:""; position:absolute; left:50%; top:0; transform:translateX(-50%);
+  width:2px; height:var(--space-7);
+  background:linear-gradient(180deg, transparent, var(--accent-border) 70%, var(--accent));
+  border-radius:2px;
+}
+
+/* The engine node — a lime-rimmed shield glyph sitting at the spine's foot, the
+   literal point both doors converge on. Glow + a soft pulse ring mark it as the
+   live core without a competing rAF animation (pure CSS, reduced-motion-safe). */
+.pricing-core__node{
+  position:relative; z-index:1;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px; border-radius:var(--radius-pill);
+  color:var(--accent);
+  background:radial-gradient(circle at 50% 40%, var(--accent-soft), var(--surface-1) 70%);
+  border:1px solid var(--accent-border);
+  box-shadow:var(--glow-lime-sm), inset 0 1px 0 rgba(255,255,255,0.06);
+  margin-bottom:var(--space-3);
+}
+.pricing-core__pulse{
+  position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
+  border:1px solid var(--accent);
+  opacity:0; animation:core-pulse 3.2s var(--ease-out) infinite;
+}
+@keyframes core-pulse{
+  0%   { opacity:0.5; transform:scale(1); }
+  70%  { opacity:0;   transform:scale(1.6); }
+  100% { opacity:0;   transform:scale(1.6); }
+}
+@media (prefers-reduced-motion: reduce){ .pricing-core__pulse{ animation:none; opacity:0; } }
+
+.pricing-core__kicker{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--text-accent);
+}
+.pricing-core__title{
+  font-family:var(--font-display); font-weight:600;
+  font-size:var(--text-h4); color:var(--text-primary); letter-spacing:-0.01em;
+}
+.pricing-core__proof{
+  max-width:58ch; margin-inline:auto;
+  color:var(--text-secondary); font-size:var(--text-body); line-height:1.6;
+  text-wrap:balance;
+}
+.pricing-core__proof strong{ color:var(--text-primary); font-weight:600; }
+
+/* ---- Desktop: doors side-by-side; the spine becomes a converging funnel ---- */
 @media (min-width:880px){
-  .pricing-grid--duo{ grid-template-columns:repeat(2, minmax(0,1fr)); max-width:840px; margin-inline:auto; }
-  /* The featured (WordPress) card no longer lifts above a third card — keep the
-     duo level so the two products read as co-equal. */
-  .pricing-grid--duo .price-card--featured{ transform:none; }
-  .pricing-grid--duo .price-card--featured:hover{ transform:translateY(-4px); }
+  .pricing-engine{ max-width:920px; margin-inline:auto; }
+  .pricing-engine__doors{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+  /* Two co-equal doors — the featured card no longer lifts (there's no third
+     card to rank against), so both read as equal entries into the one engine. */
+  .pricing-engine__doors .price-card--featured{ transform:none; }
+  .pricing-engine__doors .price-card--featured:hover{ transform:translateY(-4px); }
+
+  /* The converging funnel: two angled hairlines run from the node up-and-outward
+     toward where each door sits, making "both doors feed one core" literal. They
+     are drawn on the core's ::after as a single element with two linear-gradient
+     edges, so there's nothing to measure or sync (the analyzer-pass lesson: no
+     coordinate-synced connector). Sits behind the node (z-index:0). */
+  .pricing-engine__core{ padding-top:var(--space-8); }
+  .pricing-engine__core::before{ height:var(--space-8); }
+  .pricing-engine__core::after{
+    content:""; position:absolute; left:50%; top:0; transform:translateX(-50%);
+    z-index:0; width:min(420px, 60%); height:var(--space-8);
+    /* two symmetric diagonal hairlines meeting at the bottom-center node */
+    background:
+      linear-gradient(to top right, transparent calc(50% - 1px), var(--accent-border) calc(50% - 1px), var(--accent-border) calc(50% + 1px), transparent calc(50% + 1px)) left / 50% 100% no-repeat,
+      linear-gradient(to top left,  transparent calc(50% - 1px), var(--accent-border) calc(50% - 1px), var(--accent-border) calc(50% + 1px), transparent calc(50% + 1px)) right / 50% 100% no-repeat;
+    -webkit-mask-image:linear-gradient(180deg, transparent, #000 60%);
+            mask-image:linear-gradient(180deg, transparent, #000 60%);
+    opacity:0.9;
+  }
 }
 
 /* ============================================================
