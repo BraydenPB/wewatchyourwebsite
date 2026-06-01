@@ -562,7 +562,12 @@ section{ padding-block:var(--section-py); position:relative; }
    shows the Lottie swap (the screen never scrolls out of view). z-index keeps
    the screen above the later-in-DOM rail; the gradient bg is fully opaque. */
 .console__screen{
-  position:sticky; top:72px; z-index:2;
+  /* z-index:3 so the pinned monitor sits ABOVE the entire rail as it scrolls
+     under it on mobile — incl. the active row's lime left-edge (::before, z-index:2),
+     which at an equal z-index was painting OVER the opaque screen (later in DOM) and
+     leaving a stray green bar floating at the seam. Stays below the sticky header
+     (z-index:100). Reset to auto at >=900px (two columns, no overlap). */
+  position:sticky; top:72px; z-index:3;
   isolation:isolate;
   border:1px solid var(--border-default); border-radius:var(--radius-lg);
   background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
@@ -571,6 +576,14 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 @media (min-width:900px){ .console__screen{ top:96px; z-index:auto; } }
 @media (min-width:900px){ .pass{ scroll-margin-top:120px; } }
+/* On mobile the rail scrolls UNDER the pinned monitor — a crisper bottom edge +
+   drop shadow sells that depth (rail passes beneath) instead of a flat collision. */
+@media (max-width:899px){
+  .console__screen{
+    border-bottom-color:var(--border-strong);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 14px 22px -12px rgba(0,0,0,0.9);
+  }
+}
 
 .console__screen::before{
   content:""; position:absolute; inset:0; z-index:3; pointer-events:none; border-radius:inherit;
