@@ -591,7 +591,11 @@
 <span class="cl" data-line="9"><span class="ln">9</span>  <span class="k">return</span> <span class="threat" data-threat="1"><span class="fn">eval</span>(req.claims)</span></span>
 <span class="cl"><span class="ln">10</span>}</span>
 <span class="cl"><span class="ln">11</span></span>
-<span class="cl" data-line="12"><span class="ln">12</span>app.<span class="fn">get</span>(<span class="s">"/admin"</span>, (req,res) <span class="o">=&gt;</span> <span class="threat" data-threat="3"><span class="fn">runQuery</span>(req.query.id)</span>)</span></code></pre>
+<span class="cl" data-line="12"><span class="ln">12</span>app.<span class="fn">get</span>(<span class="s">"/admin"</span>, (req,res) <span class="o">=&gt;</span> <span class="threat" data-threat="3"><span class="fn">runQuery</span>(req.query.id)</span>)</span>
+<span class="cl"><span class="ln">13</span></span>
+<span class="cl"><span class="ln">14</span>app.<span class="fn">use</span>(<span class="fn">cors</span>({ origin: <span class="s">"https://app.example.com"</span> }))</span>
+<span class="cl"><span class="ln">15</span>app.<span class="fn">use</span>(<span class="fn">rateLimit</span>({ windowMs: <span class="lit">60000</span>, max: <span class="lit">100</span> }))</span>
+<span class="cl"><span class="ln">16</span>app.<span class="fn">listen</span>(process.env.PORT <span class="o">??</span> <span class="lit">3000</span>)</span></code></pre>
             </figure>
 
             <!-- RIGHT: the docked analysis panel. The eight real analysis stages;
