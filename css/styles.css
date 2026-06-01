@@ -1427,14 +1427,9 @@ body::after{
 }
 
 /* ============================================================
-   PRICING
+   PRICING — card primitives (layout lives in the .pricing-engine
+   "two doors, one engine" system further down this file)
    ============================================================ */
-.pricing-grid{
-  display:grid; grid-template-columns:1fr; gap:var(--grid-gap);
-  align-items:start;
-}
-@media (min-width:880px){ .pricing-grid{ grid-template-columns:repeat(3,1fr); } }
-
 .price-card{
   position:relative; display:flex; flex-direction:column;
   border:1px solid var(--border-default); border-radius:var(--radius-lg);
