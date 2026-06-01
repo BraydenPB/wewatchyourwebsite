@@ -937,53 +937,86 @@
          FAQ
          ============================================================ -->
     <section id="faq" aria-labelledby="faq-title">
-      <div class="container">
-        <div class="section-head reveal">
-          <h2 class="section-title" id="faq-title">Straight answers, no security theater.</h2>
-          <p class="section-lede">The questions site owners actually ask before they hand us the keys.</p>
-        </div>
+      <div class="container faq-layout">
+        <!-- Sticky rail — section head + escalation CTA. Fills the column that
+             would otherwise be a void; pure CSS sticky, no JS. -->
+        <aside class="faq-rail reveal">
+          <div class="section-head">
+            <h2 class="section-title" id="faq-title">Straight answers, no security theater.</h2>
+            <p class="section-lede">The questions site owners actually ask before they hand us the keys.</p>
+          </div>
+          <div class="faq-rail__esc">
+            <p class="faq-rail__esc-q">Still not sure it fits your setup?</p>
+            <a class="faq-rail__esc-link" href="#final-cta">
+              Talk to a security expert
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <span class="faq-rail__esc-note">A real engineer — not a sales rep reading a script.</span>
+          </div>
+        </aside>
 
-        <div class="faq-list">
+        <!-- Q&A log — a primary-source artifact, sibling to the incident ledger.
+             Native <details> rows under a titled chrome strip; mono case-IDs and
+             category tags echo the ledger's provenance stamp. Reads with no JS. -->
+        <div class="faq-log reveal">
+          <div class="faq-log__chrome">
+            <span class="faq-log__mark" aria-hidden="true"></span>
+            <span class="faq-log__title">Pre-engagement Q&amp;A</span>
+            <span class="faq-log__meta">6 records · answered by security</span>
+          </div>
+
           <details class="faq-item" open>
-            <summary class="faq-item__q">Is this just another WordPress plugin?
+            <summary class="faq-item__q">
+              <span class="faq-item__id"><span class="faq-item__case">Q-01</span><span class="faq-item__tag">Architecture</span></span>
+              <span class="faq-item__title">Is this just another WordPress plugin?</span>
               <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             </summary>
-            <div class="faq-item__a">No. A plugin runs inside the same site an attacker just compromised — which means it can be disabled the moment they get in. We operate at the infrastructure level, one layer below the site, so monitoring and cleanup keep working even when the site itself is hit.</div>
+            <div class="faq-item__a"><p>No. A plugin runs inside the same site an attacker just compromised — which means it can be disabled the moment they get in. We operate at the infrastructure level, one layer below the site, so monitoring and cleanup keep working even when the site itself is hit.</p></div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-item__q">Do I need to be technical to use it?
+            <summary class="faq-item__q">
+              <span class="faq-item__id"><span class="faq-item__case">Q-02</span><span class="faq-item__tag">Onboarding</span></span>
+              <span class="faq-item__title">Do I need to be technical to use it?</span>
               <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             </summary>
-            <div class="faq-item__a">No. Removal is automated and the monitoring runs on its own. When something needs a human, you talk to a real security expert who handles it — not a sales rep reading a script.</div>
+            <div class="faq-item__a"><p>No. Removal is automated and the monitoring runs on its own. When something needs a human, you talk to a real security expert who handles it — not a sales rep reading a script.</p></div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-item__q">Will a cleanup cost me extra each time?
+            <summary class="faq-item__q">
+              <span class="faq-item__id"><span class="faq-item__case">Q-03</span><span class="faq-item__tag">Billing</span></span>
+              <span class="faq-item__title">Will a cleanup cost me extra each time?</span>
               <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             </summary>
-            <div class="faq-item__a">No. There are no per-clean fees — cleanups are included, so a bad week never turns into a surprise invoice. WordPress Protection starts at $59.95/year for site owners, with enterprise and hosting-platform pricing available.</div>
+            <div class="faq-item__a"><p>No. There are no per-clean fees — cleanups are included, so a bad week never turns into a surprise invoice. WordPress Protection starts at $59.95/year for site owners, with enterprise and hosting-platform pricing available.</p></div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-item__q">How fast do you detect a problem?
+            <summary class="faq-item__q">
+              <span class="faq-item__id"><span class="faq-item__case">Q-04</span><span class="faq-item__tag">Detection</span></span>
+              <span class="faq-item__title">How fast do you detect a problem?</span>
               <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             </summary>
-            <div class="faq-item__a">File-integrity scans average about 4 seconds, running continuously. We verify your files against known-good WordPress core hashes, so unauthorized changes surface almost as soon as they happen.</div>
+            <div class="faq-item__a"><p>File-integrity scans average about 4 seconds, running continuously. We verify your files against known-good WordPress core hashes, so unauthorized changes surface almost as soon as they happen.</p></div>
+          </details>
+
+          <details class="faq-item faq-item--key">
+            <summary class="faq-item__q">
+              <span class="faq-item__id"><span class="faq-item__case">Q-05</span><span class="faq-item__tag">Remediation</span></span>
+              <span class="faq-item__title">My site already got cleaned once and reinfected. Can you stop that?</span>
+              <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </summary>
+            <div class="faq-item__a"><p>That is exactly the gap we close. Most tools remove the malware and stop there. We perform root-cause determination — finding HOW the attacker got in — and seal that entry point so the same door can not be used again.</p></div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-item__q">My site already got cleaned once and reinfected. Can you stop that?
+            <summary class="faq-item__q">
+              <span class="faq-item__id"><span class="faq-item__case">Q-06</span><span class="faq-item__tag">Scope</span></span>
+              <span class="faq-item__title">Do you only protect WordPress sites?</span>
               <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             </summary>
-            <div class="faq-item__a">That is exactly the gap we close. Most tools remove the malware and stop there. We perform root-cause determination — finding HOW the attacker got in — and seal that entry point so the same door can not be used again.</div>
-          </details>
-
-          <details class="faq-item">
-            <summary class="faq-item__q">Do you only protect WordPress sites?
-              <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-            </summary>
-            <div class="faq-item__a">WordPress is where we go deepest — including core hash verification — but our monitoring, malware removal, and infrastructure-level protection work across shared hosting, VPS, and dedicated servers. If you’re not sure your setup fits, ask a security expert before you buy.</div>
+            <div class="faq-item__a"><p>WordPress is where we go deepest — including core hash verification — but our monitoring, malware removal, and infrastructure-level protection work across shared hosting, VPS, and dedicated servers. If you’re not sure your setup fits, ask a security expert before you buy.</p></div>
           </details>
         </div>
       </div>
