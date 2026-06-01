@@ -1130,7 +1130,39 @@ section{ padding-block:var(--section-py); position:relative; }
    whole artifact fits one viewport anyway, so there's nothing to keep in view —
    plain grid flow, no overlap. */
 .faq-rail{ display:flex; flex-direction:column; gap:var(--space-6); }
-.faq-rail .section-head{ margin-bottom:0; }
+
+/* Intro block — tuned for the narrow left column, NOT the global .section-head
+   (whose 656px lede measure was sized for full-width heads and read cramped
+   here). A mono label parallels the log's chrome label on the right — left
+   says what the section is, right says what the artifact is — and a hairline
+   under the heading gives structure without a second box. */
+.faq-intro{ display:flex; flex-direction:column; }
+.faq-intro__label{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--text-faint);
+  margin-bottom:var(--space-4);
+}
+.faq-intro__title{
+  font-size:var(--text-h3); line-height:1.15;
+  padding-bottom:var(--space-5);
+  border-bottom:1px solid var(--border-subtle);
+  text-wrap:balance;
+}
+/* At the full h2 size each clause is wider than the ~320px left column, so the
+   headline cascaded into four ragged lines. Stepping to h3 lets the two clauses
+   sit one-per-line. The <br> forces the break on the comma — the semantic pause
+   — for two near-even lines. Forced only on the wide desktop column; on mobile
+   the column is narrower still, so drop the break and let it wrap naturally. */
+.faq-intro__br{ display:none; }
+@media (min-width:920px){
+  .faq-intro__title{ white-space:nowrap; }
+  .faq-intro__br{ display:inline; }
+}
+.faq-intro__lede{
+  margin-top:var(--space-5);
+  font-size:var(--text-body-lg); line-height:1.6; color:var(--text-muted);
+  max-width:34ch; text-wrap:pretty;
+}
 /* Escalation card — deliberately NOT another data-card. The log / ledger /
    status board are read-only surfaces (raised, surface-1→bg-base-2). This is
    the one invitation to act, so it joins the page's action family instead: a

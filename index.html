@@ -938,15 +938,16 @@
          ============================================================ -->
     <section id="faq" aria-labelledby="faq-title">
       <div class="container faq-layout">
-        <!-- Sticky rail — section head + escalation CTA. On desktop both sit in
-             the left column (the CTA grouped under the head). On mobile the grid
-             reorders so the CTA drops below the log — the escalation reads after
-             the questions, not before. Fills the column the old narrow layout
-             left void; pure CSS, no JS. -->
+        <!-- Left rail — a quiet typographic intro that mirrors the log: a mono
+             label on the left parallels the log's chrome label on the right, and
+             a hairline rule under the heading gives the block structure without
+             turning it into a second boxed artifact. On mobile the CTA below it
+             reorders under the log. Pure CSS, no JS. -->
         <aside class="faq-rail reveal">
-          <div class="section-head">
-            <h2 class="section-title" id="faq-title">Straight answers, no security theater.</h2>
-            <p class="section-lede">The questions site owners actually ask before they hand us the keys.</p>
+          <div class="faq-intro">
+            <p class="faq-intro__label">Before you commit</p>
+            <h2 class="faq-intro__title" id="faq-title">Straight answers, <br class="faq-intro__br">no security theater.</h2>
+            <p class="faq-intro__lede">The questions site owners ask right before they hand over the keys — answered plainly, by the people who do the work.</p>
           </div>
         </aside>
 
