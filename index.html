@@ -825,7 +825,7 @@
          ============================================================ -->
     <section id="partners" class="section--alt partners" aria-labelledby="partners-title">
       <div class="container">
-        <div class="section-head reveal">
+        <div class="section-head section-head--center reveal">
           <h2 class="section-title" id="partners-title">Built for the people running the infrastructure.</h2>
           <p class="section-lede">
             We integrate at the platform level — not as a plugin your customers install. White-label and
@@ -833,34 +833,55 @@
           </p>
         </div>
 
-        <ul class="partner-grid reveal-group" aria-label="Integration partners">
-          <li class="partner">
-            <span class="partner__name">GridPane</span>
-            <span class="partner__status partner__status--active"><span class="partner__dot" aria-hidden="true"></span>Active</span>
-          </li>
-          <li class="partner">
-            <span class="partner__name">PanelAlpha</span>
-            <span class="partner__status partner__status--active"><span class="partner__dot" aria-hidden="true"></span>Active</span>
-          </li>
-          <li class="partner">
-            <span class="partner__name">RunCloud</span>
-            <span class="partner__status partner__status--active"><span class="partner__dot" aria-hidden="true"></span>Active</span>
-          </li>
-          <li class="partner">
-            <span class="partner__name">xCloud</span>
-            <span class="partner__status partner__status--available">Available</span>
-          </li>
-          <li class="partner">
-            <span class="partner__name">Hetzner</span>
-            <span class="partner__status partner__status--active"><span class="partner__dot" aria-hidden="true"></span>Active</span>
-          </li>
-          <li class="partner partner--cta">
-            <span class="partner__name">API / Custom</span>
-            <a class="partner__link" href="#final-cta">Contact us
+        <!-- One integration status board, not a grid of name cards. Each row is a
+             real platform connection with its live state (Active / Available);
+             the trailing rail is the build-your-own CTA — kept visually separate
+             so it never reads as a fabricated sixth "partner". Static by design
+             apart from the existing status pulse (no new animation — #stats above
+             is the animated section). Reads fully with no JS. -->
+        <div class="netboard reveal">
+          <div class="netboard__chrome">
+            <span class="netboard__mark" aria-hidden="true"></span>
+            <span class="netboard__title">Platform integrations</span>
+            <span class="netboard__meta">4 active · 1 available · API</span>
+          </div>
+          <ul class="netboard__rows" aria-label="Integration partners">
+            <li class="netrow">
+              <span class="netrow__name">GridPane</span>
+              <span class="netrow__role">Managed WordPress hosting</span>
+              <span class="netrow__status netrow__status--active"><span class="netrow__dot" aria-hidden="true"></span>Active</span>
+            </li>
+            <li class="netrow">
+              <span class="netrow__name">PanelAlpha</span>
+              <span class="netrow__role">WordPress automation panel</span>
+              <span class="netrow__status netrow__status--active"><span class="netrow__dot" aria-hidden="true"></span>Active</span>
+            </li>
+            <li class="netrow">
+              <span class="netrow__name">RunCloud</span>
+              <span class="netrow__role">Server management platform</span>
+              <span class="netrow__status netrow__status--active"><span class="netrow__dot" aria-hidden="true"></span>Active</span>
+            </li>
+            <li class="netrow">
+              <span class="netrow__name">Hetzner</span>
+              <span class="netrow__role">Cloud &amp; dedicated infrastructure</span>
+              <span class="netrow__status netrow__status--active"><span class="netrow__dot" aria-hidden="true"></span>Active</span>
+            </li>
+            <li class="netrow">
+              <span class="netrow__name">xCloud</span>
+              <span class="netrow__role">Site &amp; server hosting</span>
+              <span class="netrow__status netrow__status--available">Available</span>
+            </li>
+          </ul>
+          <a class="netboard__cta" href="#final-cta">
+            <span class="netboard__cta-body">
+              <span class="netboard__cta-title">API &amp; white-label integration</span>
+              <span class="netboard__cta-sub">Bring WWYW to your own platform</span>
+            </span>
+            <span class="netboard__cta-link">Contact us
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </a>
-          </li>
-        </ul>
+            </span>
+          </a>
+        </div>
 
         <p class="partners__note reveal">
           <a class="btn btn--secondary" href="#final-cta">Partner With Us</a>
