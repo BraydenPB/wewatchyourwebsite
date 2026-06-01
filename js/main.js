@@ -65,7 +65,7 @@
     var toggleLabel = root.querySelector("[data-console-toggle-label]");
     var canHover = typeof matchMedia === "function" && matchMedia("(hover: hover)").matches;
 
-    var hoverPaused = false; // transient: pointer/focus inside the console
+    var hoverPaused = false; // transient: keyboard focus inside the console (pointer hover no longer pauses)
     var userPaused = false;  // sticky: user pressed the toggle (or tapped on touch)
     // Two separate visibility concerns — collapsing them is what froze the bars on
     // desktop. The PASSES list is much taller than the viewport, so scrolling down to
@@ -212,9 +212,11 @@
       });
     });
 
-    // transient pause on hover / focus within the console
-    root.addEventListener("mouseenter", function () { setHoverPaused(true); });
-    root.addEventListener("mouseleave", function () { setHoverPaused(false); });
+    // Pointer hover does NOT pause anymore: freezing the whole scan the instant the
+    // cursor crossed the console read as broken/distracting. The discoverable Pause
+    // button (WCAG 2.2.2) is the real pause control. We DO still pause on keyboard
+    // focus within the console, so a keyboard user reading a row doesn't have the
+    // live highlight slide off the pass they just landed on.
     root.addEventListener("focusin", function () { setHoverPaused(true); });
     root.addEventListener("focusout", function () {
       if (!root.contains(document.activeElement)) setHoverPaused(false);

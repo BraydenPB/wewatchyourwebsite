@@ -562,7 +562,12 @@ section{ padding-block:var(--section-py); position:relative; }
    shows the Lottie swap (the screen never scrolls out of view). z-index keeps
    the screen above the later-in-DOM rail; the gradient bg is fully opaque. */
 .console__screen{
-  position:sticky; top:72px; z-index:2;
+  /* z-index:3 so the pinned monitor sits ABOVE the entire rail as it scrolls
+     under it on mobile — incl. the active row's lime left-edge (::before, z-index:2),
+     which at an equal z-index was painting OVER the opaque screen (later in DOM) and
+     leaving a stray green bar floating at the seam. Stays below the sticky header
+     (z-index:100). Reset to auto at >=900px (two columns, no overlap). */
+  position:sticky; top:72px; z-index:3;
   isolation:isolate;
   border:1px solid var(--border-default); border-radius:var(--radius-lg);
   background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
@@ -571,6 +576,14 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 @media (min-width:900px){ .console__screen{ top:96px; z-index:auto; } }
 @media (min-width:900px){ .pass{ scroll-margin-top:120px; } }
+/* On mobile the rail scrolls UNDER the pinned monitor — a crisper bottom edge +
+   drop shadow sells that depth (rail passes beneath) instead of a flat collision. */
+@media (max-width:899px){
+  .console__screen{
+    border-bottom-color:var(--border-strong);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 14px 22px -12px rgba(0,0,0,0.9);
+  }
+}
 
 .console__screen::before{
   content:""; position:absolute; inset:0; z-index:3; pointer-events:none; border-radius:inherit;
@@ -752,22 +765,34 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 @media (max-width:560px){ .pass__result{ display:none; } }
 
-/* progress bar under each pass — fills while that pass is the active auto-cycle target */
+/* ---- cycle clock (intentionally invisible) ----
+   The active row's fill animation is the SINGLE cycle clock: its `animationend`
+   (pass-fill, --pass-dwell long) is what advances the auto-cycle in main.js — there
+   is no JS timer behind it. We removed the visible progress bar (it read as four
+   competing bars / distracting), but the animated element MUST keep running as the
+   clock carrier. So: zero footprint, fully transparent — never `display:none`
+   (that would suppress `animationend` and freeze the cycle). Progress is now
+   communicated purely by the breathing scan dot + the soft row hand-off. */
 .pass__bar{
-  position:absolute; left:0; right:0; bottom:-1px; height:2px; grid-column:1 / -1;
-  background:transparent; overflow:hidden;
+  position:absolute; width:0; height:0; overflow:hidden; pointer-events:none;
 }
 .pass__bar-fill{
-  display:block; height:100%; width:100%; transform:scaleX(0); transform-origin:left;
-  background:linear-gradient(90deg, var(--accent), var(--accent-2, var(--accent)));
+  display:block; width:1px; height:1px; transform:scaleX(0); transform-origin:left;
+  background:transparent; opacity:0;
 }
 
-/* ---- ACTIVE pass: the row being scanned right now (visual + aria-current) ---- */
+/* ---- ACTIVE pass: the row being scanned right now (visual + aria-current) ----
+   With the progress bar gone, the active highlight IS the cycle's only progress
+   signal — so the hand-off from one row to the next must read as a calm fade, not
+   a snap. The left accent edge is always present but opacity-0 until active, so it
+   cross-fades in/out as the scan moves down the list. */
 .pass-item.is-active .pass{ color:var(--text-primary); background:var(--surface-inset); }
-.pass-item.is-active::before{
+.pass-item::before{
   content:""; position:absolute; left:0; top:0; bottom:0; width:2px; z-index:2;
   background:linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent) 30%, transparent));
+  opacity:0; transition:opacity var(--dur-slow) var(--ease-out);
 }
+.pass-item.is-active::before{ opacity:1; }
 .pass-item.is-active .pass__num{ opacity:0; }
 .pass-item.is-active .pass__indicator{
   opacity:1; transform:scale(1); background:var(--accent);
@@ -776,8 +801,7 @@ section{ padding-block:var(--section-py); position:relative; }
 .pass-item.is-active .pass__verb{ color:var(--text-accent); }
 .pass-item.is-active .pass__result-state{ opacity:1; height:auto; color:var(--text-accent); }
 .pass-item.is-active .pass__result-value{ color:var(--text-primary); }
-.pass-item.is-active .pass__bar{ background:var(--border-subtle); }
-/* fill animates over the auto-cycle interval; paused/instant per JS + reduced-motion */
+/* the invisible clock fill animates over the auto-cycle interval; paused/instant per JS + reduced-motion */
 .pass-item.is-active .pass__bar-fill{
   animation:pass-fill var(--pass-dwell, 5200ms) linear forwards;
 }
