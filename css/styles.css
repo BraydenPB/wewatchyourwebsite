@@ -222,6 +222,97 @@ section{ padding-block:var(--section-py); position:relative; }
 #stats{ padding-block:clamp(5rem, 8vw, 10rem); }
 #faq{ padding-block:clamp(3rem, 5vw, 6rem); }
 
+/* ============================================================
+   SIDE RAILS — gutter depth layer
+   The instrument-panel texture that lives in the empty side gutters
+   outside the centered --container-max column, so the page reads as a
+   continuous console surface rather than a stack of dark voids. Two
+   fixed strips (body::before = left, body::after = right) carry a faint
+   hairline grid + a dashed vertical guide line on the INNER edge (the
+   container boundary, the "frame" of the column).
+
+   Cover-vs-reveal is structural, not per-section: the rails sit at z:0,
+   #main sits at z:1, so every section that paints a full-width opaque
+   background (.section--alt, the ribbon) or a full-bleed [data-glitch]
+   backdrop (analyzer · final-cta · footer) naturally COVERS the rails,
+   while the transparent sections (#wordpress · #stats · #pricing · #faq ·
+   #blog) REVEAL them through their empty gutters. The footer's glitch
+   backdrop is full-bleed, so the rails stop there by design. The hero is
+   the one exception that needs help: its .hero__wash has an opaque base
+   gradient inside an isolate:isolate context, so it's inset to the content
+   column (see .hero__wash @1320px) to let its gutters reveal the rails too.
+
+   Static, pure CSS — no JS, no animation — so it satisfies the
+   prefers-reduced-motion and scripting:none contracts for free, and adds
+   depth without becoming a competing motion layer. Below the column
+   width there are no gutters, so the strips are gated off entirely. */
+:root{
+  --rail-w: calc((100vw - var(--container-max)) / 2);
+  /* The gutter texture: a fine 48px hairline line-grid, harmonized with the
+     hero's own 48px grid + its rgba(255,255,255,.022) hairline color (see
+     .hero__wash::after) so the rails read as a continuation of that depth
+     language rather than a foreign import. This is Cloudflare's gutter-
+     texture concept translated into this site's native grid vocabulary
+     (the same line-grid motif used in .hero__wash, .screen-stage__grid,
+     and the mobile-menu texture) — chosen over a literal dot field because
+     it carries more clearly on the near-black base and matches the existing
+     instrument-panel idiom. */
+  --rail-grid: 48px;
+  --rail-line: rgba(255,255,255,0.04);
+  --rail-tex:
+    linear-gradient(var(--rail-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rail-line) 1px, transparent 1px);
+  --rail-tex-size: var(--rail-grid) var(--rail-grid), var(--rail-grid) var(--rail-grid);
+}
+body::before,
+body::after{
+  content:"";
+  position:fixed; top:0; bottom:0; z-index:0; width:0;
+  pointer-events:none;
+  /* Base texture (the hairline line-grid). The per-side rules below add a
+     dashed vertical guide line pinned to each strip's inner edge. */
+  background-image: var(--rail-tex);
+  background-size: var(--rail-tex-size);
+  /* Fade the strip in from the top and out before the page bottom, the
+     same mask idiom the hero grid and mobile-menu texture already use. */
+  -webkit-mask-image:linear-gradient(180deg, transparent 0, #000 12%, #000 84%, transparent 100%);
+          mask-image:linear-gradient(180deg, transparent 0, #000 12%, #000 84%, transparent 100%);
+}
+/* Each strip carries the texture PLUS a 1px dashed vertical guide line on
+   its inner edge (the container boundary) — Cloudflare's "frame" line,
+   recolored to this site's --border-default. The line is a second,
+   non-repeating background pinned to the inner edge, so left strip → line
+   on the right, right strip → line on the left. */
+body::before{
+  left:0;
+  background-image:
+    var(--rail-tex),
+    repeating-linear-gradient(180deg, var(--border-default) 0 8px, transparent 8px 16px);
+  background-size: var(--rail-tex-size), 1px 100%;
+  background-position: 0 0, 0 0, right 0;
+  background-repeat: repeat, repeat, no-repeat;
+}
+body::after{
+  right:0;
+  background-image:
+    var(--rail-tex),
+    repeating-linear-gradient(180deg, var(--border-default) 0 8px, transparent 8px 16px);
+  background-size: var(--rail-tex-size), 1px 100%;
+  background-position: 0 0, 0 0, left 0;
+  background-repeat: repeat, repeat, no-repeat;
+}
+/* Only show rails when there is real gutter room beyond the column. Below
+   this, --rail-w would clamp toward 0 and the strips collapse cleanly,
+   never fighting body{overflow-x:hidden}. */
+@media (min-width: 1320px){
+  body::before,
+  body::after{ width: var(--rail-w); }
+}
+/* The page content rides above the rails so opaque/full-bleed section
+   backgrounds cover them and only the transparent sections reveal them.
+   Header (z:100) and the mobile menu (z:200/300) remain above both. */
+#main{ position:relative; z-index:1; }
+
 .section-head{ max-width:640px; margin-bottom:var(--space-7); }
 .section-head--center{ margin-inline:auto; text-align:center; }
 
@@ -675,6 +766,15 @@ section{ padding-block:var(--section-py); position:relative; }
     radial-gradient(58% 50% at 8% 0%, rgba(105,255,18,0.10), transparent 58%),
     radial-gradient(60% 55% at 100% 12%, rgba(26,166,183,0.08), transparent 60%),
     linear-gradient(180deg, var(--bg-base-2) 0%, var(--bg-base) 70%);
+}
+/* .hero has isolation:isolate, so this wash's opaque base gradient is trapped
+   in the hero's stacking context and would paint over the body side-rails,
+   hiding them in the hero gutters (every OTHER reveal section is transparent
+   and shows the rails). Inset the wash to the content column wherever the
+   rails are live, so the hero gutters reveal the same grid + dashed guide line
+   as the rest of the page. Full-bleed below that — there are no gutters there. */
+@media (min-width:1320px){
+  .hero__wash{ left:var(--rail-w); right:var(--rail-w); }
 }
 /* faint hairline grid for depth, fading out before the stat band */
 .hero__wash::after{
