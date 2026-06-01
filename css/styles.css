@@ -1430,17 +1430,23 @@ section{ padding-block:var(--section-py); position:relative; }
   background:linear-gradient(180deg, var(--bg-base) 0%, rgba(5,6,10,0.86) 30%, rgba(5,6,10,0.86) 70%, var(--bg-base) 100%);
 }
 
+/* De-boxed stat row: numbers + labels separated by hairlines, no cards — so the
+   section opens with a clean band of figures, not a grid of boxes. Labels read
+   in --text-secondary (not muted) since they sit directly over the live glitch
+   backdrop here with no card scrim. */
 .analyzer-stats{
-  display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:var(--grid-gap);
-  margin-bottom:var(--section-gap);
+  display:grid; grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:var(--space-5) 0; margin-bottom:var(--section-gap);
 }
 @media (min-width:780px){ .analyzer-stats{ grid-template-columns:repeat(4, minmax(0,1fr)); } }
-.analyzer-stat{
-  border:1px solid var(--border-default); border-radius:var(--radius-lg);
-  padding:var(--space-5);
-  background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+.analyzer-stat{ padding:var(--space-1) var(--space-5); }
+/* Hairline separators between items; suppressed at each row's start. */
+.analyzer-stat + .analyzer-stat{ border-left:1px solid var(--border-default); }
+@media (max-width:779px){
+  .analyzer-stat{ padding-inline:var(--space-4); }
+  .analyzer-stat:nth-child(odd){ border-left:0; padding-left:0; }
 }
+@media (min-width:780px){ .analyzer-stat:first-child{ padding-left:0; } }
 .analyzer-stat__num{
   display:block; font-family:var(--font-display); font-weight:600; line-height:1;
   font-size:clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); letter-spacing:-0.03em;
@@ -1453,7 +1459,7 @@ section{ padding-block:var(--section-py); position:relative; }
 .analyzer-stat__num--text{ color:var(--accent-2-text); letter-spacing:0.02em; }
 .analyzer-stat__label{
   display:block; margin-top:var(--space-3); font-size:var(--text-small);
-  color:var(--text-muted); line-height:1.5;
+  color:var(--text-secondary); line-height:1.5; max-width:22ch;
 }
 
 /* ============================================================
@@ -1465,21 +1471,17 @@ section{ padding-block:var(--section-py); position:relative; }
    the verdict assembles. The code/sweep/threats are decorative (aria-hidden);
    the ledger carries all meaning and reads with no JS.
    ============================================================ */
+/* ONE window: a single bordered frame, one title bar, and a body split into the
+   source (left) and a docked analysis panel (right) by an internal seam. Reads as
+   one tool — an editor with its problems pane — not two cards. */
 .inspect{
-  display:grid; grid-template-columns:1fr; gap:var(--grid-gap);
-  align-items:start; max-width:1080px; margin-inline:auto;
-}
-@media (min-width:900px){
-  .inspect{ grid-template-columns:minmax(0,1.05fr) minmax(0,0.95fr); gap:var(--space-6); }
-}
-
-/* ---- LEFT: the code artifact ---- */
-.inspect__code{
-  position:relative; margin:0; overflow:hidden;
+  max-width:1080px; margin-inline:auto; overflow:hidden;
   border:1px solid var(--border-default); border-radius:var(--radius-lg);
   background:linear-gradient(180deg, var(--surface-1) 0%, var(--bg-base-2) 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.04);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.04), var(--shadow-sm);
 }
+
+/* Shared window chrome — spans the full frame width. */
 .inspect__chrome{
   display:flex; align-items:center; gap:var(--space-3);
   padding:var(--space-3) var(--space-4);
@@ -1493,6 +1495,16 @@ section{ padding-block:var(--section-py); position:relative; }
   margin-left:auto; color:var(--text-faint); letter-spacing:0.04em;
   text-transform:uppercase; font-size:10px;
 }
+
+/* Body: source | seam | analysis. Single column on mobile (seam becomes a
+   horizontal divider via the panel's top border). */
+.inspect__body{ display:grid; grid-template-columns:1fr; }
+@media (min-width:900px){
+  .inspect__body{ grid-template-columns:minmax(0,1.06fr) minmax(0,0.94fr); }
+}
+
+/* ---- LEFT: the source region (no own frame — it's part of the window) ---- */
+.inspect__code{ position:relative; margin:0; overflow:hidden; min-width:0; }
 
 /* The scan sweep — a band of light that travels down the code as it's analyzed.
    Positioned by JS via --scan-y (px from the top of the code body). */
@@ -1552,11 +1564,17 @@ section{ padding-block:var(--section-py); position:relative; }
 .cl.is-flagged .threat--glyph::after{ content:"⌫"; }
 
 /* ---- RIGHT: the findings ledger ---- */
+/* Docked analysis panel — a region of the window, not a card. The seam is its
+   leading edge: a left border on desktop, a top border when stacked on mobile.
+   A faint surface tint sets it apart from the darker code pane. */
 .inspect__panel{
   display:flex; flex-direction:column; gap:var(--space-2);
-  padding:var(--space-5); border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  padding:var(--space-5);
+  border-top:1px solid var(--border-default);
   background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+}
+@media (min-width:900px){
+  .inspect__panel{ border-top:0; border-left:1px solid var(--border-default); }
 }
 .inspect__panel-head{
   display:flex; align-items:baseline; justify-content:space-between; gap:var(--space-3);

@@ -534,7 +534,10 @@
           </p>
         </div>
 
-        <!-- Headline analyzer numbers -->
+        <!-- Headline analyzer numbers — a de-boxed inline stat row (hairline
+             separators, no cards) so the section doesn't read as a stack of
+             boxes. .analyzer-stats is local to this section, so this restyle
+             can't drift other sections' carded stats. -->
         <ul class="analyzer-stats reveal-group" aria-label="Code analyzer findings">
           <li class="analyzer-stat">
             <span class="analyzer-stat__num" data-count="72.8" data-sup="%" data-decimals="1">72.8<span class="analyzer-stat__sup">%</span></span>
@@ -554,28 +557,30 @@
           </li>
         </ul>
 
-        <!-- The inspection: the figure IS the artifact under analysis. A real-
-             looking vibe-coded auth file sits on the left, clean at a glance. As
-             the analyzer runs, a scan sweeps the code and HIDDEN THREATS SURFACE
-             in place — a hardcoded key, an injection sink, a zero-width GLASSWORM
-             character, a smuggled bundle import — each wired to a finding in the
-             ledger on the right. The eight analysis stages are real DOM content in
-             that ledger (readable with no JS); the code, sweep, and threat reveals
-             are decorative (aria-hidden). The ledger tells the same eight-stage
-             story the conveyor did, but now you SEE what each stage catches. -->
+        <!-- The inspection: the figure IS the artifact under analysis, drawn as a
+             SINGLE editor window — one frame, one title bar — with the source on
+             the left and a docked analysis panel on the right (an IDE with its
+             problems pane). As the analyzer runs, a scan sweeps the code and
+             HIDDEN THREATS SURFACE in place — a hardcoded key, an injection sink,
+             a zero-width GLASSWORM character, a smuggled bundle import — while the
+             docked panel resolves the eight analysis stages. The stages are real
+             DOM content (readable with no JS); the code, sweep, and threat reveals
+             are decorative (aria-hidden). One window, not two cards. -->
         <div class="inspect reveal" data-inspect>
 
-          <!-- LEFT: the artifact. A code editor panel. Threat tokens carry
-               data-threat (the ledger stage index they feed) and surface as the
-               sweep passes their line. aria-hidden — the ledger carries meaning. -->
-          <figure class="inspect__code" aria-hidden="true">
-            <figcaption class="inspect__chrome">
-              <span class="inspect__dots"><i></i><i></i><i></i></span>
-              <span class="inspect__file">auth.middleware.js</span>
-              <span class="inspect__lang">vibe-coded · unreviewed</span>
-            </figcaption>
-            <div class="inspect__scan" data-scan></div>
-            <pre class="inspect__pre"><code><span class="cl"><span class="ln">1</span><span class="k">import</span> jwt <span class="k">from</span> <span class="s">"jsonwebtoken"</span></span>
+          <!-- Shared window chrome — one title bar spanning the whole frame. -->
+          <div class="inspect__chrome" aria-hidden="true">
+            <span class="inspect__dots"><i></i><i></i><i></i></span>
+            <span class="inspect__file">auth.middleware.js</span>
+            <span class="inspect__lang">vibe-coded · unreviewed</span>
+          </div>
+
+          <div class="inspect__body">
+            <!-- LEFT: the source. Threat tokens carry data-threat (the stage they
+                 feed) and surface as the sweep passes their line. -->
+            <figure class="inspect__code" aria-hidden="true">
+              <div class="inspect__scan" data-scan></div>
+              <pre class="inspect__pre"><code><span class="cl"><span class="ln">1</span><span class="k">import</span> jwt <span class="k">from</span> <span class="s">"jsonwebtoken"</span></span>
 <span class="cl" data-line="2"><span class="ln">2</span><span class="k">import</span> <span class="threat" data-threat="2">"./vendor/analytics.min.js"</span></span>
 <span class="cl"><span class="ln">3</span></span>
 <span class="cl" data-line="4"><span class="ln">4</span><span class="k">const</span> API_KEY <span class="o">=</span> <span class="threat" data-threat="0"><span class="s">"sk_live_4e9a2f8c1b…"</span></span></span>
@@ -587,10 +592,10 @@
 <span class="cl"><span class="ln">10</span>}</span>
 <span class="cl"><span class="ln">11</span></span>
 <span class="cl" data-line="12"><span class="ln">12</span>app.<span class="fn">get</span>(<span class="s">"/admin"</span>, (req,res) <span class="o">=&gt;</span> <span class="threat" data-threat="3"><span class="fn">runQuery</span>(req.query.id)</span>)</span></code></pre>
-          </figure>
+            </figure>
 
-          <!-- RIGHT: the findings ledger. The eight real analysis stages; each
-               resolves to a finding as its threat surfaces (or reports clean). -->
+            <!-- RIGHT: the docked analysis panel. The eight real analysis stages;
+                 each resolves to a finding as its threat surfaces (or reads clean). -->
           <div class="inspect__panel">
             <p class="inspect__panel-head" aria-hidden="true">
               <span class="inspect__panel-title">Analysis</span>
@@ -686,6 +691,7 @@
               <span class="inspect__verdict-sub">5 confirmed · 2 attack chains · ready</span>
             </p>
           </div>
+          </div><!-- /.inspect__body -->
         </div>
 
         <div class="analyzer__cta reveal">
