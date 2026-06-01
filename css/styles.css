@@ -1423,11 +1423,17 @@ section{ padding-block:var(--section-py); position:relative; }
    CODE ANALYZER — second product. Glitch backdrop (low-text zone framing
    the pipeline), headline numbers, then the eight-stage pipeline conveyor.
    ============================================================ */
-.analyzer{ position:relative; isolation:isolate; overflow:hidden; }
+/* Match the section tone to its neighbours (both .section--alt = --bg-base-2)
+   so there's no flat-colour step at either seam, and feather the glitch edges to
+   the SAME tone over a long ramp so the texture emerges/dissolves gradually
+   instead of snapping on at a hard line. Edge-only feathering — the mid-section
+   band keeps its glitch opacity (the stat labels' AA contrast was verified
+   against that, leave it). */
+.analyzer{ position:relative; isolation:isolate; overflow:hidden; background:var(--bg-base-2); }
 .analyzer__bg{ position:absolute; inset:0; z-index:-2; background:#000; opacity:0.30; }
 .analyzer__bg-fade{
   position:absolute; inset:0; z-index:-1;
-  background:linear-gradient(180deg, var(--bg-base) 0%, rgba(5,6,10,0.86) 30%, rgba(5,6,10,0.86) 70%, var(--bg-base) 100%);
+  background:linear-gradient(180deg, var(--bg-base-2) 0%, rgba(5,6,10,0.86) 22%, rgba(5,6,10,0.86) 78%, var(--bg-base-2) 100%);
 }
 
 /* De-boxed stat row: numbers + labels separated by hairlines, no cards — so the
