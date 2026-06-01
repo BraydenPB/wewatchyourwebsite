@@ -1904,15 +1904,21 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 
 /* Instrument-bezel corner ticks — small lime L-brackets at each corner so the
-   panel reads as a piece of monitoring hardware, not a rounded web card. */
+   panel reads as a piece of monitoring hardware. The outer corner of each
+   bracket is rounded CONCENTRIC with the container: radius = container radius
+   (--radius-lg) − inset (8px), so the bracket arcs parallel to the panel's
+   rounded edge instead of cutting a hard 90° across it. --netops-corner-r keeps
+   that relationship in one place if either value changes. */
+.netops{ --netops-corner-r:calc(var(--radius-lg) - 8px); }
 .netops__corner{
-  position:absolute; z-index:3; width:11px; height:11px; pointer-events:none;
-  border:0 solid var(--accent-border);
+  position:absolute; z-index:3; width:14px; height:14px; pointer-events:none;
+  border:0 solid var(--accent-border); /* lifted to 0.55 lime below for presence */
+  border-color:rgba(105,255,18,0.55);
 }
-.netops__corner--tl{ top:8px; left:8px; border-top-width:1px; border-left-width:1px; }
-.netops__corner--tr{ top:8px; right:8px; border-top-width:1px; border-right-width:1px; }
-.netops__corner--bl{ bottom:8px; left:8px; border-bottom-width:1px; border-left-width:1px; }
-.netops__corner--br{ bottom:8px; right:8px; border-bottom-width:1px; border-right-width:1px; }
+.netops__corner--tl{ top:8px; left:8px; border-top-width:1px; border-left-width:1px; border-top-left-radius:var(--netops-corner-r); }
+.netops__corner--tr{ top:8px; right:8px; border-top-width:1px; border-right-width:1px; border-top-right-radius:var(--netops-corner-r); }
+.netops__corner--bl{ bottom:8px; left:8px; border-bottom-width:1px; border-left-width:1px; border-bottom-left-radius:var(--netops-corner-r); }
+.netops__corner--br{ bottom:8px; right:8px; border-bottom-width:1px; border-right-width:1px; border-bottom-right-radius:var(--netops-corner-r); }
 
 .netops__head{
   display:flex; align-items:center; justify-content:space-between;
