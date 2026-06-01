@@ -350,6 +350,12 @@ section{ padding-block:var(--section-py); position:relative; }
   transition:background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
 }
 .site-header.is-scrolled{ background:rgba(5,6,10,0.92); border-bottom-color:var(--border-default); }
+/* While the mobile menu is open, the top bar sits above the opaque panel, so
+   its translucent blur over the (scroll-locked) hero reads as stray tint.
+   Make it fully solid so the brand + close button strip looks deliberate, with
+   the panel's accent border landing at 64px as a clean divider. Placed AFTER
+   .is-scrolled (equal specificity) so it wins when you open after scrolling. */
+.site-header:has(#mobile-menu.is-open){ background:var(--bg-base); border-bottom-color:var(--accent-border); }
 
 .nav{
   display:flex; align-items:center; gap:var(--space-5);
@@ -441,9 +447,12 @@ section{ padding-block:var(--section-py); position:relative; }
 /* Backdrop scrim — dims + blurs the sliver of page beside/below the panel,
    and is the click-to-dismiss surface. Uses an explicit height (not bottom:0)
    so it escapes the header's backdrop-filter containing block — same trick the
-   panel relies on — and covers the full viewport instead of clamping to 64px. */
+   panel relies on. Starts at 64px (below the header bar) so the top strip —
+   brand + close button — stays clean instead of being dimmed/blurred by the
+   scrim painting over it. Explicit height, NOT bottom:0 (which would clamp to
+   the 64px containing block and collapse — the same backdrop-filter gotcha). */
 .mobile-menu__scrim{
-  position:absolute; top:0; left:0; right:0; height:100dvh;
+  position:absolute; top:64px; left:0; right:0; height:calc(100dvh - 64px);
   background:rgba(3,4,8,0.62);
   -webkit-backdrop-filter:blur(6px) saturate(120%);
           backdrop-filter:blur(6px) saturate(120%);
