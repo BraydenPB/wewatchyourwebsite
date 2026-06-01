@@ -28,7 +28,7 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/styles.css" />
 </head>
@@ -243,12 +243,15 @@
          ============================================================ -->
     <section id="wordpress" aria-labelledby="services-title">
       <div class="container">
-        <div class="section-head reveal">
-          <h2 class="section-title" id="services-title">Your WordPress site deserves more than a firewall.</h2>
-          <p class="section-lede">
-            Most security plugins react after the damage is done. We built a detection and remediation
-            stack iterated against real attacks for 18 years — at the infrastructure level, not the
-            plugin level. We find it, remove it, explain how it happened, and stop it from happening again.
+        <div class="section-head services-head reveal">
+          <div class="services-head__lead">
+            <p class="services-head__label">WordPress Security · what we actually do</p>
+            <h2 class="section-title services-head__title" id="services-title">Your WordPress site deserves more than a&nbsp;firewall.</h2>
+          </div>
+          <p class="section-lede services-head__lede">
+            A firewall guesses at the door. We watch what gets through it. Every site runs the same
+            four-pass loop — catch the threat, clean it, trace it back to the way in, and seal that way
+            in for good. Here is each pass, running live.
           </p>
         </div>
 
@@ -1082,7 +1085,7 @@
         <div class="final-cta__inner reveal">
           <h2 class="final-cta__title" id="final-cta-title">Stop reacting. Start watching.</h2>
           <p class="final-cta__body">
-            Talk to a real security expert — not a sales rep — and get your site monitored, cleaned, and
+            Talk to a real security expert — <em class="final-cta__aside">not a sales rep</em> — and get your site monitored, cleaned, and
             protected at the infrastructure level, or run your AI-generated code through the eight-stage
             analyzer. No per-clean fees.
           </p>

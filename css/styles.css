@@ -239,6 +239,32 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 .section-head--center .section-lede{ margin-inline:auto; }
 
+/* Services head — the lone NON-centered section head, deliberately asymmetric so
+   it doesn't add to the run of centered heads and it mirrors the two-column
+   console grid directly below. Heading + a mono handoff label sit left, the lede
+   sits right and fills what was dead top-right space over the console. The mono
+   label parallels the console eyebrow ("Continuous scan · 4 passes") — the same
+   left-says-section / right-says-artifact device as the FAQ rail. Overrides the
+   global 640px cap (sized for a single-column block) so the head spans the grid. */
+.services-head{ max-width:none; }
+/* Match the console grid below exactly (same 1.35/1 ratio, gap and 900px break)
+   so the lede's left edge lands on the console rail's left edge — the head reads
+   as the same two columns, just one row up. */
+@media (min-width:900px){
+  .services-head{
+    display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+    gap:clamp(1.5rem,3vw,3rem); align-items:end;
+  }
+  /* Lede baseline-aligns to the heading's last line, not floated mid-air. */
+  .services-head__lede{ margin-top:0; max-width:46ch; }
+}
+.services-head__label{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--text-faint);
+  margin-bottom:var(--space-4);
+}
+.services-head__title{ max-width:none; text-wrap:balance; }
+
 /* Solid lime accent on display words — gradient-fill text reads as an AI tell.
    Weight + the display face carry the emphasis, not a gradient. */
 .text-grad{ color:var(--accent); }
@@ -1161,6 +1187,7 @@ section{ padding-block:var(--section-py); position:relative; }
 .faq-intro__lede{
   margin-top:var(--space-5);
   font-size:var(--text-body-lg); line-height:1.6; color:var(--text-muted);
+  font-weight:300;
   max-width:34ch; text-wrap:pretty;
 }
 /* Escalation card — deliberately NOT another data-card. The log / ledger /
@@ -1343,6 +1370,7 @@ section{ padding-block:var(--section-py); position:relative; }
 .final-cta__inner .eyebrow{ justify-content:center; }
 .final-cta__title{ font-size:var(--text-h1); margin-block:0 var(--space-5); text-wrap:balance; }
 .final-cta__body{ font-size:var(--text-body-lg); color:var(--text-secondary); margin-bottom:var(--space-7); }
+.final-cta__aside{ font-weight:300; font-style:italic; }
 .final-cta__cta{ display:flex; flex-wrap:wrap; gap:var(--space-4); justify-content:center; }
 .final-cta .proof-line{ justify-content:center; }
 
