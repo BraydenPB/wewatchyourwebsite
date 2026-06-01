@@ -752,22 +752,34 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 @media (max-width:560px){ .pass__result{ display:none; } }
 
-/* progress bar under each pass — fills while that pass is the active auto-cycle target */
+/* ---- cycle clock (intentionally invisible) ----
+   The active row's fill animation is the SINGLE cycle clock: its `animationend`
+   (pass-fill, --pass-dwell long) is what advances the auto-cycle in main.js — there
+   is no JS timer behind it. We removed the visible progress bar (it read as four
+   competing bars / distracting), but the animated element MUST keep running as the
+   clock carrier. So: zero footprint, fully transparent — never `display:none`
+   (that would suppress `animationend` and freeze the cycle). Progress is now
+   communicated purely by the breathing scan dot + the soft row hand-off. */
 .pass__bar{
-  position:absolute; left:0; right:0; bottom:-1px; height:2px; grid-column:1 / -1;
-  background:transparent; overflow:hidden;
+  position:absolute; width:0; height:0; overflow:hidden; pointer-events:none;
 }
 .pass__bar-fill{
-  display:block; height:100%; width:100%; transform:scaleX(0); transform-origin:left;
-  background:linear-gradient(90deg, var(--accent), var(--accent-2, var(--accent)));
+  display:block; width:1px; height:1px; transform:scaleX(0); transform-origin:left;
+  background:transparent; opacity:0;
 }
 
-/* ---- ACTIVE pass: the row being scanned right now (visual + aria-current) ---- */
+/* ---- ACTIVE pass: the row being scanned right now (visual + aria-current) ----
+   With the progress bar gone, the active highlight IS the cycle's only progress
+   signal — so the hand-off from one row to the next must read as a calm fade, not
+   a snap. The left accent edge is always present but opacity-0 until active, so it
+   cross-fades in/out as the scan moves down the list. */
 .pass-item.is-active .pass{ color:var(--text-primary); background:var(--surface-inset); }
-.pass-item.is-active::before{
+.pass-item::before{
   content:""; position:absolute; left:0; top:0; bottom:0; width:2px; z-index:2;
   background:linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent) 30%, transparent));
+  opacity:0; transition:opacity var(--dur-slow) var(--ease-out);
 }
+.pass-item.is-active::before{ opacity:1; }
 .pass-item.is-active .pass__num{ opacity:0; }
 .pass-item.is-active .pass__indicator{
   opacity:1; transform:scale(1); background:var(--accent);
@@ -776,31 +788,10 @@ section{ padding-block:var(--section-py); position:relative; }
 .pass-item.is-active .pass__verb{ color:var(--text-accent); }
 .pass-item.is-active .pass__result-state{ opacity:1; height:auto; color:var(--text-accent); }
 .pass-item.is-active .pass__result-value{ color:var(--text-primary); }
-/* The fill ALWAYS animates over --pass-dwell — its animationend is the auto-cycle
-   clock (js/main.js). But the user found the always-visible lime line too prominent,
-   so the bar is hidden during passive cycling and revealed only on hover/focus of
-   the console (when the user is actually deciding whether to pause here). We hide via
-   OPACITY, never display/visibility — the animation must keep running so the clock
-   keeps firing. The track + fill fade in together; on reveal the fill shows the live
-   frozen progress of the active scan (hover pauses the cycle), reading as "paused
-   here". */
-.pass-item.is-active .pass__bar{
-  background:var(--border-subtle);
-  opacity:0; transition:opacity var(--dur-base) var(--ease-out);
-}
-/* fill animates over the auto-cycle interval; paused/instant per JS + reduced-motion.
-   The lime fill is the prominent part the user saw, so it carries its OWN opacity
-   hide/reveal — a parent opacity:0 on .pass__bar does NOT hide it because the running
-   transform animation promotes the fill to its own compositing layer. Opacity only;
-   the transform animation (hence animationend / the cycle clock) keeps running. */
+/* the invisible clock fill animates over the auto-cycle interval; paused/instant per JS + reduced-motion */
 .pass-item.is-active .pass__bar-fill{
   animation:pass-fill var(--pass-dwell, 5200ms) linear forwards;
-  opacity:0; transition:opacity var(--dur-base) var(--ease-out);
 }
-.console:hover .pass-item.is-active .pass__bar,
-.console:focus-within .pass-item.is-active .pass__bar,
-.console:hover .pass-item.is-active .pass__bar-fill,
-.console:focus-within .pass-item.is-active .pass__bar-fill{ opacity:1; }
 .console[data-paused="true"] .pass-item.is-active .pass__bar-fill{ animation-play-state:paused; }
 .console[data-paused="true"] .pass-item.is-active .pass__indicator{ animation-play-state:paused; }
 @keyframes pass-fill{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
