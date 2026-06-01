@@ -1361,6 +1361,14 @@ body::after{
   -webkit-mask-image:radial-gradient(120% 140% at 30% 35%, #000 0%, #000 42%, transparent 78%);
   mask-image:radial-gradient(120% 140% at 30% 35%, #000 0%, #000 42%, transparent 78%);
 }
+/* On phones the heading block sits near the viewport edge, so the -1.5rem
+   horizontal bleed pokes a few px past the right edge and gives the page a
+   small horizontal drag. Drop the side bleed to 0 there (keep the vertical
+   bleed) — fixing it at the source rather than clipping an ancestor, which
+   would break the sticky watch-console + header pins below it. */
+@media (max-width:639px){
+  .section-head__terminal{ inset:-1.25rem 0; }
+}
 .faulty-terminal__canvas{ display:block; width:100%; height:100%; }
 @media (prefers-reduced-motion: reduce){
   /* static frame already; trim opacity further so it's pure texture */
