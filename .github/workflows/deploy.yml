@@ -1,0 +1,37 @@
+name: Deploy to Cloudflare Pages
+
+# Auto-deploy the allowlisted static build on every push to main.
+# Reuses deploy.js (the same allowlist + forbidden-path safety net used locally),
+# so CI can never publish memory/, configs, or secrets even if PUBLISH is edited.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {} # allow manual runs from the Actions tab
+
+# Cancel an in-flight deploy if a newer commit lands, so live always reflects
+# the latest push rather than whichever job happens to finish last.
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install Wrangler
+        run: npm install --no-save wrangler@4
+
+      - name: Build and deploy
+        run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
