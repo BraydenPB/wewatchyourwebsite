@@ -971,7 +971,17 @@ section{ padding-block:var(--section-py); position:relative; }
   position:relative; width:100%; max-width:340px; aspect-ratio:1; margin-inline:auto;
 }
 @media (min-width:960px){ .monitor__radar{ max-width:440px; } }
-.scan-radar__canvas{ display:block; }
+/* Soft atmosphere behind the dial so it sits on something instead of floating
+   in the void — reuses the page's lime+teal radial-glow vocabulary. Bleeds
+   well past the dial (it's decorative) and sits BEHIND the transparent canvas. */
+.monitor__radar::before{
+  content:""; position:absolute; z-index:0; pointer-events:none;
+  inset:-18%; border-radius:50%;
+  background:
+    radial-gradient(closest-side, rgba(105,255,18,0.14), rgba(105,255,18,0.05) 45%, transparent 72%),
+    radial-gradient(closest-side at 64% 70%, rgba(26,166,183,0.10), transparent 60%);
+}
+.scan-radar__canvas{ display:block; position:relative; z-index:1; }
 /* "live" readout under the dial */
 .monitor__readout{
   display:flex; align-items:center; gap:var(--space-3); margin-top:var(--space-4);
@@ -984,6 +994,27 @@ section{ padding-block:var(--section-py); position:relative; }
 @media (prefers-reduced-motion: reduce){ .monitor__pulse{ animation:none; } }
 .monitor__readout-num{ font-size:var(--text-h5); font-weight:600; color:var(--text-primary); font-feature-settings:"tnum"; }
 .monitor__readout-label{ font-size:var(--text-xs); letter-spacing:0.04em; text-transform:uppercase; color:var(--text-muted); }
+
+/* Faulty-terminal CRT field behind the heading block. Low opacity + edge
+   mask so it reads as atmosphere, never as noise behind the words. The
+   heading + lede are lifted above it via z-index. */
+.section-head--terminal{ position:relative; isolation:isolate; }
+.section-head--terminal > .section-title,
+.section-head--terminal > .section-lede{ position:relative; z-index:1; }
+.section-head__terminal{
+  position:absolute; z-index:0; pointer-events:none;
+  /* bleed past the text box so the CRT field fills the heading area */
+  inset:-1.25rem -1.5rem;
+  opacity:0.16;
+  /* fade the field out toward the edges so it never reads as a hard panel */
+  -webkit-mask-image:radial-gradient(120% 140% at 30% 35%, #000 0%, #000 42%, transparent 78%);
+  mask-image:radial-gradient(120% 140% at 30% 35%, #000 0%, #000 42%, transparent 78%);
+}
+.faulty-terminal__canvas{ display:block; width:100%; height:100%; }
+@media (prefers-reduced-motion: reduce){
+  /* static frame already; trim opacity further so it's pure texture */
+  .section-head__terminal{ opacity:0.10; }
+}
 
 /* ============================================================
    STATS GRID (inside the monitor body)

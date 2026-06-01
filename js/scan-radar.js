@@ -184,6 +184,15 @@
       raf = 0;
     }
 
+    // Re-measure + repaint a static frame when paused/reduced (the running
+    // loop repaints itself). Used by both ResizeObserver and the resize fallback.
+    function remeasure() {
+      resize();
+      if (prefersReduced || !running) {
+        render(running, performance.now ? performance.now() : 0);
+      }
+    }
+
     resize();
     if (prefersReduced) {
       render(false, 0); // single static frame
@@ -204,14 +213,24 @@
       play();
     }
 
-    var rt = 0;
-    window.addEventListener("resize", function () {
-      clearTimeout(rt);
-      rt = setTimeout(function () {
-        resize();
-        if (prefersReduced || !running) render(running, performance.now ? performance.now() : 0);
-      }, 150);
-    }, { passive: true });
+    // Keep the canvas square to its host on EVERY box change — not just window
+    // resizes. On mobile, the host's final size often settles after our init
+    // measurement (and no `resize` event fires), which left the canvas
+    // mis-sized/"squished" until a manual refresh. ResizeObserver fires on
+    // observe() and on each subsequent box change, fixing both cases.
+    if ("ResizeObserver" in window) {
+      var rt = 0;
+      new ResizeObserver(function () {
+        clearTimeout(rt);
+        rt = setTimeout(remeasure, 100);
+      }).observe(host);
+    } else {
+      var rtw = 0;
+      window.addEventListener("resize", function () {
+        clearTimeout(rtw);
+        rtw = setTimeout(remeasure, 150);
+      }, { passive: true });
+    }
   }
 
   Array.prototype.forEach.call(hosts, function (host) { new ScanRadar(host); });
