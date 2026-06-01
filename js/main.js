@@ -57,19 +57,28 @@
     var readoutStatus = root.querySelector("[data-readout-status]");
     if (!mounts.length || !tabs.length) return;
 
-    var DWELL = 5200; // ms per pass — keep in sync with --pass-dwell
+    // ms per pass is the CSS --pass-dwell on .pass__bar-fill; that animation's
+    // completion (animationend) is the single cycle clock — no JS duplicate.
     var anims = [];
     var active = 0;
     var toggle = root.querySelector("[data-console-toggle]");
     var toggleLabel = root.querySelector("[data-console-toggle-label]");
     var canHover = typeof matchMedia === "function" && matchMedia("(hover: hover)").matches;
 
-    var timer = null;
     var hoverPaused = false; // transient: pointer/focus inside the console
     var userPaused = false;  // sticky: user pressed the toggle (or tapped on touch)
-    var visible = false;
+    // Two separate visibility concerns — collapsing them is what froze the bars on
+    // desktop. The PASSES list is much taller than the viewport, so scrolling down to
+    // read the lower rows pushes the Lottie SCREEN off the top while the bars stay in
+    // view. Gate the cycle on the passes being visible (what the user watches), and
+    // gate only the Lottie's play/pause on the screen being visible (a perf concern).
+    var cycleVisible = false;  // the passes list (bars + highlight) is on screen
+    var screenVisible = false; // the Lottie panel is on screen
 
-    function isHalted() { return hoverPaused || userPaused; }
+    // Halted = the cycle must not progress: user/hover pause OR the passes are off
+    // screen. When halted the bar's CSS fill freezes in place (animation-play-state via
+    // data-paused) rather than racing to scaleX(1) and firing a dropped animationend.
+    function isHalted() { return hoverPaused || userPaused || !cycleVisible; }
 
     function load(i) {
       var el = mounts[i];
@@ -86,7 +95,7 @@
       anims[i].addEventListener("DOMLoaded", function () {
         if (prefersReduced) {
           anims[i].goToAndStop(Math.floor(anims[i].totalFrames * 0.55), true);
-        } else if (i === active && visible && !isHalted()) {
+        } else if (i === active && screenVisible && !hoverPaused && !userPaused) {
           anims[i].play();
         }
       });
@@ -107,7 +116,7 @@
       if (anims[active]) anims[active].stop();
       active = i;
       load(active);
-      if (anims[active] && !prefersReduced && visible && !isHalted()) anims[active].play();
+      if (anims[active] && !prefersReduced && screenVisible && !hoverPaused && !userPaused) anims[active].play();
       if (readoutLabel) readoutLabel.textContent = READOUTS[i].label;
       if (readoutStatus) readoutStatus.textContent = READOUTS[i].status;
       restartBar();
@@ -124,7 +133,17 @@
       fill.style.animation = "";
     }
 
+    // The progress bar's CSS fill (pass-fill, --pass-dwell long) IS the cycle
+    // clock: when it finishes, advance to the next pass. Hover/user pauses freeze
+    // the fill via animation-play-state (data-paused), which simply delays the
+    // animationend — it is never reset, so repeated pause/resume can't wedge the
+    // cycle. One clock, no setInterval to drift against or clear mid-flight.
     function advance() { select((active + 1) % tabs.length); }
+    passes.addEventListener("animationend", function (e) {
+      if (e.animationName !== "pass-fill") return;
+      if (prefersReduced || isHalted()) return; // isHalted() already covers off-screen
+      advance();
+    });
 
     // Staggered "scan sweep" reveal: panels open one-by-one on scroll-in, then
     // STAY open (accumulate) so all copy is readable without a click. Fast
@@ -141,25 +160,18 @@
       });
     }
 
-    function startCycle() {
-      if (prefersReduced || isHalted() || !visible || timer) return;
-      restartBar();
-      timer = window.setInterval(advance, DWELL);
-    }
-    function stopCycle() {
-      if (timer) { window.clearInterval(timer); timer = null; }
-    }
-    // Apply the current halt state: stop/pause when halted, resume otherwise.
+    // Apply state for both visibility concerns:
+    //  • the BAR/cycle freezes via data-paused → animation-play-state when isHalted()
+    //    (user/hover pause or the passes scrolled out of view). It continues in place
+    //    on resume — animationend drives the cycle, no interval to start or clear.
+    //  • the LOTTIE plays only while its screen panel is on-screen and not user/hover
+    //    paused — independent of cycle visibility, purely a render-cost concern.
     function applyHalt() {
-      var halted = isHalted();
-      root.setAttribute("data-paused", halted ? "true" : "false");
-      if (halted) {
-        stopCycle();
-        if (anims[active]) anims[active].pause();
-      } else {
-        if (anims[active] && !prefersReduced && visible) anims[active].play();
-        startCycle();
-      }
+      root.setAttribute("data-paused", isHalted() ? "true" : "false");
+      if (!anims[active]) return;
+      var lottiePlaying = screenVisible && !prefersReduced && !hoverPaused && !userPaused;
+      if (lottiePlaying) anims[active].play();
+      else anims[active].pause();
     }
     function setHoverPaused(state) {
       // a sticky user-pause overrides transient hover state
@@ -208,27 +220,46 @@
       if (!root.contains(document.activeElement)) setHoverPaused(false);
     });
 
-    // visibility: only run while on screen
-    function onVisible(isVisible) {
-      visible = isVisible;
-      if (isVisible) {
+    // The passes list scrolled in/out of view → freeze/resume the cycle. The bar
+    // continues in place on resume; on the very first reveal restart it once (the
+    // fill may have raced to scaleX(1) during initial page load while off-screen).
+    var everShown = false;
+    function onCycleVisible(isVisible) {
+      cycleVisible = isVisible;
+      if (isVisible && !everShown) {
+        everShown = true;
         load(active);
-        if (anims[active] && !prefersReduced && !isHalted()) anims[active].play();
-        startCycle();
-      } else {
-        stopCycle();
-        if (anims[active]) anims[active].pause();
+        if (!prefersReduced && !isHalted()) restartBar();
       }
+      applyHalt();
+    }
+    // The Lottie panel scrolled in/out of view → play/pause the animation (perf only).
+    function onScreenVisible(isVisible) {
+      screenVisible = isVisible;
+      if (isVisible) load(active);
+      applyHalt();
     }
 
     // preload the active pass right away; lazily warm the rest after
     load(active);
 
     if ("IntersectionObserver" in window) {
-      // 1) play/pause the Lottie based on the screen being on-screen
+      // 1a) CYCLE clock: gate on the PASSES list (the bars + highlight the user
+      //     watches). It is taller than the viewport, so use isIntersecting — keep
+      //     cycling whenever ANY part of the list is on screen. This is the fix for
+      //     "bars freeze when I scroll down to read the passes": the cycle no longer
+      //     depends on the Lottie screen, which scrolls off the top first.
+      var cycleIo = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) { onCycleVisible(entry.isIntersecting); });
+      }, { rootMargin: "0px", threshold: 0 });
+      cycleIo.observe(passes);
+
+      // 1b) LOTTIE render: gate on the screen panel. Use a ratio threshold so we only
+      //     pay to animate it while it's meaningfully on screen — purely a perf knob,
+      //     decoupled from the cycle above.
       var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) { onVisible(entry.isIntersecting); });
-      }, { rootMargin: "0px", threshold: 0.25 });
+        entries.forEach(function (entry) { onScreenVisible(entry.intersectionRatio >= 0.25); });
+      }, { rootMargin: "0px", threshold: [0, 0.25, 0.5] });
       io.observe(screen || root);
 
       // 2) fire the scan-sweep reveal only when the RAIL itself scrolls into
@@ -242,7 +273,9 @@
       }, { rootMargin: "0px 0px -20% 0px", threshold: 0.15 });
       revealIo.observe(passes);
     } else {
-      onVisible(true);
+      // No IntersectionObserver: assume on-screen and run.
+      onScreenVisible(true);
+      onCycleVisible(true);
     }
   }
 
