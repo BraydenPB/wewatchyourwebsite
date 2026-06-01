@@ -304,8 +304,19 @@
 
     var main = document.querySelector("main");
     var footer = document.querySelector(".site-footer");
+    var scrim = menu.querySelector("[data-menu-scrim]");
+    var firstLink = menu.querySelector(".mobile-menu__link");
+    var revealTimer = null;
 
     function setOpen(open) {
+      if (open) {
+        // Lift `hidden` (display:none) BEFORE flipping the open class so the
+        // panel/scrim transitions actually run from their closed state.
+        menu.hidden = false;
+        // Force a reflow so the just-shown element animates instead of jumping.
+        // eslint-disable-next-line no-unused-expressions
+        menu.offsetHeight;
+      }
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
       menu.classList.toggle("is-open", open);
@@ -314,23 +325,55 @@
       // menu out of the tab order (and the a11y tree) while it is open.
       if (main) main.inert = open;
       if (footer) footer.inert = open;
+
+      if (revealTimer) { clearTimeout(revealTimer); revealTimer = null; }
+      if (open) {
+        // Move focus into the menu for keyboard users. The panel is
+        // visibility:hidden until the open transition runs, and hidden
+        // elements aren't focusable — so wait for the panel to settle
+        // (a hair past --dur-slow) before focusing the first link.
+        if (firstLink) {
+          revealTimer = setTimeout(function () {
+            if (toggle.getAttribute("aria-expanded") === "true") {
+              firstLink.focus({ preventScroll: true });
+            }
+          }, 300);
+        }
+      } else {
+        // Re-apply `hidden` once the close transition has settled, so the
+        // collapsed menu can't trap pointer/scroll events behind the page.
+        revealTimer = setTimeout(function () {
+          if (toggle.getAttribute("aria-expanded") !== "true") menu.hidden = true;
+        }, 320);
+      }
     }
+
+    function close() {
+      setOpen(false);
+      toggle.focus();
+    }
+
     toggle.addEventListener("click", function () {
       setOpen(toggle.getAttribute("aria-expanded") !== "true");
     });
+    // Tapping a nav link or CTA navigates and closes (no focus return — the
+    // user is leaving the menu by intent).
     menu.addEventListener("click", function (e) {
       if (e.target.closest("a")) setOpen(false);
     });
+    // Backdrop dismiss — return focus to the toggle, like Escape.
+    if (scrim) scrim.addEventListener("click", close);
+
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
-        setOpen(false);
-        toggle.focus();
+        close();
       }
     });
-    // Close if viewport grows past the mobile breakpoint.
+    // Close if viewport grows past the mobile breakpoint (keep 768px synced
+    // with the CSS hide breakpoint + header anchor).
     var mq = matchMedia("(min-width: 768px)");
     (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(function () {
-      if (mq.matches) setOpen(false);
+      if (mq.matches && toggle.getAttribute("aria-expanded") === "true") close();
     });
   }
 

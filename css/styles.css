@@ -382,44 +382,246 @@ section{ padding-block:var(--section-py); position:relative; }
 
 .nav__cta{ display:none; align-items:center; gap:var(--space-3); margin-inline-start:auto; }
 
+/* ---- Toggle: animated hamburger → X ---------------------------------
+   A 44px tap target; three bars of staggered width (the resting state reads
+   as a deliberate glyph, not a generic icon). On open they equalize and the
+   outer two rotate into an X while the middle collapses. Bars carry a lime
+   tip-glow on hover/open to tie into the brand accent. */
 .nav__toggle{
+  position:relative; z-index:calc(var(--z-overlay) + 1);
   display:inline-flex; align-items:center; justify-content:center;
   width:44px; height:44px; margin-inline-start:auto; padding:0;
   background:transparent; border:1px solid var(--border-default);
   border-radius:var(--radius-sm); color:var(--text-primary); cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
   transition:border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
 }
-.nav__toggle:hover{ border-color:var(--accent-border); }
+.nav__toggle:hover{ border-color:var(--accent-border); background:var(--accent-soft); }
+.nav__toggle:active{ transform:scale(0.94); }
 .nav__toggle:focus-visible{ box-shadow:var(--focus-ring); }
-.nav__toggle .icon-close{ display:none; }
-.nav__toggle[aria-expanded="true"] .icon-open{ display:none; }
-.nav__toggle[aria-expanded="true"] .icon-close{ display:block; }
+.nav__toggle[aria-expanded="true"]{ border-color:var(--accent-border); background:var(--accent-soft); }
 
-/* Mobile menu panel */
+.nav__toggle-bars{
+  position:relative; display:flex; flex-direction:column;
+  align-items:flex-end; justify-content:center; gap:5px;
+  width:22px; height:16px;
+}
+.nav__toggle-bar{
+  display:block; height:2px; border-radius:var(--radius-pill);
+  background:var(--text-primary);
+  transition:width var(--dur-base) var(--ease-out),
+             transform var(--dur-slow) var(--ease-out),
+             opacity var(--dur-fast) var(--ease-out),
+             background var(--dur-base) var(--ease-out);
+}
+.nav__toggle-bar:nth-child(1){ width:22px; }
+.nav__toggle-bar:nth-child(2){ width:15px; }
+.nav__toggle-bar:nth-child(3){ width:18px; }
+.nav__toggle:hover .nav__toggle-bar,
+.nav__toggle[aria-expanded="true"] .nav__toggle-bar{ background:var(--accent); }
+.nav__toggle:hover .nav__toggle-bar:nth-child(2),
+.nav__toggle:hover .nav__toggle-bar:nth-child(3){ width:22px; }
+/* Morph to X: equalize widths, collapse the middle, rotate the outer pair
+   about the bars' shared center (gap 5px → ±7px travel to meet). */
+.nav__toggle[aria-expanded="true"] .nav__toggle-bar{ width:22px; }
+.nav__toggle[aria-expanded="true"] .nav__toggle-bar:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.nav__toggle[aria-expanded="true"] .nav__toggle-bar:nth-child(2){ opacity:0; transform:scaleX(0); }
+.nav__toggle[aria-expanded="true"] .nav__toggle-bar:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+/* ---- Mobile menu: full-coverage "security console" drawer ------------
+   Outer element spans the whole viewport so the scrim can dim the page; the
+   inner .mobile-menu__panel is the opaque sheet anchored below the 64px
+   header. Structurally opaque (solid --bg-base) so nothing bleeds through. */
 .mobile-menu{
-  position:fixed; inset:64px 0 0; z-index:var(--z-overlay);
+  position:fixed; inset:0; z-index:var(--z-overlay);
+  display:block; pointer-events:none;
+}
+.mobile-menu[hidden]{ display:none; }
+
+/* Backdrop scrim — dims + blurs the sliver of page beside/below the panel,
+   and is the click-to-dismiss surface. Uses an explicit height (not bottom:0)
+   so it escapes the header's backdrop-filter containing block — same trick the
+   panel relies on — and covers the full viewport instead of clamping to 64px. */
+.mobile-menu__scrim{
+  position:absolute; top:0; left:0; right:0; height:100dvh;
+  background:rgba(3,4,8,0.62);
+  -webkit-backdrop-filter:blur(6px) saturate(120%);
+          backdrop-filter:blur(6px) saturate(120%);
+  opacity:0; transition:opacity var(--dur-slow) var(--ease-out);
+}
+.mobile-menu.is-open{ pointer-events:auto; }
+.mobile-menu.is-open .mobile-menu__scrim{ opacity:1; }
+
+/* The opaque panel. Anchored under the header; fills to the viewport bottom
+   on tall menus (overflow scrolls). Slides down + fades from behind the
+   header bar. */
+.mobile-menu__panel{
+  position:absolute; top:64px; left:0; right:0;
+  max-height:calc(100dvh - 64px);
+  display:flex; flex-direction:column;
+  padding:var(--space-5) var(--gutter)
+          calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
   background:var(--bg-base);
-  border-top:1px solid var(--border-subtle);
-  padding:var(--space-6) var(--gutter) var(--space-8);
-  display:flex; flex-direction:column; gap:var(--space-2);
-  transform:translateX(100%); visibility:hidden;
-  transition:transform var(--dur-slow) var(--ease-out), visibility var(--dur-slow);
-  overflow-y:auto;
+  border-top:1px solid var(--accent-border);
+  box-shadow:0 24px 60px -12px rgba(0,0,0,0.7), var(--glow-lime-sm);
+  overflow-y:auto; overscroll-behavior:contain;
+  -webkit-tap-highlight-color:transparent;
+  transform:translateY(-12px); opacity:0; visibility:hidden;
+  transition:transform var(--dur-slow) var(--ease-out),
+             opacity var(--dur-slow) var(--ease-out),
+             visibility var(--dur-slow);
 }
-.mobile-menu.is-open{ transform:translateX(0); visibility:visible; }
+.mobile-menu.is-open .mobile-menu__panel{ transform:translateY(0); opacity:1; visibility:visible; }
+
+/* Faint scanline + hairline-grid texture, masked to fade downward — the same
+   ops-console language used across the site, kept very low contrast. */
+.mobile-menu__texture{
+  position:absolute; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(80% 50% at 100% 0%, rgba(105,255,18,0.06), transparent 60%),
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size:auto, 100% 44px, 44px 100%;
+  -webkit-mask-image:linear-gradient(180deg, #000 0%, transparent 85%);
+          mask-image:linear-gradient(180deg, #000 0%, transparent 85%);
+}
+/* Keep real content above the texture. */
+.mobile-menu__status,
+.mobile-menu__list,
+.mobile-menu__cta,
+.mobile-menu__foot{ position:relative; z-index:1; }
+
+/* Status strip */
+.mobile-menu__status{
+  display:flex; align-items:center; gap:var(--space-2);
+  margin:0 0 var(--space-4);
+  font-family:var(--font-mono); font-size:var(--text-xs);
+  letter-spacing:0.08em; text-transform:uppercase;
+}
+.mobile-menu__status-dot{
+  width:7px; height:7px; border-radius:var(--radius-pill);
+  background:var(--accent); box-shadow:0 0 8px var(--accent);
+  animation:menu-pulse 2.4s var(--ease-in-out) infinite;
+}
+.mobile-menu__status-k{ color:var(--text-secondary); }
+.mobile-menu__status-v{
+  margin-inline-start:auto; color:var(--text-faint);
+  font-size:0.625rem; letter-spacing:0.06em;
+}
+@keyframes menu-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.35; } }
+
+/* Nav manifest */
+.mobile-menu__list{ list-style:none; margin:0; padding:0; }
+.mobile-menu__item{ border-top:1px solid var(--border-subtle); }
+.mobile-menu__item:first-child{ border-top:none; }
+
 .mobile-menu__link{
-  padding:var(--space-4) var(--space-2); font-family:var(--font-display);
-  font-size:var(--text-h4); font-weight:600; color:var(--text-primary);
-  border-bottom:1px solid var(--border-subtle);
+  position:relative; display:grid;
+  grid-template-columns:auto 1fr auto;
+  grid-template-areas:"index label arrow" "index hint arrow";
+  align-items:center; column-gap:var(--space-4); row-gap:2px;
+  min-height:60px; padding:var(--space-3) var(--space-1);
+  color:var(--text-primary); text-decoration:none;
+  -webkit-tap-highlight-color:transparent;
+  transition:color var(--dur-base) var(--ease-out);
 }
-.mobile-menu__link:hover{ color:var(--text-accent); }
-.mobile-menu__cta{ display:flex; flex-direction:column; gap:var(--space-3); margin-top:var(--space-6); }
+/* Lime sweep that grows from the left edge on hover/active/current. */
+.mobile-menu__link::before{
+  content:""; position:absolute; left:calc(var(--space-1) * -1 - 2px); top:8px; bottom:8px;
+  width:2px; border-radius:var(--radius-pill); background:var(--accent);
+  transform:scaleY(0); transform-origin:center;
+  transition:transform var(--dur-base) var(--ease-out);
+}
+.mobile-menu__link:hover,
+.mobile-menu__link[aria-current="true"]{ color:var(--text-primary); }
+.mobile-menu__link:hover::before,
+.mobile-menu__link:active::before,
+.mobile-menu__link[aria-current="true"]::before{ transform:scaleY(1); }
+.mobile-menu__link:focus-visible{
+  outline:none; border-radius:var(--radius-sm);
+  box-shadow:var(--focus-ring-on-surface);
+}
+
+.mobile-menu__index{
+  grid-area:index; align-self:center;
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  color:var(--text-faint); transition:color var(--dur-base) var(--ease-out);
+}
+.mobile-menu__link:hover .mobile-menu__index,
+.mobile-menu__link[aria-current="true"] .mobile-menu__index{ color:var(--accent); }
+
+.mobile-menu__label{
+  grid-area:label;
+  font-family:var(--font-display); font-size:var(--text-h4); font-weight:600;
+  line-height:1.1; letter-spacing:-0.01em;
+}
+.mobile-menu__hint{
+  grid-area:hint;
+  font-size:0.75rem; color:var(--text-muted); letter-spacing:0.01em;
+}
+.mobile-menu__arrow{
+  grid-area:arrow; align-self:center; color:var(--text-faint);
+  transform:translateX(-4px); opacity:0;
+  transition:transform var(--dur-base) var(--ease-out),
+             opacity var(--dur-base) var(--ease-out),
+             color var(--dur-base) var(--ease-out);
+}
+.mobile-menu__link:hover .mobile-menu__arrow,
+.mobile-menu__link[aria-current="true"] .mobile-menu__arrow{
+  transform:translateX(0); opacity:1; color:var(--accent);
+}
+
+/* CTAs */
+.mobile-menu__cta{
+  display:flex; flex-direction:column; gap:var(--space-3);
+  margin-top:var(--space-5); padding-top:var(--space-5);
+  border-top:1px solid var(--border-default);
+}
+
+/* Footer signature */
+.mobile-menu__foot{
+  display:flex; align-items:center; gap:var(--space-2);
+  margin:var(--space-5) 0 0;
+  font-family:var(--font-mono); font-size:0.6875rem;
+  letter-spacing:0.04em; color:var(--text-faint);
+}
+.mobile-menu__foot-dot{
+  width:5px; height:5px; border-radius:var(--radius-pill); background:var(--accent-2);
+  box-shadow:var(--glow-teal-sm);
+}
+
+/* Staggered entrance for rows + CTA block (driven by inline --i). */
+.mobile-menu__item,
+.mobile-menu__cta{
+  opacity:0; transform:translateY(10px);
+  transition:opacity var(--dur-slow) var(--ease-out),
+             transform var(--dur-slow) var(--ease-out);
+}
+.mobile-menu.is-open .mobile-menu__item,
+.mobile-menu.is-open .mobile-menu__cta{
+  opacity:1; transform:translateY(0);
+  transition-delay:calc(120ms + var(--i, 0) * 45ms);
+}
+
 @media (min-width:768px){ .mobile-menu{ display:none; } }
 
 @media (min-width:768px){
   .nav__links,.nav__cta{ display:flex; }
   .nav__toggle{ display:none; }
   .brand-logo{ height:32px; }
+}
+
+/* Reduced motion: no slide/stagger/pulse — instant, static reveal. */
+@media (prefers-reduced-motion: reduce){
+  .nav__toggle-bar,
+  .mobile-menu__scrim,
+  .mobile-menu__panel,
+  .mobile-menu__item,
+  .mobile-menu__cta,
+  .mobile-menu__arrow{ transition:none; }
+  .mobile-menu.is-open .mobile-menu__item,
+  .mobile-menu.is-open .mobile-menu__cta{ transition-delay:0s; }
+  .mobile-menu__status-dot{ animation:none; }
 }
 
 /* ============================================================
