@@ -1171,13 +1171,20 @@ section{ padding-block:var(--section-py); position:relative; }
   margin-top:var(--space-7); padding-top:var(--space-6);
   padding-left:clamp(1.25rem, 3vw, 2rem);
   display:grid; grid-template-columns:1fr; gap:var(--space-6);
+  /* Open band, but the top + leading edge rules turn a rounded corner so the
+     junction reads softened, not a hard 90° — a quiet nod to the rounded cards
+     above without becoming a boxed panel. The top hairline and the teal edge
+     are both drawn as borders here so the radius actually curves the corner. */
   border-top:1px solid var(--border-subtle);
+  border-left:2px solid var(--accent-2);
+  border-top-left-radius:var(--radius-lg);
 }
-/* Teal leading edge — the through-line marker, lifted straight from
-   .ledger-row--key. Marks the band as the platform tier without boxing it. */
+/* The teal edge fades downward — overlay a transparent-to-bg gradient on the
+   lower border so only the top of the leading edge stays full teal, matching
+   the .ledger-row--key through-line look. */
 .enterprise::before{
-  content:""; position:absolute; left:0; top:-1px; bottom:0; width:2px;
-  background:linear-gradient(180deg, var(--accent-2), transparent 85%);
+  content:""; position:absolute; left:-2px; top:40%; bottom:0; width:2px;
+  background:linear-gradient(180deg, var(--accent-2), transparent 95%);
 }
 /* A very faint teal wash hugging the leading edge — depth without a panel. */
 .enterprise::after{
