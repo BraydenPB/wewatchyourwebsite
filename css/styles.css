@@ -233,6 +233,16 @@ section{ padding-block:var(--section-py); position:relative; }
 
 .section-title{ font-size:var(--text-h2); line-height:1.08; max-width:20ch; }
 .section-head--center .section-title{ margin-inline:auto; }
+
+/* Why-diff head — two sentences, each meant to sit on its own pair of lines.
+   The shared 20ch cap collapses them into a lopsided wrap, so on desktop we
+   drop the cap, hard-break between the sentences, and let each sentence find
+   its own two near-even lines. Mobile keeps the default single-column wrap. */
+.why-diff__br{ display:none; }
+@media (min-width:920px){
+  .why-diff__title{ max-width:none; }
+  .why-diff__br{ display:inline; }
+}
 .section-lede{
   margin-top:var(--space-5); font-size:var(--text-body-lg);
   color:var(--text-muted); line-height:1.6; max-width:52ch;
