@@ -197,6 +197,8 @@ button{ font-family:inherit; }
   overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
 }
 
+.nowrap{ white-space:nowrap; }
+
 .skip-link{
   position:absolute; left:var(--space-4); top:-3rem; z-index:var(--z-modal);
   background:var(--accent); color:var(--text-on-accent);
@@ -1239,6 +1241,7 @@ section{ padding-block:var(--section-py); position:relative; }
 .pricing__note{
   margin-top:var(--space-7); text-align:center;
   font-size:var(--text-small); color:var(--text-muted);
+  text-wrap:balance;
 }
 .pricing__note a{ color:var(--text-accent); }
 .pricing__note a:hover{ color:var(--text-link-hover); text-decoration:underline; }
