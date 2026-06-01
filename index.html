@@ -710,7 +710,7 @@
          ============================================================ -->
     <section id="why" class="section--alt why-diff" aria-labelledby="why-title">
       <div class="container">
-        <div class="section-head reveal">
+        <div class="section-head section-head--center reveal">
           <h2 class="section-title" id="why-title">We didn’t start with a product. We started with the attacks.</h2>
           <p class="section-lede">
             Since 2007 we have been doing active incident response on compromised sites. Every detection
@@ -724,24 +724,51 @@
           </a>
         </div>
 
-        <ol class="incidents reveal-group" aria-label="Recent incident response">
-          <li class="incident">
-            <span class="incident__year">2025</span>
-            <p class="incident__desc">Multi-component rootkit using inotify-based self-regeneration across PanelAlpha servers — dismantled and documented.</p>
-          </li>
-          <li class="incident">
-            <span class="incident__year">2025</span>
-            <p class="incident__desc">Casino SEO spam injected directly into Elementor JSON in the WordPress database — invisible to file scanners.</p>
-          </li>
-          <li class="incident">
-            <span class="incident__year">2025</span>
-            <p class="incident__desc">webanalytics-cdn.sbs campaign across hundreds of GridPane-managed sites — full remediation and abuse reporting.</p>
-          </li>
-          <li class="incident">
-            <span class="incident__year">2025</span>
-            <p class="incident__desc">GLASSWORM Unicode steganography found in a production vibe-coded app’s auth middleware — zero-width chars adjacent to token validation.</p>
-          </li>
-        </ol>
+        <!-- The proof of "we started with the attacks": a primary-source incident
+             ledger, not four marketing cards. One artifact, internal-seam rows.
+             Deliberately static — restraint sets it apart from the animated
+             analyzer above and the scan-radar stats below. -->
+        <div class="ledger reveal">
+          <div class="ledger__chrome">
+            <span class="ledger__mark" aria-hidden="true"></span>
+            <span class="ledger__title">Incident ledger</span>
+            <span class="ledger__meta">Active IR · field notes</span>
+          </div>
+          <ol class="ledger__rows" aria-label="Recent incident response">
+            <li class="ledger-row">
+              <div class="ledger-row__id">
+                <span class="ledger-row__case">IR-2025-041</span>
+                <span class="ledger-row__class">Rootkit</span>
+              </div>
+              <p class="ledger-row__desc">Multi-component rootkit using inotify-based self-regeneration across PanelAlpha servers — traced, dismantled, and documented.</p>
+              <span class="ledger-row__status">Dismantled</span>
+            </li>
+            <li class="ledger-row">
+              <div class="ledger-row__id">
+                <span class="ledger-row__case">IR-2025-039</span>
+                <span class="ledger-row__class">SEO spam</span>
+              </div>
+              <p class="ledger-row__desc">Casino SEO spam injected directly into Elementor JSON in the WordPress database — invisible to file scanners, surfaced from the database.</p>
+              <span class="ledger-row__status">Remediated</span>
+            </li>
+            <li class="ledger-row">
+              <div class="ledger-row__id">
+                <span class="ledger-row__case">IR-2025-044</span>
+                <span class="ledger-row__class">Malicious CDN</span>
+              </div>
+              <p class="ledger-row__desc">webanalytics-cdn.sbs campaign across hundreds of GridPane-managed sites — full remediation and upstream abuse reporting.</p>
+              <span class="ledger-row__status">Reported</span>
+            </li>
+            <li class="ledger-row ledger-row--key">
+              <div class="ledger-row__id">
+                <span class="ledger-row__case">IR-2025-047</span>
+                <span class="ledger-row__class">GLASSWORM</span>
+              </div>
+              <p class="ledger-row__desc">Unicode steganography in a production vibe-coded app’s auth middleware — zero-width characters smuggled adjacent to token validation.</p>
+              <span class="ledger-row__status">Documented</span>
+            </li>
+          </ol>
+        </div>
       </div>
     </section>
 
