@@ -364,7 +364,10 @@ section{ padding-block:var(--section-py); position:relative; }
 }
 .nav__brand{ display:inline-flex; align-items:center; flex:none; border-radius:var(--radius-sm); }
 .nav__brand:focus-visible{ box-shadow:var(--focus-ring); }
-.brand-logo{ height:30px; width:auto; }
+/* Logo height. Base governs MOBILE (bigger here for legibility); the desktop
+   override below pins it back to 32px. The header bar is a fixed 64px (.nav),
+   independent of this, so a taller mobile logo does NOT grow the header. */
+.brand-logo{ height:40px; width:auto; }
 
 .nav__links{
   display:none; align-items:center; gap:var(--space-2);
