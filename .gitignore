@@ -3,6 +3,7 @@ node_modules/
 *.log
 .wrangler/
 .reference/
+.screenshots/
 dist/
 
 # Claude Code — personal/local state (keep .mcp.json tracked, ignore local approvals)

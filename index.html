@@ -100,23 +100,91 @@
         <a class="btn btn--primary btn--compact" href="#wordpress">Protect My Site</a>
       </div>
 
+      <!-- Animated hamburger → X. Three lime-tipped bars of staggered width
+           that morph into a close glyph on open; the .nav__toggle hook + ARIA
+           contract are unchanged so mobileMenu() drives it untouched. -->
       <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
-        <svg class="icon-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-        <svg class="icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        <span class="nav__toggle-bars" aria-hidden="true">
+          <span class="nav__toggle-bar"></span>
+          <span class="nav__toggle-bar"></span>
+          <span class="nav__toggle-bar"></span>
+        </span>
       </button>
     </nav>
 
-    <!-- Mobile menu -->
-    <div class="mobile-menu" id="mobile-menu">
-      <a class="mobile-menu__link" href="#wordpress">WordPress Security</a>
-      <a class="mobile-menu__link" href="#analyzer">Code Analyzer</a>
-      <a class="mobile-menu__link" href="#why">Why Us</a>
-      <a class="mobile-menu__link" href="#partners">Partners</a>
-      <a class="mobile-menu__link" href="#pricing">Pricing</a>
-      <div class="mobile-menu__cta">
-        <a class="btn btn--primary btn--block" href="#wordpress">Protect My Site</a>
-        <a class="btn btn--secondary btn--block" href="#analyzer">Analyze My Code</a>
-      </div>
+    <!-- ============================================================
+         MOBILE MENU — "Security console" drawer
+         A full-coverage panel anchored below the 64px header (kept inside
+         <header> so it stays outside the inerted main/footer). Structurally
+         opaque: a solid --bg-base sheet + scanline/grid texture, with a
+         dismissible blurred scrim beneath. Nav reads as a console manifest —
+         numbered rows, status indicators — echoing the netops aesthetic.
+         ============================================================ -->
+    <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Site menu" hidden>
+      <div class="mobile-menu__scrim" data-menu-scrim aria-hidden="true"></div>
+
+      <nav class="mobile-menu__panel" aria-label="Mobile primary">
+        <div class="mobile-menu__texture" aria-hidden="true"></div>
+
+        <!-- Status strip — brand-cohesive "live ops" header inside the drawer -->
+        <p class="mobile-menu__status" aria-hidden="true">
+          <span class="mobile-menu__status-dot"></span>
+          <span class="mobile-menu__status-k">Navigation</span>
+          <span class="mobile-menu__status-v">all systems nominal</span>
+        </p>
+
+        <ul class="mobile-menu__list">
+          <li class="mobile-menu__item" style="--i:0">
+            <a class="mobile-menu__link" href="#wordpress">
+              <span class="mobile-menu__index" aria-hidden="true">01</span>
+              <span class="mobile-menu__label">WordPress Security</span>
+              <span class="mobile-menu__hint" aria-hidden="true">Watch · clean · seal</span>
+              <svg class="mobile-menu__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+            </a>
+          </li>
+          <li class="mobile-menu__item" style="--i:1">
+            <a class="mobile-menu__link" href="#analyzer">
+              <span class="mobile-menu__index" aria-hidden="true">02</span>
+              <span class="mobile-menu__label">Code Analyzer</span>
+              <span class="mobile-menu__hint" aria-hidden="true">8-stage source review</span>
+              <svg class="mobile-menu__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+            </a>
+          </li>
+          <li class="mobile-menu__item" style="--i:2">
+            <a class="mobile-menu__link" href="#why">
+              <span class="mobile-menu__index" aria-hidden="true">03</span>
+              <span class="mobile-menu__label">Why Us</span>
+              <span class="mobile-menu__hint" aria-hidden="true">18 years of real attacks</span>
+              <svg class="mobile-menu__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+            </a>
+          </li>
+          <li class="mobile-menu__item" style="--i:3">
+            <a class="mobile-menu__link" href="#partners">
+              <span class="mobile-menu__index" aria-hidden="true">04</span>
+              <span class="mobile-menu__label">Partners</span>
+              <span class="mobile-menu__hint" aria-hidden="true">Platform &amp; API access</span>
+              <svg class="mobile-menu__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+            </a>
+          </li>
+          <li class="mobile-menu__item" style="--i:4">
+            <a class="mobile-menu__link" href="#pricing">
+              <span class="mobile-menu__index" aria-hidden="true">05</span>
+              <span class="mobile-menu__label">Pricing</span>
+              <span class="mobile-menu__hint" aria-hidden="true">No per-clean fees</span>
+              <svg class="mobile-menu__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mobile-menu__cta" style="--i:5">
+          <a class="btn btn--primary btn--block" href="#wordpress">Protect My Site</a>
+          <a class="btn btn--secondary btn--block" href="#analyzer">Analyze My Code</a>
+        </div>
+
+        <p class="mobile-menu__foot" aria-hidden="true">
+          <span class="mobile-menu__foot-dot"></span>8,000,000+ sites cleaned since 2007
+        </p>
+      </nav>
     </div>
   </header>
 

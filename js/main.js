@@ -304,8 +304,19 @@
 
     var main = document.querySelector("main");
     var footer = document.querySelector(".site-footer");
+    var scrim = menu.querySelector("[data-menu-scrim]");
+    var firstLink = menu.querySelector(".mobile-menu__link");
+    var revealTimer = null;
 
     function setOpen(open) {
+      if (open) {
+        // Lift `hidden` (display:none) BEFORE flipping the open class so the
+        // panel/scrim transitions actually run from their closed state.
+        menu.hidden = false;
+        // Force a reflow so the just-shown element animates instead of jumping.
+        // eslint-disable-next-line no-unused-expressions
+        menu.offsetHeight;
+      }
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
       menu.classList.toggle("is-open", open);
@@ -314,23 +325,83 @@
       // menu out of the tab order (and the a11y tree) while it is open.
       if (main) main.inert = open;
       if (footer) footer.inert = open;
+
+      if (revealTimer) { clearTimeout(revealTimer); revealTimer = null; }
+      if (open) {
+        // Move focus into the menu for keyboard users. The panel is
+        // visibility:hidden until the open transition runs, and hidden
+        // elements aren't focusable — so wait for the panel to settle
+        // (a hair past --dur-slow) before focusing the first link.
+        if (firstLink) {
+          revealTimer = setTimeout(function () {
+            if (toggle.getAttribute("aria-expanded") === "true") {
+              firstLink.focus({ preventScroll: true });
+            }
+          }, 300);
+        }
+      } else {
+        // Re-apply `hidden` once the close transition has settled, so the
+        // collapsed menu can't trap pointer/scroll events behind the page.
+        revealTimer = setTimeout(function () {
+          if (toggle.getAttribute("aria-expanded") !== "true") menu.hidden = true;
+        }, 320);
+      }
     }
+
+    function close() {
+      setOpen(false);
+      toggle.focus();
+    }
+
     toggle.addEventListener("click", function () {
       setOpen(toggle.getAttribute("aria-expanded") !== "true");
     });
+    // Tapping a nav link or CTA navigates and closes (no focus return — the
+    // user is leaving the menu by intent).
     menu.addEventListener("click", function (e) {
       if (e.target.closest("a")) setOpen(false);
     });
+    // Backdrop dismiss — return focus to the toggle, like Escape.
+    if (scrim) scrim.addEventListener("click", close);
+
+    // Focusables for the trap: the close toggle (the X lives outside the
+    // dialog but is the close affordance) plus everything inside the panel.
+    function focusables() {
+      var list = [toggle];
+      var inside = menu.querySelectorAll(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      return list.concat(Array.prototype.slice.call(inside));
+    }
+
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
-        setOpen(false);
-        toggle.focus();
+      if (toggle.getAttribute("aria-expanded") !== "true") return;
+      if (e.key === "Escape") {
+        close();
+        return;
+      }
+      // Trap Tab within [toggle + menu] so focus can't escape to the
+      // scrim-covered skip-link / brand behind the modal (matches the
+      // role="dialog" aria-modal contract).
+      if (e.key === "Tab") {
+        var items = focusables();
+        if (!items.length) return;
+        var first = items[0];
+        var last = items[items.length - 1];
+        var active = document.activeElement;
+        var within = items.indexOf(active) !== -1;
+        if (e.shiftKey) {
+          if (active === first || !within) { e.preventDefault(); last.focus(); }
+        } else {
+          if (active === last || !within) { e.preventDefault(); first.focus(); }
+        }
       }
     });
-    // Close if viewport grows past the mobile breakpoint.
+    // Close if viewport grows past the mobile breakpoint (keep 768px synced
+    // with the CSS hide breakpoint + header anchor).
     var mq = matchMedia("(min-width: 768px)");
     (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(function () {
-      if (mq.matches) setOpen(false);
+      if (mq.matches && toggle.getAttribute("aria-expanded") === "true") close();
     });
   }
 
