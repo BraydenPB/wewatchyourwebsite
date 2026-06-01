@@ -834,6 +834,7 @@ section{ padding-block:var(--section-py); position:relative; }
 .feature-list li{
   display:flex; align-items:flex-start; gap:var(--space-3);
   font-size:var(--text-small); color:var(--text-muted); line-height:1.5;
+  text-wrap:balance;
 }
 .feature-list .tick{ margin-top:2px; }
 
