@@ -125,53 +125,96 @@
          HERO
          ============================================================ -->
     <section class="hero" id="hero-section" aria-labelledby="hero-title">
-      <div class="hero__bg" data-glitch aria-hidden="true"></div>
-      <div class="hero__bg-fade" aria-hidden="true"></div>
+      <!-- Calm anchor wash, not character rain. The matrix-glitch backdrop read
+           as a dated "hacker" cliché behind the primary message; it survives as
+           a quiet texture in the dividers / final-CTA / footer, not here. -->
+      <div class="hero__wash" aria-hidden="true"></div>
       <div class="container">
-        <div class="hero__inner">
-          <p class="eyebrow">18 Years of Real-World Threat Intelligence</p>
-          <h1 class="hero__title" id="hero-title">
-            <span class="text-grad">Real</span> Security.<span class="brk"></span> Built From <span class="text-grad">Real</span> Attacks.
-          </h1>
-          <p class="hero__body">
-            We protect WordPress sites and analyze AI-generated code — powered by the same threat
-            intelligence that has removed malware from over 8,000,000 sites since 2007. Security
-            engineered at the infrastructure level, not bolted on as another plugin.
-          </p>
-          <div class="hero__cta">
-            <a class="btn btn--primary btn--lg" href="#wordpress">Protect My Site</a>
-            <a class="btn btn--secondary btn--lg" href="#analyzer">Analyze My Code</a>
+        <div class="hero__grid">
+          <!-- LEFT: the message -->
+          <div class="hero__inner">
+            <p class="eyebrow">18 Years of Real-World Threat Intelligence</p>
+            <h1 class="hero__title" id="hero-title">
+              <span class="text-grad">Real</span> Security.<span class="brk"></span> Built From <span class="text-grad">Real</span> Attacks.
+            </h1>
+            <p class="hero__body">
+              We protect WordPress sites and analyze AI-generated code — powered by the same threat
+              intelligence that has removed malware from over 8,000,000 sites since 2007. Security
+              engineered at the infrastructure level, not bolted on as another plugin.
+            </p>
+            <div class="hero__cta">
+              <a class="btn btn--primary btn--lg" href="#wordpress">Protect My Site</a>
+              <a class="btn btn--secondary btn--lg" href="#analyzer">Analyze My Code</a>
+            </div>
           </div>
 
-          <!-- Six real metrics straight from the field — the proof the brand
-               leads with. Mono data-tags + tnum keep them reading as a readout. -->
-          <dl class="hero-stats" aria-label="Threat-intelligence track record">
-            <div class="hero-stat">
-              <dt class="hero-stat__num" data-count="18">18</dt>
-              <dd class="hero-stat__label">Years active</dd>
+          <!-- RIGHT: the NETWORK operations panel — the aggregate story (the
+               per-site watch console lives further down; this one is global on
+               purpose, so the two custom objects never read as duplicates). A
+               live ops readout: sites under watch ticking up, both products
+               armed, a rolling event feed. Decorative → aria-hidden; the real
+               numbers live in the stat band below. -->
+          <aside class="netops" aria-hidden="true" data-netops>
+            <div class="netops__head">
+              <span class="netops__title">Network Operations</span>
+              <span class="netops__live"><span class="netops__live-dot"></span>LIVE</span>
             </div>
-            <div class="hero-stat">
-              <dt class="hero-stat__num" data-count="8" data-sup="M+">8<span class="hero-stat__sup">M+</span></dt>
-              <dd class="hero-stat__label">Sites cleaned since 2007</dd>
+
+            <div class="netops__primary">
+              <span class="netops__primary-num" data-netops-count>2,900,000</span>
+              <span class="netops__primary-label">sites under watch right now</span>
             </div>
-            <div class="hero-stat">
-              <dt class="hero-stat__num" data-count="2.9" data-sup="M" data-decimals="1">2.9<span class="hero-stat__sup">M</span></dt>
-              <dd class="hero-stat__label">Sites monitored today</dd>
+
+            <div class="netops__meters">
+              <div class="netops__meter">
+                <span class="netops__meter-k">WordPress Security</span>
+                <span class="netops__meter-bar"><span class="netops__meter-fill" style="--w:100%"></span></span>
+                <span class="netops__meter-v">armed</span>
+              </div>
+              <div class="netops__meter">
+                <span class="netops__meter-k">Code Analyzer</span>
+                <span class="netops__meter-bar"><span class="netops__meter-fill" style="--w:100%"></span></span>
+                <span class="netops__meter-v">armed</span>
+              </div>
             </div>
-            <div class="hero-stat">
-              <dt class="hero-stat__num" data-count="300" data-sup="k+">300<span class="hero-stat__sup">k+</span></dt>
-              <dd class="hero-stat__label">Malware samples</dd>
+
+            <ul class="netops__feed" data-netops-feed>
+              <li class="netops__event"><span class="netops__event-dot"></span><span class="netops__event-txt">malware removed · shared host</span><span class="netops__event-t">0s</span></li>
+              <li class="netops__event"><span class="netops__event-dot netops__event-dot--teal"></span><span class="netops__event-txt">vuln flagged · vibe-coded app</span><span class="netops__event-t">3s</span></li>
+              <li class="netops__event"><span class="netops__event-dot"></span><span class="netops__event-txt">core hashes verified · WP 6.x</span><span class="netops__event-t">6s</span></li>
+              <li class="netops__event"><span class="netops__event-dot"></span><span class="netops__event-txt">entry point sealed · root cause</span><span class="netops__event-t">9s</span></li>
+            </ul>
+
+            <div class="netops__foot">
+              <span>0.047% re-infection</span>
+              <span class="netops__foot-v">all systems nominal</span>
             </div>
-            <div class="hero-stat hero-stat--accent">
-              <dt class="hero-stat__num" data-count="0.047" data-sup="%" data-decimals="3">0.047<span class="hero-stat__sup">%</span></dt>
-              <dd class="hero-stat__label">Re-infection rate</dd>
-            </div>
-            <div class="hero-stat">
-              <dt class="hero-stat__num" data-count="2096">2,096</dt>
-              <dd class="hero-stat__label">Vibe-coded apps analyzed</dd>
-            </div>
-          </dl>
+          </aside>
         </div>
+
+        <!-- The HISTORICAL proof, as one full-width readout band under a hairline.
+             Hidden on mobile (the network-ops panel above already carries the key
+             figures; the band stacked into stat-overload on small screens). The
+             live "right now" numbers (2.9M, 0.047%) are intentionally NOT repeated
+             here — the panel owns those — so the band is the track-record only. -->
+        <dl class="hero-stats" aria-label="Threat-intelligence track record">
+          <div class="hero-stat">
+            <dt class="hero-stat__num" data-count="18">18</dt>
+            <dd class="hero-stat__label">Years active</dd>
+          </div>
+          <div class="hero-stat">
+            <dt class="hero-stat__num" data-count="8" data-sup="M+">8<span class="hero-stat__sup">M+</span></dt>
+            <dd class="hero-stat__label">Sites cleaned since 2007</dd>
+          </div>
+          <div class="hero-stat">
+            <dt class="hero-stat__num" data-count="300" data-sup="k+">300<span class="hero-stat__sup">k+</span></dt>
+            <dd class="hero-stat__label">Malware samples</dd>
+          </div>
+          <div class="hero-stat">
+            <dt class="hero-stat__num" data-count="2096">2,096</dt>
+            <dd class="hero-stat__label">Vibe-coded apps analyzed</dd>
+          </div>
+        </dl>
       </div>
     </section>
 
@@ -180,12 +223,13 @@
          ============================================================ -->
     <div class="ribbon" id="proof" role="group" aria-label="Credentials">
       <div class="container">
+        <!-- Qualitative trust signals only — the numbers live in the hero band
+             + network-ops panel directly above, so the ribbon must NOT repeat
+             them (it stacked into a third stat list on mobile otherwise). -->
         <ul class="ribbon__list">
-          <li class="ribbon__item"><span class="dot" aria-hidden="true"></span>Active Since 2007</li>
+          <li class="ribbon__item"><span class="dot" aria-hidden="true"></span>Automated Malware Removal</li>
           <li class="ribbon__sep" aria-hidden="true"></li>
-          <li class="ribbon__item"><span class="dot" aria-hidden="true"></span>8M+ Sites Cleaned</li>
-          <li class="ribbon__sep" aria-hidden="true"></li>
-          <li class="ribbon__item"><span class="dot" aria-hidden="true"></span>2.9M Monitored Today</li>
+          <li class="ribbon__item"><span class="dot" aria-hidden="true"></span>Root-Cause Analysis</li>
           <li class="ribbon__sep" aria-hidden="true"></li>
           <li class="ribbon__item"><span class="dot" aria-hidden="true"></span>Infrastructure-Level Defense</li>
           <li class="ribbon__sep" aria-hidden="true"></li>
@@ -515,73 +559,104 @@
              and packet are decorative (aria-hidden); each stage's text is real
              content, always present, readable with no JS. -->
         <div class="pipeline reveal" data-pipeline>
+          <!-- Travelling scan beam: a glowing packet that physically descends the
+               rail as the figure enters view, lighting each stage and revealing its
+               finding as it passes. Decorative (aria-hidden); the JS moves it via a
+               CSS custom property (--beam-y). Reduced-motion hides it entirely and
+               the stages settle lit immediately. -->
+          <span class="pipeline__beam" aria-hidden="true"></span>
+
           <div class="pipeline__source" aria-hidden="true">
             <span class="pipeline__source-label">input</span>
             <span class="pipeline__source-val">your repo · plugin · bundle</span>
           </div>
 
           <ol class="pipeline__stages" aria-label="Eight-stage code analysis pipeline">
-            <li class="pipeline-stage" data-stage="0">
+            <li class="pipeline-stage" data-stage="0" data-find="hit">
               <span class="pipeline-stage__rail" aria-hidden="true"></span>
               <span class="pipeline-stage__num">01</span>
               <span class="pipeline-stage__body">
-                <span class="pipeline-stage__title">Secrets Detection</span>
+                <span class="pipeline-stage__head">
+                  <span class="pipeline-stage__title">Secrets Detection</span>
+                  <span class="pipeline-stage__find" aria-hidden="true"><span class="pipeline-stage__find-n" data-find-to="3">0</span> found</span>
+                </span>
                 <span class="pipeline-stage__desc">API keys, tokens, and credentials across all file types.</span>
               </span>
             </li>
-            <li class="pipeline-stage" data-stage="1">
+            <li class="pipeline-stage" data-stage="1" data-find="clean">
               <span class="pipeline-stage__rail" aria-hidden="true"></span>
               <span class="pipeline-stage__num">02</span>
               <span class="pipeline-stage__body">
-                <span class="pipeline-stage__title">Static Analysis</span>
+                <span class="pipeline-stage__head">
+                  <span class="pipeline-stage__title">Static Analysis</span>
+                  <span class="pipeline-stage__find" aria-hidden="true">clean</span>
+                </span>
                 <span class="pipeline-stage__desc">AST parsing combined with Semgrep rule sets.</span>
               </span>
             </li>
-            <li class="pipeline-stage" data-stage="2">
+            <li class="pipeline-stage" data-stage="2" data-find="hit">
               <span class="pipeline-stage__rail" aria-hidden="true"></span>
               <span class="pipeline-stage__num">03</span>
               <span class="pipeline-stage__body">
-                <span class="pipeline-stage__title">Dependency Audit</span>
+                <span class="pipeline-stage__head">
+                  <span class="pipeline-stage__title">Dependency Audit</span>
+                  <span class="pipeline-stage__find" aria-hidden="true"><span class="pipeline-stage__find-n" data-find-to="1">0</span> high</span>
+                </span>
                 <span class="pipeline-stage__desc">npm audit and OSV database cross-reference.</span>
               </span>
             </li>
-            <li class="pipeline-stage" data-stage="3">
+            <li class="pipeline-stage" data-stage="3" data-find="hit">
               <span class="pipeline-stage__rail" aria-hidden="true"></span>
               <span class="pipeline-stage__num">04</span>
               <span class="pipeline-stage__body">
-                <span class="pipeline-stage__title">LLM Deep Review</span>
+                <span class="pipeline-stage__head">
+                  <span class="pipeline-stage__title">LLM Deep Review</span>
+                  <span class="pipeline-stage__find" aria-hidden="true"><span class="pipeline-stage__find-n" data-find-to="2">0</span> flagged</span>
+                </span>
                 <span class="pipeline-stage__desc">Logic-level analysis catching what static tools miss.</span>
               </span>
             </li>
-            <li class="pipeline-stage" data-stage="4">
+            <li class="pipeline-stage" data-stage="4" data-find="clean">
               <span class="pipeline-stage__rail" aria-hidden="true"></span>
               <span class="pipeline-stage__num">05</span>
               <span class="pipeline-stage__body">
-                <span class="pipeline-stage__title">Bundle Analysis</span>
+                <span class="pipeline-stage__head">
+                  <span class="pipeline-stage__title">Bundle Analysis</span>
+                  <span class="pipeline-stage__find" aria-hidden="true">clean</span>
+                </span>
                 <span class="pipeline-stage__desc">Compiled output inspected for embedded threats.</span>
               </span>
             </li>
-            <li class="pipeline-stage" data-stage="5">
+            <li class="pipeline-stage" data-stage="5" data-find="hit">
               <span class="pipeline-stage__rail" aria-hidden="true"></span>
               <span class="pipeline-stage__num">06</span>
               <span class="pipeline-stage__body">
-                <span class="pipeline-stage__title">Unicode Steganography</span>
+                <span class="pipeline-stage__head">
+                  <span class="pipeline-stage__title">Unicode Steganography</span>
+                  <span class="pipeline-stage__find" aria-hidden="true"><span class="pipeline-stage__find-n" data-find-to="1">0</span> hidden</span>
+                </span>
                 <span class="pipeline-stage__desc">GLASSWORM hidden-character detection.</span>
               </span>
             </li>
-            <li class="pipeline-stage" data-stage="6">
+            <li class="pipeline-stage" data-stage="6" data-find="verify">
               <span class="pipeline-stage__rail" aria-hidden="true"></span>
               <span class="pipeline-stage__num">07</span>
               <span class="pipeline-stage__body">
-                <span class="pipeline-stage__title">Adversarial Verification</span>
+                <span class="pipeline-stage__head">
+                  <span class="pipeline-stage__title">Adversarial Verification</span>
+                  <span class="pipeline-stage__find" aria-hidden="true">7 confirmed</span>
+                </span>
                 <span class="pipeline-stage__desc">A red-team agent challenges every finding before your report.</span>
               </span>
             </li>
-            <li class="pipeline-stage" data-stage="7">
+            <li class="pipeline-stage" data-stage="7" data-find="verify">
               <span class="pipeline-stage__rail" aria-hidden="true"></span>
               <span class="pipeline-stage__num">08</span>
               <span class="pipeline-stage__body">
-                <span class="pipeline-stage__title">Attack Chain Construction</span>
+                <span class="pipeline-stage__head">
+                  <span class="pipeline-stage__title">Attack Chain Construction</span>
+                  <span class="pipeline-stage__find" aria-hidden="true">2 chains</span>
+                </span>
                 <span class="pipeline-stage__desc">Individual findings synthesized into attack narratives.</span>
               </span>
             </li>
@@ -985,6 +1060,7 @@
   <script src="js/scan-radar.js" defer></script>
   <script src="js/defense-field.js" defer></script>
   <script src="js/pipeline.js" defer></script>
+  <script src="js/netops.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>
