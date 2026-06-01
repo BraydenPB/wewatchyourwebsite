@@ -902,7 +902,7 @@
               <span class="price-card__amount">$59.95</span>
               <span class="price-card__suffix">/year</span>
             </div>
-            <p class="price-card__for">Plans start at $59.95/year for site owners. Enterprise and hosting-platform pricing available.</p>
+            <p class="price-card__for">For a single site owner. No per-clean fees, ever.</p>
             <ul class="feature-list">
               <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Automated malware removal — no per-clean fees</li>
               <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>File integrity monitoring + WP core hash verification</li>
@@ -920,16 +920,52 @@
               <span class="price-card__amount">Free</span>
               <span class="price-card__suffix">first scan</span>
             </div>
-            <p class="price-card__for">Free first scan. API access and white-label integrations available for platforms.</p>
+            <p class="price-card__for">Your first scan is free — see exactly what an attacker would.</p>
             <ul class="feature-list">
               <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Eight-stage vulnerability analysis pipeline</li>
               <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>OWASP Top 10 2025 mapped with CWE classification</li>
               <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Adversarially verified, attack-chain reports</li>
-              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>API &amp; white-label integration for platforms</li>
+              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>API access for automated, on-demand scans</li>
             </ul>
             <a class="btn btn--secondary btn--block" href="#final-cta">Run a Free Scan</a>
           </article>
         </div>
+
+        <!-- Enterprise & Platform band: NOT a third card. A full-width hairline-ruled
+             panel that carries the volume / white-label / API offer the per-site cards
+             can't. Left column = the identity + "Custom" price; right column = the three
+             platform capabilities + a CTA that hands off to the #partners proof band
+             above (which holds the live integration wall). The two sections rhyme by
+             design — partners = who already runs us, enterprise = how you join them. -->
+        <article class="enterprise reveal" aria-labelledby="enterprise-title">
+          <div class="enterprise__lead">
+            <span class="enterprise__kicker"><span class="status-dot" aria-hidden="true"></span>For platforms &amp; teams</span>
+            <h3 class="enterprise__title" id="enterprise-title">Enterprise &amp; Platform</h3>
+            <div class="enterprise__price">
+              <span class="enterprise__amount">Custom</span>
+              <span class="enterprise__suffix">volume &amp; platform pricing</span>
+            </div>
+            <p class="enterprise__for">
+              Protect a fleet, a host's whole customer base, or embed our engine in your own product.
+              One threat-intelligence core, priced to your scale — not per cleanup.
+            </p>
+          </div>
+
+          <div class="enterprise__detail">
+            <ul class="feature-list enterprise__features">
+              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Volume protection across unlimited sites &amp; brands</li>
+              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>White-label &amp; API access — integrate at the platform level</li>
+              <li><svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Dedicated onboarding &amp; a named security contact</li>
+            </ul>
+            <div class="enterprise__actions">
+              <a class="btn btn--primary" href="#final-cta">Talk to us</a>
+              <a class="link-arrow link-arrow--inline" href="#partners">
+                See who already runs us
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
 
         <p class="pricing__note reveal">
           Not sure which fits? <a href="#final-cta">Talk to a security expert</a> — not a sales rep.
