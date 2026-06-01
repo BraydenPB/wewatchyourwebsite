@@ -61,7 +61,13 @@
     this._mount();
     this._bindResize();
     this.resize();
-    this.start();
+    // Only animate while the backdrop is on-screen. Each instance runs a per-frame
+    // canvas redraw; with several instances (hero, dividers, footer) all looping
+    // unconditionally, the combined per-frame cost janks the main thread during
+    // scroll — most visibly while the sticky console is being repositioned, which
+    // stalls everything (Lottie, progress bars, highlight) until scrolling settles.
+    // Pausing off-screen instances removed 100% of scroll long-tasks in profiling.
+    this._bindVisibility();
   }
 
   LetterGlitch.prototype._mount = function () {
@@ -79,9 +85,13 @@
     this._onResize = function () {
       clearTimeout(self.resizeTimer);
       self.resizeTimer = setTimeout(function () {
+        var wasRunning = self.rafId != null;
         cancelAnimationFrame(self.rafId);
+        self.rafId = null;
         self.resize();
-        self.start();
+        // Only resume the loop if it was running (i.e. on-screen). Off-screen
+        // instances stay paused — the IntersectionObserver restarts them on entry.
+        if (wasRunning || self._reduceMotion) self.start();
       }, 120);
     };
     window.addEventListener("resize", self._onResize);
@@ -200,6 +210,26 @@
     }
   };
 
+  // Run the animation only while on-screen. Under reduced motion we draw one static
+  // frame and never loop, so there's nothing to gate — render it once and bail.
+  LetterGlitch.prototype._bindVisibility = function () {
+    if (this._reduceMotion || typeof IntersectionObserver !== "function") {
+      this.start();
+      return;
+    }
+    var self = this;
+    this._io = new IntersectionObserver(function (entries) {
+      var onScreen = entries[entries.length - 1].isIntersecting;
+      if (onScreen) self.start();
+      else self.stop();
+    }, { rootMargin: "200px 0px" }); // warm up just before it scrolls into view
+    this._io.observe(this.container);
+  };
+
+  LetterGlitch.prototype.stop = function () {
+    if (this.rafId) { cancelAnimationFrame(this.rafId); this.rafId = null; }
+  };
+
   LetterGlitch.prototype.start = function () {
     // Reduced motion: render a single static frame, then stop.
     if (this._reduceMotion) {
@@ -223,6 +253,7 @@
 
   LetterGlitch.prototype.destroy = function () {
     if (this.rafId) cancelAnimationFrame(this.rafId);
+    if (this._io) { this._io.disconnect(); this._io = null; }
     clearTimeout(this.resizeTimer);
     window.removeEventListener("resize", this._onResize);
     if (this.canvas && this.canvas.parentNode) {
