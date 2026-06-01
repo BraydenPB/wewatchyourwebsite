@@ -1804,6 +1804,9 @@ section{ padding-block:var(--section-py); position:relative; }
 .analyzer-stats{
   display:grid; grid-template-columns:repeat(2, minmax(0,1fr));
   gap:var(--space-5) 0; margin-bottom:var(--section-gap);
+  /* Reset the UA list defaults (padding-inline-start + bullets) so the row
+     isn't pushed right of the centered lede above it. */
+  list-style:none; margin-top:0; padding-left:0;
 }
 @media (min-width:780px){ .analyzer-stats{ grid-template-columns:repeat(4, minmax(0,1fr)); } }
 .analyzer-stat{ padding:var(--space-1) var(--space-5); }
