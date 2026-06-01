@@ -1102,11 +1102,25 @@ section{ padding-block:var(--section-py); position:relative; }
    and the escalation CTA. The rail earns the column the old narrow layout
    left void. Mono case-IDs + category tags reuse the ledger's provenance
    grammar; rows are hairline-seamed, not bordered boxes. Reads with no JS. */
-.faq-layout{ display:grid; grid-template-columns:1fr; gap:var(--space-7); }
+/* Three grid children — head, escalation CTA, log — placed by named areas so
+   the reading order can differ between mobile and desktop without reordering
+   the DOM. Mobile: head → log → CTA (the escalation reads AFTER the questions).
+   Desktop: head + CTA stack in the left sticky column, log on the right. */
+.faq-layout{
+  display:grid; grid-template-columns:1fr; gap:var(--space-7);
+  grid-template-areas:"head" "log" "esc";
+}
+.faq-rail{ grid-area:head; }
+.faq-log{ grid-area:log; }
+.faq-rail__esc{ grid-area:esc; }
 @media (min-width:920px){
   .faq-layout{
     grid-template-columns:minmax(0,20rem) minmax(0,1fr);
-    gap:clamp(2rem, 5vw, 4.5rem); align-items:start;
+    grid-template-areas:
+      "head log"
+      "esc  log";
+    grid-template-rows:auto 1fr;
+    gap:var(--space-6) clamp(2rem, 5vw, 4.5rem); align-items:start;
   }
 }
 

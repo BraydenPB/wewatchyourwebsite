@@ -938,22 +938,26 @@
          ============================================================ -->
     <section id="faq" aria-labelledby="faq-title">
       <div class="container faq-layout">
-        <!-- Sticky rail — section head + escalation CTA. Fills the column that
-             would otherwise be a void; pure CSS sticky, no JS. -->
+        <!-- Sticky rail — section head + escalation CTA. On desktop both sit in
+             the left column (the CTA grouped under the head). On mobile the grid
+             reorders so the CTA drops below the log — the escalation reads after
+             the questions, not before. Fills the column the old narrow layout
+             left void; pure CSS, no JS. -->
         <aside class="faq-rail reveal">
           <div class="section-head">
             <h2 class="section-title" id="faq-title">Straight answers, no security theater.</h2>
             <p class="section-lede">The questions site owners actually ask before they hand us the keys.</p>
           </div>
-          <div class="faq-rail__esc">
-            <p class="faq-rail__esc-q">Still not sure it fits your setup?</p>
-            <a class="faq-rail__esc-link" href="#final-cta">
-              Talk to a security expert
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </a>
-            <span class="faq-rail__esc-note">A real engineer — not a sales rep reading a script.</span>
-          </div>
         </aside>
+
+        <div class="faq-rail__esc reveal">
+          <p class="faq-rail__esc-q">Still not sure it fits your setup?</p>
+          <a class="faq-rail__esc-link" href="#final-cta">
+            Talk to a security expert
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <span class="faq-rail__esc-note">A real engineer — not a sales rep reading a script.</span>
+        </div>
 
         <!-- Q&A log — a primary-source artifact, sibling to the incident ledger.
              Native <details> rows under a titled chrome strip; mono case-IDs and
