@@ -776,11 +776,31 @@ section{ padding-block:var(--section-py); position:relative; }
 .pass-item.is-active .pass__verb{ color:var(--text-accent); }
 .pass-item.is-active .pass__result-state{ opacity:1; height:auto; color:var(--text-accent); }
 .pass-item.is-active .pass__result-value{ color:var(--text-primary); }
-.pass-item.is-active .pass__bar{ background:var(--border-subtle); }
-/* fill animates over the auto-cycle interval; paused/instant per JS + reduced-motion */
+/* The fill ALWAYS animates over --pass-dwell — its animationend is the auto-cycle
+   clock (js/main.js). But the user found the always-visible lime line too prominent,
+   so the bar is hidden during passive cycling and revealed only on hover/focus of
+   the console (when the user is actually deciding whether to pause here). We hide via
+   OPACITY, never display/visibility — the animation must keep running so the clock
+   keeps firing. The track + fill fade in together; on reveal the fill shows the live
+   frozen progress of the active scan (hover pauses the cycle), reading as "paused
+   here". */
+.pass-item.is-active .pass__bar{
+  background:var(--border-subtle);
+  opacity:0; transition:opacity var(--dur-base) var(--ease-out);
+}
+/* fill animates over the auto-cycle interval; paused/instant per JS + reduced-motion.
+   The lime fill is the prominent part the user saw, so it carries its OWN opacity
+   hide/reveal — a parent opacity:0 on .pass__bar does NOT hide it because the running
+   transform animation promotes the fill to its own compositing layer. Opacity only;
+   the transform animation (hence animationend / the cycle clock) keeps running. */
 .pass-item.is-active .pass__bar-fill{
   animation:pass-fill var(--pass-dwell, 5200ms) linear forwards;
+  opacity:0; transition:opacity var(--dur-base) var(--ease-out);
 }
+.console:hover .pass-item.is-active .pass__bar,
+.console:focus-within .pass-item.is-active .pass__bar,
+.console:hover .pass-item.is-active .pass__bar-fill,
+.console:focus-within .pass-item.is-active .pass__bar-fill{ opacity:1; }
 .console[data-paused="true"] .pass-item.is-active .pass__bar-fill{ animation-play-state:paused; }
 .console[data-paused="true"] .pass-item.is-active .pass__indicator{ animation-play-state:paused; }
 @keyframes pass-fill{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
