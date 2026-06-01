@@ -1105,7 +1105,11 @@ section{ padding-block:var(--section-py); position:relative; }
 /* Three grid children — head, escalation CTA, log — placed by named areas so
    the reading order can differ between mobile and desktop without reordering
    the DOM. Mobile: head → log → CTA (the escalation reads AFTER the questions).
-   Desktop: head + CTA stack in the left sticky column, log on the right. */
+   Desktop: head pinned to the top (sharing the log's top line), CTA dropped to
+   the bottom of the column — the empty middle becomes deliberate breathing
+   space, and the card's foot lands on the log's foot for a second shared
+   baseline. The left stays a quiet typographic column against the data-artifact
+   on the right; the asymmetry is the point. */
 .faq-layout{
   display:grid; grid-template-columns:1fr; gap:var(--space-7);
   grid-template-areas:"head" "log" "esc";
@@ -1122,6 +1126,9 @@ section{ padding-block:var(--section-py); position:relative; }
     grid-template-rows:auto 1fr;
     gap:var(--space-6) clamp(2rem, 5vw, 4.5rem); align-items:start;
   }
+  /* Bottom-anchor the CTA in its stretched row so the column reads top-and-foot
+     anchored instead of top-clustered with trailing dead space. */
+  .faq-rail__esc{ align-self:end; }
 }
 
 /* Left-column rail (head). NOT sticky: the head and the escalation card share
