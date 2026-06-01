@@ -1809,14 +1809,15 @@ section{ padding-block:var(--section-py); position:relative; }
   list-style:none; margin-top:0; padding-left:0;
 }
 @media (min-width:780px){ .analyzer-stats{ grid-template-columns:repeat(4, minmax(0,1fr)); } }
-.analyzer-stat{ padding:var(--space-1) var(--space-5); }
+/* Each cell centers its number + label so the row shares the centered
+   axis of the heading/lede above it (no left- or right-weighting). */
+.analyzer-stat{ padding:var(--space-1) var(--space-5); text-align:center; }
 /* Hairline separators between items; suppressed at each row's start. */
 .analyzer-stat + .analyzer-stat{ border-left:1px solid var(--border-default); }
 @media (max-width:779px){
   .analyzer-stat{ padding-inline:var(--space-4); }
-  .analyzer-stat:nth-child(odd){ border-left:0; padding-left:0; }
+  .analyzer-stat:nth-child(odd){ border-left:0; }
 }
-@media (min-width:780px){ .analyzer-stat:first-child{ padding-left:0; } }
 .analyzer-stat__num{
   display:block; font-family:var(--font-display); font-weight:600; line-height:1;
   font-size:clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); letter-spacing:-0.03em;
@@ -1829,7 +1830,7 @@ section{ padding-block:var(--section-py); position:relative; }
 .analyzer-stat__num--text{ color:var(--accent-2-text); letter-spacing:0.02em; }
 .analyzer-stat__label{
   display:block; margin-top:var(--space-3); font-size:var(--text-small);
-  color:var(--text-secondary); line-height:1.5; max-width:22ch;
+  color:var(--text-secondary); line-height:1.5; max-width:22ch; margin-inline:auto;
 }
 
 /* ============================================================
