@@ -364,9 +364,37 @@
     // Backdrop dismiss — return focus to the toggle, like Escape.
     if (scrim) scrim.addEventListener("click", close);
 
+    // Focusables for the trap: the close toggle (the X lives outside the
+    // dialog but is the close affordance) plus everything inside the panel.
+    function focusables() {
+      var list = [toggle];
+      var inside = menu.querySelectorAll(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      return list.concat(Array.prototype.slice.call(inside));
+    }
+
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+      if (toggle.getAttribute("aria-expanded") !== "true") return;
+      if (e.key === "Escape") {
         close();
+        return;
+      }
+      // Trap Tab within [toggle + menu] so focus can't escape to the
+      // scrim-covered skip-link / brand behind the modal (matches the
+      // role="dialog" aria-modal contract).
+      if (e.key === "Tab") {
+        var items = focusables();
+        if (!items.length) return;
+        var first = items[0];
+        var last = items[items.length - 1];
+        var active = document.activeElement;
+        var within = items.indexOf(active) !== -1;
+        if (e.shiftKey) {
+          if (active === first || !within) { e.preventDefault(); last.focus(); }
+        } else {
+          if (active === last || !within) { e.preventDefault(); first.focus(); }
+        }
       }
     });
     // Close if viewport grows past the mobile breakpoint (keep 768px synced
