@@ -37,6 +37,17 @@ const PUBLISH = [
 const PROJECT = process.env.CLOUDFLARE_PROJECT || "wwyw2";
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 
+// PROJECT is interpolated into the deploy shell command below, so validate it
+// against Cloudflare Pages' own project-name rules (lowercase alphanumeric and
+// hyphens, no leading/trailing hyphen, <=58 chars). This both catches typos and
+// prevents shell-metacharacter injection via a malformed CLOUDFLARE_PROJECT.
+if (!/^[a-z0-9](?:[a-z0-9-]{0,56}[a-z0-9])?$/.test(PROJECT)) {
+  throw new Error(
+    `Invalid CLOUDFLARE_PROJECT "${PROJECT}". Cloudflare Pages project names must be ` +
+      "lowercase letters, numbers, and hyphens (no leading/trailing hyphen), max 58 chars."
+  );
+}
+
 function rmrf(p) {
   fs.rmSync(p, { recursive: true, force: true });
 }
@@ -99,9 +110,9 @@ function deploy() {
   }
   build();
   console.log(`Deploying dist/ to Pages project "${PROJECT}"...`);
-  // Single command string (all args are static/trusted) so Node doesn't warn
-  // about passing an args array with shell:true. shell:true is needed on
-  // Windows, where `wrangler` is a .cmd shim.
+  // Single command string (PROJECT is validated above; all other args are static)
+  // so Node doesn't warn about passing an args array with shell:true. shell:true is
+  // needed on Windows, where `wrangler` is a .cmd shim.
   const cmd = `wrangler pages deploy dist --project-name=${PROJECT} --branch=main --commit-dirty=true`;
   execSync(cmd, {
     stdio: "inherit",
