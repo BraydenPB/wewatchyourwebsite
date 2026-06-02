@@ -1,0 +1,22 @@
+# Cloudflare Pages response headers. https://developers.cloudflare.com/pages/configuration/headers/
+# These are conservative, non-breaking security headers safe for this static site.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# Cache the vendor bundle for a week. NOT "immutable" / not a year: the filename has
+# no content hash, so if you ever bump the lottie-web version, a shorter max-age lets
+# returning visitors pick it up without serving a stale bundle. HTML stays default so
+# content edits show immediately.
+/js/vendor/*
+  Cache-Control: public, max-age=604800
+
+# OPTIONAL — Content-Security-Policy. Left disabled because this page uses inline
+# <style> (the wordmark sprite) and inline style="--i:.." attributes, plus Google
+# Fonts. TEST in a preview deployment before enabling. A working starting point:
+#
+# /*
+#   Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; base-uri 'self'; frame-ancestors 'self'

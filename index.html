@@ -6,8 +6,11 @@
   <title>WeWatchYourWebsite — Real Security. Built From Real Attacks.</title>
   <meta name="description" content="WordPress security and AI-code analysis powered by 18 years of real threat intelligence. 8,000,000+ sites cleaned since 2007, with automated malware removal and no per-clean fees, plus an eight-stage analyzer for vibe-coded apps." />
   <meta name="theme-color" content="#05060a" />
+  <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://wewatchyourwebsite.com/" />
   <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
 
   <!-- Open Graph / social -->
   <meta property="og:type" content="website" />
@@ -15,22 +18,59 @@
   <meta property="og:title" content="Real Security. Built From Real Attacks." />
   <meta property="og:description" content="WordPress security and AI-code analysis powered by 18 years of real threat intelligence. 8,000,000+ sites cleaned since 2007. Automated malware removal, no per-clean fees." />
   <meta property="og:url" content="https://wewatchyourwebsite.com/" />
-  <!-- TODO: most social platforms will NOT render an SVG share image. Export a
-       1200x630 raster (PNG/JPG) and point og:image + twitter:image at it. -->
-  <meta property="og:image" content="https://wewatchyourwebsite.com/assets/img/horz-bnw-black.svg" />
+  <meta property="og:image" content="https://wewatchyourwebsite.com/assets/img/og-image.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="WeWatchYourWebsite — Real Security. Built From Real Attacks." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Real Security. Built From Real Attacks." />
   <meta name="twitter:description" content="WordPress security and AI-code analysis powered by 18 years of real threat intelligence. 8,000,000+ sites cleaned since 2007, no per-clean fees." />
-  <meta name="twitter:image" content="https://wewatchyourwebsite.com/assets/img/horz-bnw-black.svg" />
+  <meta name="twitter:image" content="https://wewatchyourwebsite.com/assets/img/og-image.jpg" />
+  <meta name="twitter:image:alt" content="WeWatchYourWebsite — Real Security. Built From Real Attacks." />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" crossorigin="anonymous" />
 
   <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Structured data. Only verified facts (founding 2007, the two products, the
+       confirmed pricing). No contact/address/phone is asserted — add those to the
+       Organization node once the client confirms them. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "WeWatchYourWebsite",
+    "url": "https://wewatchyourwebsite.com/",
+    "logo": "https://wewatchyourwebsite.com/assets/img/horz-bnw-black.svg",
+    "foundingDate": "2007",
+    "description": "Infrastructure-level WordPress security and AI-generated-code analysis, powered by 18 years of real threat intelligence. Over 8,000,000 sites cleaned since 2007, with automated malware removal and no per-clean fees.",
+    "sameAs": ["https://blog.wewatchyourwebsite.com/"],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Security products",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": { "@type": "Service", "name": "WordPress Protection", "description": "Automated malware removal, file-integrity monitoring, root-cause determination, and continuous intrusion detection at the infrastructure level." },
+          "price": "59.95",
+          "priceCurrency": "USD",
+          "priceSpecification": { "@type": "UnitPriceSpecification", "price": "59.95", "priceCurrency": "USD", "referenceQuantity": { "@type": "QuantitativeValue", "value": "1", "unitText": "YEAR" } }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": { "@type": "Service", "name": "Code Analyzer", "description": "Eight-stage vulnerability analysis pipeline for AI-generated code, mapped to OWASP Top 10 2025 with CWE classification and adversarially verified attack-chain reports." },
+          "price": "0",
+          "priceCurrency": "USD",
+          "description": "First scan free"
+        }
+      ]
+    }
+  }
+  </script>
 </head>
 <body id="top">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -391,7 +431,7 @@
             <ul class="passes" aria-label="Site protection scan passes" data-passes>
 
               <li class="pass-item is-active" data-pass-item="0">
-                <button class="pass" aria-current="true" data-pass-btn="0">
+                <button class="pass" aria-current="true" data-pass-btn="0" aria-label="Pass 1 of 4: Malware Removal">
                   <span class="pass__status" aria-hidden="true">
                     <span class="pass__num">01</span>
                     <span class="pass__indicator"></span>
@@ -417,7 +457,7 @@
               </li>
 
               <li class="pass-item" data-pass-item="1">
-                <button class="pass" data-pass-btn="1">
+                <button class="pass" data-pass-btn="1" aria-label="Pass 2 of 4: File Integrity Monitoring">
                   <span class="pass__status" aria-hidden="true">
                     <span class="pass__num">02</span>
                     <span class="pass__indicator"></span>
@@ -443,7 +483,7 @@
               </li>
 
               <li class="pass-item" data-pass-item="2">
-                <button class="pass" data-pass-btn="2">
+                <button class="pass" data-pass-btn="2" aria-label="Pass 3 of 4: Root-Cause Determination">
                   <span class="pass__status" aria-hidden="true">
                     <span class="pass__num">03</span>
                     <span class="pass__indicator"></span>
@@ -469,7 +509,7 @@
               </li>
 
               <li class="pass-item" data-pass-item="3">
-                <button class="pass" data-pass-btn="3">
+                <button class="pass" data-pass-btn="3" aria-label="Pass 4 of 4: Total Protection">
                   <span class="pass__status" aria-hidden="true">
                     <span class="pass__num">04</span>
                     <span class="pass__indicator"></span>
@@ -807,7 +847,7 @@
             signature, every YARA rule, every analysis stage was written because we saw something real
             and had to stop it.
           </p>
-          <a class="link-arrow" href="https://blog.wewatchyourwebsite.com" target="_blank" rel="noopener">
+          <a class="link-arrow" href="https://blog.wewatchyourwebsite.com" target="_blank" rel="noopener noreferrer">
             Read our research
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
             <span class="visually-hidden">(opens in a new tab)</span>
@@ -1209,7 +1249,7 @@
           <div>
             <h2 class="section-title" id="blog-title">Intelligence from the field.</h2>
           </div>
-          <a class="link-arrow" href="https://blog.wewatchyourwebsite.com" target="_blank" rel="noopener">
+          <a class="link-arrow" href="https://blog.wewatchyourwebsite.com" target="_blank" rel="noopener noreferrer">
             All posts
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             <span class="visually-hidden">(opens in a new tab)</span>
@@ -1218,7 +1258,7 @@
 
         <ul class="post-grid reveal-group" aria-label="Recent blog posts">
           <li>
-            <a class="post" href="https://blog.wewatchyourwebsite.com" target="_blank" rel="noopener">
+            <a class="post" href="https://blog.wewatchyourwebsite.com" target="_blank" rel="noopener noreferrer">
               <span class="post__tag">Security Research</span>
               <h3 class="post__title">We Built 35 AI-Generated Apps and Put Every One Through a Security Scanner</h3>
               <p class="post__excerpt">Every platform told its users their app was ready to ship. Our scanner disagreed with all of them.</p>
@@ -1226,7 +1266,7 @@
             </a>
           </li>
           <li>
-            <a class="post" href="https://blog.wewatchyourwebsite.com" target="_blank" rel="noopener">
+            <a class="post" href="https://blog.wewatchyourwebsite.com" target="_blank" rel="noopener noreferrer">
               <span class="post__tag">Threat Intelligence</span>
               <h3 class="post__title">The Vibe Coding Trap: How AI-Generated Plugins Are Becoming Attack Vectors</h3>
               <p class="post__excerpt">A developer built a custom plugin over a weekend with AI. It passed a functionality test. It did not pass an attacker.</p>
@@ -1234,7 +1274,7 @@
             </a>
           </li>
           <li>
-            <a class="post" href="https://blog.wewatchyourwebsite.com" target="_blank" rel="noopener">
+            <a class="post" href="https://blog.wewatchyourwebsite.com" target="_blank" rel="noopener noreferrer">
               <span class="post__tag">Data &amp; Research</span>
               <h3 class="post__title">The Real Attack Vector Responsible for 60% of Hacked WordPress Sites</h3>
               <p class="post__excerpt">The “95% of hacks are due to outdated plugins” myth, dismantled with actual data.</p>
@@ -1303,7 +1343,7 @@
           <h2 class="footer-col__title">Company</h2>
           <ul class="footer-col__list">
             <li><a href="#why">Why Us</a></li>
-            <li><a href="https://blog.wewatchyourwebsite.com" target="_blank" rel="noopener">Security Blog</a></li>
+            <li><a href="https://blog.wewatchyourwebsite.com" target="_blank" rel="noopener noreferrer">Security Blog</a></li>
             <li><a href="#faq">FAQ</a></li>
             <li><a href="#final-cta">Talk to a Security Expert</a></li>
           </ul>
@@ -1321,16 +1361,19 @@
       <div class="footer-legal">
         <span>© 2007–2026 WeWatchYourWebsite. All rights reserved.</span>
         <span class="footer-legal__guarantee">18 years of real-world threat intelligence. No per-clean fees.</span>
+        <!-- CLIENT TODO: these point at conventional paths the client must create
+             (or repoint to existing legal pages) before launch. The live site does
+             not yet have Privacy/Terms pages — see README "Before you launch". -->
         <span class="footer-legal__links">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
+          <a href="/privacy-policy/">Privacy Policy</a>
+          <a href="/terms-of-service/">Terms of Service</a>
         </span>
       </div>
     </div>
   </footer>
 
-  <!-- lottie-web player (CDN) -->
-  <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js" defer></script>
+  <!-- lottie-web player (self-hosted, v5.12.2 — no CDN/supply-chain dependency, works offline) -->
+  <script src="js/vendor/lottie.min.js" defer></script>
   <script src="js/letter-glitch.js" defer></script>
   <script src="js/scan-radar.js" defer></script>
   <script src="js/defense-field.js" defer></script>

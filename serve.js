@@ -15,7 +15,9 @@ const TYPES = {
 http.createServer((req, res) => {
   let f = decodeURIComponent(req.url.split("?")[0]);
   if (f.endsWith("/")) f += "index.html";
-  f = path.join(ROOT, f);
+  f = path.normalize(path.join(ROOT, f));
+  // Contain requests to ROOT — reject path-traversal (e.g. /../../etc/passwd).
+  if (f !== ROOT && !f.startsWith(ROOT + path.sep)) { res.writeHead(403); res.end("403"); return; }
   fs.readFile(f, (err, data) => {
     if (err) { res.writeHead(404); res.end("404"); return; }
     res.writeHead(200, { "content-type": TYPES[path.extname(f).toLowerCase()] || "application/octet-stream" });
