@@ -61,7 +61,8 @@ The site is plain static files. To host it anywhere (Netlify, Cloudflare Pages, 
 Apache/Nginx, GitHub Pages…), publish these paths at the web root:
 
 ```
-index.html  assets/  css/  js/  robots.txt  sitemap.xml  site.webmanifest  _headers
+index.html  assets/  css/  js/  privacy-policy/  terms-of-service/
+robots.txt  sitemap.xml  site.webmanifest  _headers
 ```
 
 `_headers` is a [Cloudflare Pages](https://developers.cloudflare.com/pages/configuration/headers/)
