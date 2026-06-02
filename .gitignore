@@ -16,3 +16,6 @@ skills-lock.json
 
 # Private working notes — design strategy / internal history. Never ship to client.
 memory/
+
+# deepsec security-scan workspace — local tooling, not shipped to the client
+.deepsec/

@@ -23,6 +23,13 @@ http.createServer((req, res) => {
     // Malformed percent-encoding (e.g. a stray "%") — don't crash the server.
     res.writeHead(400); res.end("400"); return;
   }
+  // Reject control chars (code < 0x20). A decoded NUL byte (e.g. "%00") slips past
+  // the checks below but makes fs.readFile throw a synchronous TypeError that escapes
+  // the async callback and crashes the server. charCodeAt avoids a literal control
+  // char in source; rejecting the whole C0 range is harmless for legitimate URLs.
+  for (let i = 0; i < f.length; i++) {
+    if (f.charCodeAt(i) < 0x20) { res.writeHead(400); res.end("400"); return; }
+  }
   if (f.endsWith("/")) f += "index.html";
   // Defense-in-depth: never serve dotfiles (.git/…) or the private memory/ notes,
   // even though the server already binds loopback-only.

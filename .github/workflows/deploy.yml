@@ -15,20 +15,30 @@ concurrency:
   group: pages-deploy
   cancel-in-progress: true
 
+# Least privilege: the deploy authenticates to Cloudflare with CLOUDFLARE_API_TOKEN,
+# not the GitHub token, so this job needs no write scope on the repo.
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Only deploy from main. workflow_dispatch lets you pick any ref in the Actions
+    # tab; without this guard a manual run could ship a non-main branch's code with
+    # the Cloudflare secrets. Push triggers are already main-only (see `on:` above).
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        # Pinned to a full commit SHA (supply-chain hardening); comment tracks the tag.
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
 
       - name: Install Wrangler
-        run: npm install --no-save wrangler@4
+        run: npm install --no-save wrangler@4.97.0
 
       - name: Build and deploy
         run: npm run deploy
