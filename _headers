@@ -1,0 +1,42 @@
+# Cloudflare Pages response headers. https://developers.cloudflare.com/pages/configuration/headers/
+# These are conservative, non-breaking security headers safe for this static site.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  # Top-level browsing-context isolation (OWASP baseline). Safe here: the page
+  # opens no cross-origin popups that read window.opener, and every target=_blank
+  # link already carries rel=noopener. (COEP:require-corp is intentionally not
+  # paired — it's unnecessary here and would only add cross-origin friction.)
+  Cross-Origin-Opener-Policy: same-origin
+  # Content-Security-Policy. Validated against both pages with Report-Only +
+  # Chrome (zero violations): all scripts are external/defer (script-src 'self',
+  # no 'unsafe-eval' needed once the malware-removal Lottie's redundant AE
+  # expressions were baked out); inline <style> sprite + style="--i:.." attrs need
+  # style-src 'unsafe-inline'; self-hosted fonts/imgs are 'self' (+ data: for SVG).
+  # If you re-introduce a Lottie with AE expressions, it will need 'unsafe-eval'
+  # in script-src — strip/bake the expressions instead to keep this strict.
+  # form-action is a navigation directive and does NOT inherit from default-src, so
+  # it's listed explicitly to constrain where forms (e.g. the scanner page) can post.
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'
+
+# Cache the vendor bundle for a week. NOT "immutable" / not a year: the filename has
+# no content hash, so if you ever bump the lottie-web version, a shorter max-age lets
+# returning visitors pick it up without serving a stale bundle. HTML stays default so
+# content edits show immediately.
+/js/vendor/*
+  Cache-Control: public, max-age=604800
+
+# Self-hosted fonts: content-stable woff2 we control. Long-cache immutable — if you
+# ever re-subset or bump a family, ship a new filename so returning visitors fetch it.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# NOTE on rollout: the CSP above is enforcing. To gather field telemetry without
+# risk before committing on a new domain, you can duplicate it as a
+# `Content-Security-Policy-Report-Only:` header (it blocks nothing, only reports)
+# on a preview deploy first, then remove the Report-Only copy. HSTS
+# (Strict-Transport-Security) is intentionally NOT set here — it's sticky and
+# domain-level, so enable it at the apex once the production domain is final.

@@ -1,0 +1,10 @@
+# Vendored, minified third-party library — keep it in the repo but treat it as a
+# binary/generated blob: suppress it from diffs and exclude it from language stats.
+js/vendor/lottie.min.js  -diff  linguist-vendored  linguist-generated
+
+# Generated raster assets — never diffed as text.
+assets/img/*.png  binary
+assets/img/*.jpg  binary
+
+# Self-hosted web fonts — binary blobs, suppress from diffs and language stats.
+assets/fonts/*.woff2  binary  -diff  linguist-vendored

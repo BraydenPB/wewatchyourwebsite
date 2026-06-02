@@ -1,0 +1,13 @@
+{
+  "name": "WeWatchYourWebsite",
+  "short_name": "WWYW",
+  "description": "Infrastructure-level WordPress security and AI-code analysis.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#05060a",
+  "theme_color": "#05060a",
+  "icons": [
+    { "src": "assets/img/icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "assets/img/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" }
+  ]
+}

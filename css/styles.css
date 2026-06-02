@@ -1,0 +1,3289 @@
+/* ============================================================
+   WeWatchYourWebsite — Landing page styles
+   Dark security-grade base, lime accent. Mobile-first.
+   Tokens are the LOCKED design anchor — consume, never redefine inline.
+   ============================================================ */
+
+:root{
+  /* Dark-only site: tell the UA so the root scrollbar, the default document
+     canvas, and any native control render dark to match. theme-color only tints
+     the browser chrome — this themes the page surface itself. */
+  color-scheme: dark;
+
+  /* --- Brand source-of-truth (from logo SVG, do not alter) --- */
+  --brand-lime:        #69ff12;
+  --brand-lime-grad-a: #bed143;
+  --brand-lime-grad-b: #3d6f3c;
+  --brand-teal:        #1aa6b7;
+  --brand-navy:        #000033;
+  --brand-ink:         #0c0c0c;
+
+  /* --- Accent scale --- */
+  --accent:            #69ff12;
+  --accent-hover:      #7bff33;
+  --accent-press:      #5ee300;
+  --accent-soft:       rgba(105,255,18,0.12);
+  --accent-border:     rgba(105,255,18,0.40);
+  --accent-ring:       #69ff12;
+  --accent-2:          #1aa6b7;
+  --accent-2-text:     #3dd6e8;
+  --accent-2-hover:    #6fe3f2;
+  --accent-2-soft:     rgba(26,166,183,0.08);
+  --glow-teal-sm:      0 0 10px rgba(26,166,183,0.5);
+
+  /* --- Lime tonal ramp (DEPTH, not dimming) ---
+     The brand neon (--accent #69ff12) is the brightest rung and never changes.
+     These darker rungs exist so flat data-viz (signal bars, radar rings, stage
+     dots) can climb from deep green UP to full neon — the brights pop *because*
+     there is dim green beneath them. Use for decorative/structural/inactive viz
+     segments only; active/leading elements and all text stay on --accent. */
+  /* Rungs are tuned so even the dimmest one used on a panel clears WCAG 1.4.11
+     (3:1 for meaningful graphical elements) against the --surface-2/-1 panels.
+     --lime-400 = 3.0:1 floor; brighter rungs pass comfortably. */
+  --lime-100:          #69ff12;   /* = --accent, the live/peak rung */
+  --lime-200:          #54c531;
+  --lime-300:          #45942c;
+  --lime-400:          #367823;   /* dimmest rung IN USE — ~3:1 on panel */
+  --lime-500:          #1d3a14;   /* reserve: deepest, decorative-only (sub-3:1) */
+  --lime-glow-peak:    0 0 8px rgba(105,255,18,0.6);
+
+  /* --- Cyan role: ONE job ---
+     Cyan/teal is the site's SECONDARY-TIER marker — the "other lens" running
+     alongside the lime defense line: the Code Analyzer product, the enterprise
+     band, the "Available" partner state, the GLASSWORM ledger key-row, and the
+     incoming-threat probes in the how-it-works diagram. It is NOT a third
+     decorative color; every cyan use should answer "is this the secondary tier
+     / the attacker's-lens read?" If not, it should be lime or neutral. */
+  --tier-2:            var(--accent-2);        /* solid mark / leading edge   */
+  --tier-2-text:       var(--accent-2-text);   /* text / icons on dark        */
+  --tier-2-hover:      var(--accent-2-hover);
+  --tier-2-soft:       var(--accent-2-soft);
+  --glow-tier-2-sm:    var(--glow-teal-sm);
+
+  /* --- Severity scale (Code Analyzer findings) ---
+     The two-accent system (lime/teal) deliberately has no "danger" hue — but a
+     vulnerability report MUST encode severity, and lime/teal can't carry
+     critical/high without overloading their meaning. So this is the ONE place a
+     red/amber rung enters the palette, scoped to findings: critical = red, high
+     = amber, medium = the lime accent (lowest "real" rung), low/info = teal.
+     Defined once here; consumed by .scan-finding / .scan-report (never inline).
+     Text rungs are tuned light enough to clear contrast on the dark panels. */
+  --sev-crit-text:     #ffb4b4;
+  --sev-crit-border:   rgba(255,107,107,0.50);
+  --sev-crit-soft:     rgba(255,107,107,0.12);
+  --sev-high-text:     #ffd49b;
+  --sev-high-border:   rgba(255,176,80,0.45);
+  --sev-high-soft:     rgba(255,176,80,0.10);
+  --sev-error-text:    #ff9b9b;   /* form/validation error text */
+
+  /* --- Surfaces ---
+     Base + inset deepened slightly (the page "stage" goes darker) while the
+     panel tiers hold, so neon glows sit on a darker backdrop and read with more
+     depth. This is the only "depth" move that touches brightness — and it
+     darkens the STAGE, never the neon. */
+  --bg-base:           #04050a;
+  --bg-base-2:         #070910;
+  --surface-1:         #0c0f17;
+  --surface-2:         #141925;
+  --surface-3:         #1b2130;
+  --surface-inset:     #030409;
+
+  /* --- Borders & hairlines --- */
+  --border-subtle:     rgba(255,255,255,0.06);
+  --border-default:    rgba(255,255,255,0.10);
+  --border-strong:     rgba(255,255,255,0.16);
+  --border-accent:     rgba(105,255,18,0.40);
+
+  /* --- Text --- */
+  --text-primary:      #e8ecf2;
+  --text-secondary:    #b3bccb;
+  --text-muted:        #8a94a6;
+  --text-faint:        #7b8499;
+  --text-on-accent:    #000033;
+  --text-accent:       #69ff12;
+  --text-link:         #69ff12;
+  --text-link-hover:   #84ff45;
+
+  /* --- Gradients --- */
+  /* Bright-bodied lime: keep glyph bodies luminous on the largest type
+     (olive only past 100%, so it never muddies the headline / stat numbers). */
+  --grad-lime-text:    linear-gradient(180deg, #9bff63 0%, #69ff12 70%, #4f9a3a 130%);
+  --grad-hero-vignette: radial-gradient(120% 90% at 50% 35%, transparent 0%, rgba(5,6,10,0.55) 55%, var(--bg-base) 80%);
+
+  /* --- Radii --- */
+  --radius-xs:  4px;
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  24px;
+  --radius-pill: 999px;
+
+  /* --- Shadows (minimal — elevation via surface step + hairline) --- */
+  --shadow-none:   none;
+  --shadow-sm:     0 1px 2px rgba(0,0,0,0.40);
+  /* Wider halos = the neon spreads further into the (now darker) stage, so it
+     reads with more presence/depth without raising the core brightness. */
+  --glow-lime:     0 0 30px rgba(105,255,18,0.28);
+  --glow-lime-sm:  0 0 15px rgba(105,255,18,0.20);
+
+  /* --- Focus ring (two-layer) --- */
+  --focus-ring-w:    2px;
+  --focus-ring:      0 0 0 2px var(--bg-base), 0 0 0 4px var(--accent-ring);
+  --focus-ring-on-surface: 0 0 0 2px var(--surface-1), 0 0 0 4px var(--accent-ring);
+
+  /* --- Typography stacks --- */
+  --font-display: "Space Grotesk", "Space Grotesk Fallback", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body:    "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono:    "JetBrains Mono", "JetBrains Mono Fallback", "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* --- Motion / easing --- */
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast:      120ms;
+  --dur-base:      160ms;
+  --dur-slow:      260ms;
+
+  /* --- Layout --- */
+  --container-max:    1240px;
+  --container-narrow: 760px;
+  --gutter:           clamp(1.25rem, 4vw, 2.5rem);
+  --z-header: 100; --z-overlay: 200; --z-modal: 300;
+
+  /* --- Fluid type scale ---
+     Tightened display max (5rem felt oversized and forced ragged hero wraps).
+     h1/h2 nudged closer so section heads read as one consistent family. */
+  --text-display: clamp(2.75rem, 1.5rem + 5.4vw, 4.5rem);
+  --text-h1:      clamp(2.25rem, 1.6rem + 3.0vw, 3.25rem);
+  --text-h2:      clamp(1.875rem, 1.45rem + 1.9vw, 2.5rem);
+  --text-h3:      clamp(1.375rem, 1.2rem + 0.9vw, 1.75rem);
+  --text-h4:      clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);
+  --text-h5:      clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --text-h6:      clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+  --text-body-lg: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  --text-body:    clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --text-small:   0.875rem;
+  --text-xs:      0.75rem;
+
+  /* --- Spacing scale --- */
+  --space-0:  0;
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.5rem;
+  --space-6:  2rem;
+  --space-7:  3rem;
+  --space-8:  4rem;
+  --space-9:  6rem;
+  --space-10: 8rem;
+
+  /* Lower mobile floors: the old 4rem/3rem/6rem minimums never relaxed on
+     small screens, so every stacked section carried desktop-sized vertical
+     padding and the page read as a series of voids. The vw term still scales
+     these up generously on wide screens. */
+  --section-py:       clamp(2.75rem, 6vw, 8rem);
+  --section-py-tight: clamp(2.25rem, 4vw, 5rem);
+  --section-gap:      clamp(1.75rem, 4vw, 4rem);
+  --hero-py-top:      clamp(3.5rem, 6vw, 7rem);
+  --grid-gap:         clamp(1.25rem, 2.5vw, 2rem);
+  --stack-gap:        1rem;
+}
+
+/* ============================================================
+   SELF-HOSTED FONTS — first-party, no Google Fonts CDN
+   Three variable woff2 per family-subset (one file covers all weights via the
+   weight axis), served from assets/fonts/ with an immutable cache (see _headers)
+   and font-display:swap. Subsets: latin + latin-ext (the page is English; ext
+   covers the odd accented glyph / extended punctuation safely). Each family has
+   a metrics-matched fallback @font-face (local Arial + size-adjust / ascent- /
+   descent-override) so the swap from the system fallback to the web font does
+   not shift layout — holding CLS at its prior ~0.01. CLIENT NOTE: you now own
+   font subsetting + version bumps that Google handled automatically.
+   ============================================================ */
+@font-face{
+  font-family:"Space Grotesk"; font-style:normal; font-weight:400 700;
+  font-display:swap; src:url(../assets/fonts/space-grotesk-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:"Space Grotesk"; font-style:normal; font-weight:400 700;
+  font-display:swap; src:url(../assets/fonts/space-grotesk-latin-ext.woff2) format("woff2");
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face{
+  font-family:"Inter"; font-style:normal; font-weight:300 700;
+  font-display:swap; src:url(../assets/fonts/inter-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:"Inter"; font-style:normal; font-weight:300 700;
+  font-display:swap; src:url(../assets/fonts/inter-latin-ext.woff2) format("woff2");
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+/* JetBrains Mono is declared in TWO disjoint weight bands (400-500 and 700) from
+   the same variable file, deliberately leaving a gap at 600. The design uses
+   font-weight:600 on its emphatic mono micro-labels (pass numbers, status tags),
+   and the old Google Fonts setup only shipped discrete {400,500,700}, so the UA
+   rounded that 600 UP to the real 700 cut. Reproducing the gap here keeps those
+   labels rendering at 700 exactly as shipped, instead of a lighter true-600 the
+   single 400-700 variable range would now interpolate. (Space Grotesk / Inter
+   keep the full continuous range — they were requested at 600 originally.) */
+@font-face{
+  font-family:"JetBrains Mono"; font-style:normal; font-weight:400 500;
+  font-display:swap; src:url(../assets/fonts/jetbrains-mono-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:"JetBrains Mono"; font-style:normal; font-weight:700;
+  font-display:swap; src:url(../assets/fonts/jetbrains-mono-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:"JetBrains Mono"; font-style:normal; font-weight:400 500;
+  font-display:swap; src:url(../assets/fonts/jetbrains-mono-latin-ext.woff2) format("woff2");
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face{
+  font-family:"JetBrains Mono"; font-style:normal; font-weight:700;
+  font-display:swap; src:url(../assets/fonts/jetbrains-mono-latin-ext.woff2) format("woff2");
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+/* Metrics-matched fallbacks (local Arial, scaled to each web font's x-height +
+   ascent/descent) — sit between the web font and system-ui in each stack so the
+   swap holds the line box. Values computed from each font's own head/hhea/OS2. */
+@font-face{
+  font-family:"Space Grotesk Fallback"; src:local("Arial");
+  size-adjust:93.72%; ascent-override:104.99%; descent-override:31.16%; line-gap-override:0%;
+}
+@font-face{
+  font-family:"Inter Fallback"; src:local("Arial");
+  size-adjust:105.27%; ascent-override:92.02%; descent-override:22.91%; line-gap-override:0%;
+}
+@font-face{
+  font-family:"JetBrains Mono Fallback"; src:local("Arial");
+  size-adjust:106.06%; ascent-override:96.17%; descent-override:28.28%; line-gap-override:0%;
+}
+
+@media (prefers-reduced-motion: reduce){
+  :root{ --dur-fast:0ms; --dur-base:0ms; --dur-slow:0ms; }
+}
+
+/* ============================================================
+   RESET / BASE
+   ============================================================ */
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:72px; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+body{
+  margin:0;
+  background:var(--bg-base);
+  color:var(--text-secondary);
+  font-family:var(--font-body);
+  font-size:var(--text-body);
+  line-height:1.65;
+  font-feature-settings:"cv11","ss01";
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+
+h1,h2,h3,h4,h5,h6{
+  margin:0;
+  font-family:var(--font-display);
+  font-weight:700;
+  color:var(--text-primary);
+  line-height:1.1;
+  letter-spacing:-0.025em;
+  /* Balance every headline by default so multi-line headings break evenly
+     instead of orphaning a single word on the last line. */
+  text-wrap:balance;
+}
+/* pretty avoids a lone last word (orphan/widow) on body + lede paragraphs */
+p{ margin:0; text-wrap:pretty; }
+a{ color:var(--text-link); text-decoration:none; transition:color var(--dur-base) var(--ease-out); }
+a:hover{ color:var(--text-link-hover); }
+img,svg,canvas{ display:block; max-width:100%; }
+ul{ margin:0; padding:0; list-style:none; }
+button{ font-family:inherit; }
+
+::selection{ background:rgba(105,255,18,0.24); color:#fff; }
+
+:focus-visible{ outline:none; box-shadow:var(--focus-ring); border-radius:var(--radius-sm); }
+
+/* Forced-colors / Windows High Contrast strips box-shadow, so the ring-based
+   focus indicators vanish. Restore a real system-color outline for every
+   focusable element in that mode. */
+@media (forced-colors: active){
+  :focus-visible{ outline:3px solid Highlight; outline-offset:2px; }
+  /* .btn:focus-visible sets `outline:none` at higher specificity, so without
+     this it would still have no indicator once box-shadow is stripped. Covers
+     both primary and secondary CTAs (both carry .btn). */
+  .btn:focus-visible{ outline:3px solid Highlight; outline-offset:2px; }
+}
+
+.visually-hidden{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+.nowrap{ white-space:nowrap; }
+
+.skip-link{
+  position:absolute; left:var(--space-4); top:-3rem; z-index:var(--z-modal);
+  background:var(--accent); color:var(--text-on-accent);
+  padding:var(--space-2) var(--space-4); border-radius:var(--radius-md);
+  font-weight:600; transition:top var(--dur-base) var(--ease-out);
+}
+.skip-link:focus{ top:var(--space-4); color:var(--text-on-accent); }
+
+/* ============================================================
+   LAYOUT PRIMITIVES
+   ============================================================ */
+.container{
+  width:100%; max-width:var(--container-max);
+  margin-inline:auto; padding-inline:var(--gutter);
+}
+
+section{ padding-block:var(--section-py); position:relative; }
+.section--alt{ background:var(--bg-base-2); }
+/* Vary the vertical rhythm so the page doesn't pulse at one fixed interval:
+   the monitor (radar) breathes wider; the FAQ sits tighter as a dense list. */
+#stats{ padding-block:clamp(5rem, 8vw, 10rem); }
+#faq{ padding-block:clamp(3rem, 5vw, 6rem); }
+
+/* ============================================================
+   SIDE RAILS — gutter depth layer
+   The instrument-panel texture that lives in the empty side gutters
+   outside the centered --container-max column, so the page reads as a
+   continuous console surface rather than a stack of dark voids. Two
+   fixed strips (body::before = left, body::after = right) carry a faint
+   hairline grid + a dashed vertical guide line on the INNER edge (the
+   container boundary, the "frame" of the column).
+
+   Cover-vs-reveal is structural, not per-section: the rails sit at z:0,
+   #main sits at z:1, so every section that paints a full-width opaque
+   background (.section--alt, the ribbon) or a full-bleed [data-glitch]
+   backdrop (analyzer · final-cta · footer) naturally COVERS the rails,
+   while the transparent sections (#wordpress · #stats · #pricing · #faq ·
+   #blog) REVEAL them through their empty gutters. The footer's glitch
+   backdrop is full-bleed, so the rails stop there by design. The hero is
+   the one exception that needs help: its .hero__wash has an opaque base
+   gradient inside an isolate:isolate context, so it's inset to the content
+   column (see .hero__wash @1320px) to let its gutters reveal the rails too.
+
+   Static, pure CSS — no JS, no animation — so it satisfies the
+   prefers-reduced-motion and scripting:none contracts for free, and adds
+   depth without becoming a competing motion layer. Below the column
+   width there are no gutters, so the strips are gated off entirely. */
+:root{
+  --rail-w: calc((100vw - var(--container-max)) / 2);
+  /* The gutter texture: a fine 48px hairline line-grid, harmonized with the
+     hero's own 48px grid + its rgba(255,255,255,.022) hairline color (see
+     .hero__wash::after) so the rails read as a continuation of that depth
+     language rather than a foreign import. This is Cloudflare's gutter-
+     texture concept translated into this site's native grid vocabulary
+     (the same line-grid motif used in .hero__wash, .screen-stage__grid,
+     and the mobile-menu texture) — chosen over a literal dot field because
+     it carries more clearly on the near-black base and matches the existing
+     instrument-panel idiom. */
+  --rail-grid: 48px;
+  --rail-line: rgba(255,255,255,0.04);
+  --rail-tex:
+    linear-gradient(var(--rail-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rail-line) 1px, transparent 1px);
+  --rail-tex-size: var(--rail-grid) var(--rail-grid), var(--rail-grid) var(--rail-grid);
+}
+body::before,
+body::after{
+  content:"";
+  position:fixed; top:0; bottom:0; z-index:0; width:0;
+  pointer-events:none;
+  /* Base texture (the hairline line-grid). The per-side rules below add a
+     dashed vertical guide line pinned to each strip's inner edge. */
+  background-image: var(--rail-tex);
+  background-size: var(--rail-tex-size);
+  /* Fade the strip in from the top and out before the page bottom, the
+     same mask idiom the hero grid and mobile-menu texture already use. */
+  -webkit-mask-image:linear-gradient(180deg, transparent 0, #000 12%, #000 84%, transparent 100%);
+          mask-image:linear-gradient(180deg, transparent 0, #000 12%, #000 84%, transparent 100%);
+}
+/* Each strip carries the texture PLUS a 1px dashed vertical guide line on
+   its inner edge (the container boundary) — Cloudflare's "frame" line,
+   recolored to this site's --border-default. The line is a second,
+   non-repeating background pinned to the inner edge, so left strip → line
+   on the right, right strip → line on the left. */
+body::before{
+  left:0;
+  background-image:
+    var(--rail-tex),
+    repeating-linear-gradient(180deg, var(--border-default) 0 8px, transparent 8px 16px);
+  background-size: var(--rail-tex-size), 1px 100%;
+  background-position: 0 0, 0 0, right 0;
+  background-repeat: repeat, repeat, no-repeat;
+}
+body::after{
+  right:0;
+  background-image:
+    var(--rail-tex),
+    repeating-linear-gradient(180deg, var(--border-default) 0 8px, transparent 8px 16px);
+  background-size: var(--rail-tex-size), 1px 100%;
+  background-position: 0 0, 0 0, left 0;
+  background-repeat: repeat, repeat, no-repeat;
+}
+/* Only show rails when there is real gutter room beyond the column. Below
+   this, --rail-w would clamp toward 0 and the strips collapse cleanly,
+   never fighting body{overflow-x:hidden}. */
+@media (min-width: 1320px){
+  body::before,
+  body::after{ width: var(--rail-w); }
+}
+/* The page content rides above the rails so opaque/full-bleed section
+   backgrounds cover them and only the transparent sections reveal them.
+   Header (z:100) and the mobile menu (z:200/300) remain above both. */
+#main{ position:relative; z-index:1; }
+
+.section-head{ max-width:640px; margin-bottom:var(--space-7); }
+.section-head--center{ margin-inline:auto; text-align:center; }
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--text-accent); margin-bottom:var(--space-4);
+}
+.eyebrow::before{
+  content:""; width:18px; height:1px; background:var(--accent-border);
+}
+.section-head--center .eyebrow{ justify-content:center; }
+
+.section-title{ font-size:var(--text-h2); line-height:1.08; max-width:20ch; }
+.section-head--center .section-title{ margin-inline:auto; }
+
+/* Why-diff head — two sentences, each meant to sit on its own pair of lines.
+   The shared 20ch cap collapses them into a lopsided wrap, so on desktop we
+   drop the cap, hard-break between the sentences, and let each sentence find
+   its own two near-even lines. Mobile keeps the default single-column wrap. */
+.why-diff__br{ display:none; }
+@media (min-width:920px){
+  .why-diff__title{ max-width:none; }
+  .why-diff__br{ display:inline; }
+}
+.section-lede{
+  margin-top:var(--space-5); font-size:var(--text-body-lg);
+  color:var(--text-muted); line-height:1.6; max-width:52ch;
+}
+.section-head--center .section-lede{ margin-inline:auto; }
+
+/* Services head — the lone NON-centered section head, deliberately asymmetric so
+   it doesn't add to the run of centered heads and it mirrors the two-column
+   console grid directly below. Heading + a mono handoff label sit left, the lede
+   sits right and fills what was dead top-right space over the console. The mono
+   label parallels the console eyebrow ("Continuous scan · 4 passes") — the same
+   left-says-section / right-says-artifact device as the FAQ rail. Overrides the
+   global 640px cap (sized for a single-column block) so the head spans the grid. */
+.services-head{ max-width:none; }
+/* Match the console grid below exactly (same 1.35/1 ratio, gap and 900px break)
+   so the lede's left edge lands on the console rail's left edge — the head reads
+   as the same two columns, just one row up. */
+@media (min-width:900px){
+  .services-head{
+    display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+    gap:clamp(1.5rem,3vw,3rem); align-items:end;
+  }
+  /* Lede baseline-aligns to the heading's last line, not floated mid-air. */
+  .services-head__lede{ margin-top:0; max-width:46ch; }
+}
+.services-head__label{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--text-faint);
+  margin-bottom:var(--space-4);
+}
+.services-head__title{ max-width:none; text-wrap:balance; }
+
+/* Solid lime accent on display words — gradient-fill text reads as an AI tell.
+   Weight + the display face carry the emphasis, not a gradient. */
+.text-grad{ color:var(--accent); }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:var(--space-2);
+  padding:0.875rem 1.5rem; min-height:48px;
+  border-radius:var(--radius-md); border:1px solid transparent;
+  font-family:var(--font-body); font-size:1rem; font-weight:600;
+  line-height:1; cursor:pointer; white-space:nowrap;
+  transition:background var(--dur-base) var(--ease-out),
+             border-color var(--dur-base) var(--ease-out),
+             color var(--dur-base) var(--ease-out),
+             transform var(--dur-base) var(--ease-out),
+             box-shadow var(--dur-base) var(--ease-out);
+}
+.btn:focus-visible{ outline:none; box-shadow:var(--focus-ring); }
+
+.btn--primary{ background:var(--accent); color:var(--text-on-accent); border-color:var(--accent); }
+.btn--primary:hover{ background:var(--accent-hover); border-color:var(--accent-hover); color:var(--text-on-accent); transform:translateY(-2px); box-shadow:var(--glow-lime); }
+.btn--primary:active{ background:var(--accent-press); border-color:var(--accent-press); transform:translateY(0); }
+.btn--primary[disabled],.btn--primary:disabled{ background:rgba(105,255,18,0.30); color:rgba(0,0,51,0.55); cursor:not-allowed; transform:none; box-shadow:none; }
+
+.btn--secondary{ background:transparent; color:var(--text-primary); border-color:var(--border-strong); }
+.btn--secondary:hover{ border-color:var(--accent-border); color:var(--text-accent); background:var(--accent-soft); transform:translateY(-2px); }
+.btn--secondary:active{ background:rgba(105,255,18,0.18); transform:translateY(0); }
+.btn--secondary:focus-visible{ box-shadow:var(--focus-ring-on-surface); }
+
+.btn--compact{ padding:0.625rem 1.125rem; min-height:auto; font-size:0.9375rem; }
+.btn--block{ width:100%; }
+.btn--lg{ padding:1rem 1.75rem; font-size:1.0625rem; }
+
+/* ============================================================
+   BADGE / PILL
+   ============================================================ */
+.badge{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  padding:0.375rem 0.75rem; border-radius:var(--radius-pill);
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.04em; text-transform:uppercase;
+  background:var(--accent-soft); color:var(--text-accent);
+  border:1px solid var(--accent-border);
+}
+
+.status-dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--accent); box-shadow:var(--glow-lime-sm); flex:none;
+}
+.status-dot--pulse{ animation:pulse 2s var(--ease-in-out) infinite; }
+@keyframes pulse{
+  0%,100%{ box-shadow:0 0 0 0 rgba(105,255,18,0.45); }
+  50%{ box-shadow:0 0 0 5px rgba(105,255,18,0); }
+}
+@media (prefers-reduced-motion: reduce){ .status-dot--pulse{ animation:none; } }
+
+/* ============================================================
+   HEADER / NAV
+   ============================================================ */
+.site-header{
+  position:sticky; top:0; z-index:var(--z-header);
+  background:rgba(5,6,10,0.72);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  backdrop-filter:blur(14px) saturate(140%);
+  border-bottom:1px solid var(--border-subtle);
+  transition:background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+}
+.site-header.is-scrolled{ background:rgba(5,6,10,0.92); border-bottom-color:var(--border-default); }
+/* While the mobile menu is open, the top bar sits above the opaque panel, so
+   its translucent blur over the (scroll-locked) hero reads as stray tint.
+   Make it fully solid so the brand + close button strip looks deliberate, with
+   the panel's accent border landing at 64px as a clean divider. Placed AFTER
+   .is-scrolled (equal specificity) so it wins when you open after scrolling. */
+.site-header:has(#mobile-menu.is-open){ background:var(--bg-base); border-bottom-color:var(--accent-border); }
+
+.nav{
+  display:flex; align-items:center; gap:var(--space-5);
+  height:64px; max-width:var(--container-max); margin-inline:auto;
+  padding-inline:var(--gutter);
+}
+.nav__brand{ display:inline-flex; align-items:center; flex:none; border-radius:var(--radius-sm); }
+.nav__brand:focus-visible{ box-shadow:var(--focus-ring); }
+/* Logo height — 48px at ALL widths (no desktop override). The header bar is a
+   fixed 64px (.nav), independent of this, so the logo height does NOT grow the
+   header (48px clears 64px with 8px breathing room each side). */
+.brand-logo{ height:48px; width:auto; }
+
+.nav__links{
+  display:none; align-items:center; gap:var(--space-2);
+  margin-inline-start:var(--space-4);
+}
+.nav__link{
+  position:relative; padding:var(--space-2) var(--space-3);
+  font-size:0.9375rem; font-weight:500; color:var(--text-muted);
+  border-radius:var(--radius-sm);
+  transition:color var(--dur-base) var(--ease-out);
+}
+.nav__link::after{
+  content:""; position:absolute; left:var(--space-3); right:var(--space-3); bottom:4px;
+  height:2px; background:var(--accent); border-radius:2px;
+  transform:scaleX(0); transform-origin:left;
+  transition:transform var(--dur-base) var(--ease-out);
+}
+.nav__link:hover,.nav__link[aria-current="true"]{ color:var(--text-primary); }
+.nav__link:hover::after,.nav__link[aria-current="true"]::after{ transform:scaleX(1); }
+.nav__link:focus-visible{ box-shadow:var(--focus-ring); }
+
+.nav__cta{ display:none; align-items:center; gap:var(--space-3); margin-inline-start:auto; }
+
+/* ---- Toggle: animated hamburger → X ---------------------------------
+   A 44px tap target; three bars of staggered width (the resting state reads
+   as a deliberate glyph, not a generic icon). On open they equalize and the
+   outer two rotate into an X while the middle collapses. Bars carry a lime
+   tip-glow on hover/open to tie into the brand accent. */
+.nav__toggle{
+  position:relative; z-index:calc(var(--z-overlay) + 1);
+  display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px; margin-inline-start:auto; padding:0;
+  background:transparent; border:1px solid var(--border-default);
+  border-radius:var(--radius-sm); color:var(--text-primary); cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
+}
+.nav__toggle:hover{ border-color:var(--accent-border); background:var(--accent-soft); }
+.nav__toggle:active{ transform:scale(0.94); }
+.nav__toggle:focus-visible{ box-shadow:var(--focus-ring); }
+.nav__toggle[aria-expanded="true"]{ border-color:var(--accent-border); background:var(--accent-soft); }
+
+.nav__toggle-bars{
+  position:relative; display:flex; flex-direction:column;
+  align-items:flex-end; justify-content:center; gap:5px;
+  width:22px; height:16px;
+}
+.nav__toggle-bar{
+  display:block; height:2px; border-radius:var(--radius-pill);
+  background:var(--text-primary);
+  transition:width var(--dur-base) var(--ease-out),
+             transform var(--dur-slow) var(--ease-out),
+             opacity var(--dur-fast) var(--ease-out),
+             background var(--dur-base) var(--ease-out);
+}
+.nav__toggle-bar:nth-child(1){ width:22px; }
+.nav__toggle-bar:nth-child(2){ width:15px; }
+.nav__toggle-bar:nth-child(3){ width:18px; }
+.nav__toggle:hover .nav__toggle-bar,
+.nav__toggle[aria-expanded="true"] .nav__toggle-bar{ background:var(--accent); }
+.nav__toggle:hover .nav__toggle-bar:nth-child(2),
+.nav__toggle:hover .nav__toggle-bar:nth-child(3){ width:22px; }
+/* Morph to X: equalize widths, collapse the middle, rotate the outer pair
+   about the bars' shared center (gap 5px → ±7px travel to meet). */
+.nav__toggle[aria-expanded="true"] .nav__toggle-bar{ width:22px; }
+.nav__toggle[aria-expanded="true"] .nav__toggle-bar:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.nav__toggle[aria-expanded="true"] .nav__toggle-bar:nth-child(2){ opacity:0; transform:scaleX(0); }
+.nav__toggle[aria-expanded="true"] .nav__toggle-bar:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+/* ---- Mobile menu: full-coverage "security console" drawer ------------
+   Outer element spans the whole viewport so the scrim can dim the page; the
+   inner .mobile-menu__panel is the opaque sheet anchored below the 64px
+   header. Structurally opaque (solid --bg-base) so nothing bleeds through. */
+.mobile-menu{
+  position:fixed; inset:0; z-index:var(--z-overlay);
+  display:block; pointer-events:none;
+}
+/* Focused programmatically on open (tabindex=-1) so SRs announce the dialog;
+   it's never a Tab stop, so suppress its outline — the links keep their own. */
+.mobile-menu:focus{ outline:none; }
+.mobile-menu[hidden]{ display:none; }
+
+/* Backdrop scrim — dims + blurs the sliver of page beside/below the panel,
+   and is the click-to-dismiss surface. Uses an explicit height (not bottom:0)
+   so it escapes the header's backdrop-filter containing block — same trick the
+   panel relies on. Starts at 64px (below the header bar) so the top strip —
+   brand + close button — stays clean instead of being dimmed/blurred by the
+   scrim painting over it. Explicit height, NOT bottom:0 (which would clamp to
+   the 64px containing block and collapse — the same backdrop-filter gotcha). */
+.mobile-menu__scrim{
+  position:absolute; top:64px; left:0; right:0; height:calc(100dvh - 64px);
+  background:rgba(3,4,8,0.62);
+  -webkit-backdrop-filter:blur(6px) saturate(120%);
+          backdrop-filter:blur(6px) saturate(120%);
+  opacity:0; transition:opacity var(--dur-slow) var(--ease-out);
+}
+.mobile-menu.is-open{ pointer-events:auto; }
+.mobile-menu.is-open .mobile-menu__scrim{ opacity:1; }
+
+/* The opaque panel. Anchored under the header; fills to the viewport bottom
+   on tall menus (overflow scrolls). Slides down + fades from behind the
+   header bar. */
+.mobile-menu__panel{
+  position:absolute; top:64px; left:0; right:0;
+  max-height:calc(100dvh - 64px);
+  display:flex; flex-direction:column;
+  padding:var(--space-5) var(--gutter)
+          calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  background:var(--bg-base);
+  border-top:1px solid var(--accent-border);
+  box-shadow:0 24px 60px -12px rgba(0,0,0,0.7), var(--glow-lime-sm);
+  overflow-y:auto; overscroll-behavior:contain;
+  -webkit-tap-highlight-color:transparent;
+  transform:translateY(-12px); opacity:0; visibility:hidden;
+  transition:transform var(--dur-slow) var(--ease-out),
+             opacity var(--dur-slow) var(--ease-out),
+             visibility var(--dur-slow);
+}
+.mobile-menu.is-open .mobile-menu__panel{ transform:translateY(0); opacity:1; visibility:visible; }
+
+/* Faint scanline + hairline-grid texture, masked to fade downward — the same
+   ops-console language used across the site, kept very low contrast. */
+.mobile-menu__texture{
+  position:absolute; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(80% 50% at 100% 0%, rgba(105,255,18,0.06), transparent 60%),
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size:auto, 100% 44px, 44px 100%;
+  -webkit-mask-image:linear-gradient(180deg, #000 0%, transparent 85%);
+          mask-image:linear-gradient(180deg, #000 0%, transparent 85%);
+}
+/* Keep real content above the texture. */
+.mobile-menu__status,
+.mobile-menu__list,
+.mobile-menu__cta,
+.mobile-menu__foot{ position:relative; z-index:1; }
+
+/* Status strip */
+.mobile-menu__status{
+  display:flex; align-items:center; gap:var(--space-2);
+  margin:0 0 var(--space-4);
+  font-family:var(--font-mono); font-size:var(--text-xs);
+  letter-spacing:0.08em; text-transform:uppercase;
+}
+.mobile-menu__status-dot{
+  width:7px; height:7px; border-radius:var(--radius-pill);
+  background:var(--accent); box-shadow:0 0 8px var(--accent);
+  animation:menu-pulse 2.4s var(--ease-in-out) infinite;
+}
+.mobile-menu__status-k{ color:var(--text-secondary); }
+.mobile-menu__status-v{
+  margin-inline-start:auto; color:var(--text-faint);
+  font-size:0.625rem; letter-spacing:0.06em;
+}
+@keyframes menu-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.35; } }
+
+/* Nav manifest */
+.mobile-menu__list{ list-style:none; margin:0; padding:0; }
+.mobile-menu__item{ border-top:1px solid var(--border-subtle); }
+.mobile-menu__item:first-child{ border-top:none; }
+
+.mobile-menu__link{
+  position:relative; display:grid;
+  grid-template-columns:auto 1fr auto;
+  grid-template-areas:"index label arrow" "index hint arrow";
+  align-items:center; column-gap:var(--space-4); row-gap:2px;
+  min-height:60px; padding:var(--space-3) var(--space-1);
+  color:var(--text-primary); text-decoration:none;
+  -webkit-tap-highlight-color:transparent;
+  transition:color var(--dur-base) var(--ease-out);
+}
+/* Lime sweep that grows from the left edge on hover/active/current. */
+.mobile-menu__link::before{
+  content:""; position:absolute; left:calc(var(--space-1) * -1 - 2px); top:8px; bottom:8px;
+  width:2px; border-radius:var(--radius-pill); background:var(--accent);
+  transform:scaleY(0); transform-origin:center;
+  transition:transform var(--dur-base) var(--ease-out);
+}
+.mobile-menu__link:hover,
+.mobile-menu__link[aria-current="true"]{ color:var(--text-primary); }
+.mobile-menu__link:hover::before,
+.mobile-menu__link:active::before,
+.mobile-menu__link[aria-current="true"]::before{ transform:scaleY(1); }
+.mobile-menu__link:focus-visible{
+  outline:none; border-radius:var(--radius-sm);
+  box-shadow:var(--focus-ring-on-surface);
+}
+
+.mobile-menu__index{
+  grid-area:index; align-self:center;
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  color:var(--text-faint); transition:color var(--dur-base) var(--ease-out);
+}
+.mobile-menu__link:hover .mobile-menu__index,
+.mobile-menu__link[aria-current="true"] .mobile-menu__index{ color:var(--accent); }
+
+.mobile-menu__label{
+  grid-area:label;
+  font-family:var(--font-display); font-size:var(--text-h4); font-weight:600;
+  line-height:1.1; letter-spacing:-0.01em;
+}
+.mobile-menu__hint{
+  grid-area:hint;
+  font-size:0.75rem; color:var(--text-muted); letter-spacing:0.01em;
+}
+.mobile-menu__arrow{
+  grid-area:arrow; align-self:center; color:var(--text-faint);
+  transform:translateX(-4px); opacity:0;
+  transition:transform var(--dur-base) var(--ease-out),
+             opacity var(--dur-base) var(--ease-out),
+             color var(--dur-base) var(--ease-out);
+}
+.mobile-menu__link:hover .mobile-menu__arrow,
+.mobile-menu__link[aria-current="true"] .mobile-menu__arrow{
+  transform:translateX(0); opacity:1; color:var(--accent);
+}
+
+/* CTAs */
+.mobile-menu__cta{
+  display:flex; flex-direction:column; gap:var(--space-3);
+  margin-top:var(--space-5); padding-top:var(--space-5);
+  border-top:1px solid var(--border-default);
+}
+
+/* Footer signature */
+.mobile-menu__foot{
+  display:flex; align-items:center; gap:var(--space-2);
+  margin:var(--space-5) 0 0;
+  font-family:var(--font-mono); font-size:0.6875rem;
+  letter-spacing:0.04em; color:var(--text-faint);
+}
+/* Defense/uptime signal (sites cleaned) = your-side = lime, matching the netops
+   LIVE dot and ribbon dots. (Was a stray teal — cyan is reserved for the
+   secondary tier / attacker's-lens, which an uptime stat is not.) */
+.mobile-menu__foot-dot{
+  width:5px; height:5px; border-radius:var(--radius-pill); background:var(--accent);
+  box-shadow:var(--glow-lime-sm);
+}
+
+/* Staggered entrance for rows + CTA block (driven by inline --i). */
+.mobile-menu__item,
+.mobile-menu__cta{
+  opacity:0; transform:translateY(10px);
+  transition:opacity var(--dur-slow) var(--ease-out),
+             transform var(--dur-slow) var(--ease-out);
+}
+.mobile-menu.is-open .mobile-menu__item,
+.mobile-menu.is-open .mobile-menu__cta{
+  opacity:1; transform:translateY(0);
+  transition-delay:calc(120ms + var(--i, 0) * 45ms);
+}
+
+/* Mobile→desktop nav switch at 1120px (was 768px). The desktop nav —
+   5 links + 2 full CTA buttons — needs ~1100px to sit on one line; below
+   that it wrapped inside the FIXED 64px bar (links spilling to a 2nd row,
+   overlapping the hero). 768px let landscape phones, iPad-landscape, and
+   small windows cross into desktop mode and break. The measured fit floor
+   is ~1100px; 1120px adds a ~20px cushion so cross-engine font-width
+   variance can't tip the now-`nowrap` row into horizontal page scroll.
+   Everything below gets the hamburger "security console" drawer, which
+   scales to any width. KEEP THIS NUMBER SYNCED with the .nav slim block
+   below and the matchMedia query in js/main.js (menu auto-close on grow). */
+@media (min-width:1120px){ .mobile-menu{ display:none; } }
+
+@media (min-width:1120px){
+  .nav__links,.nav__cta{ display:flex; }
+  .nav__toggle{ display:none; }
+  /* Hold the link row on ONE line inside the 64px bar. Without flex:0 0 auto
+     the links column is shrinkable, so flexbox wraps it (a 2nd row → clipped
+     by the fixed height) the moment space tightens, even when the content
+     would otherwise fit. nowrap + non-shrinking is what actually keeps the
+     header intact across the 1100–1280 range. The slimmer gaps/padding here
+     (vs the base values) buy the width that lets the floor sit at 1100. */
+  .nav{ gap:var(--space-4); }
+  .nav__links{ flex:0 0 auto; flex-wrap:nowrap; gap:var(--space-1); margin-inline-start:var(--space-2); }
+  .nav__link{ padding-inline:10px; white-space:nowrap; }
+  .nav__cta{ flex:0 0 auto; gap:var(--space-2); }
+}
+
+/* Reduced motion: no slide/stagger/pulse — instant, static reveal. */
+@media (prefers-reduced-motion: reduce){
+  .nav__toggle-bar,
+  .mobile-menu__scrim,
+  .mobile-menu__panel,
+  .mobile-menu__item,
+  .mobile-menu__cta,
+  .mobile-menu__arrow{ transition:none; }
+  .mobile-menu.is-open .mobile-menu__item,
+  .mobile-menu.is-open .mobile-menu__cta{ transition-delay:0s; }
+  .mobile-menu__status-dot{ animation:none; }
+}
+
+/* ============================================================
+   LETTERGLITCH BACKDROP
+   ============================================================ */
+/* SOURCE-ORDER WARNING (latent fragility — do not "tidy" by moving this):
+   `.glitch` is z-index:0 (positioned, so it establishes a paint level). The
+   hero/final-cta/footer `__bg` backdrops sit at z-index:-2 and `__bg-fade` /
+   localized scrims at z-index:-1. Those negative z-indexes only paint BEHIND
+   the section content because this `.glitch` block is declared BEFORE the
+   section rules below — equal-specificity source order is what keeps the
+   backdrop stack winning. If you relocate this block beneath the hero/footer
+   section rules, the layering inverts and the glitch covers the copy. Keep it
+   here, above the section blocks. */
+.glitch{ position:absolute; inset:0; z-index:0; overflow:hidden; background:#000; pointer-events:none; }
+.glitch canvas{ display:block; width:100%; height:100%; }
+.glitch__vignette{
+  position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,1) 100%);
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  position:relative; isolation:isolate;
+  padding-block:var(--hero-py-top) var(--section-py);
+  overflow:hidden;
+}
+/* Mobile: the stacked hero (message → ops panel → stat band) ran ~2 screens
+   tall because the desktop padding floors (6rem top / 4rem bottom) are far too
+   generous once everything is in one column. Tighten the whole vertical rhythm
+   so the hero reads as one screen, not a void. */
+@media (max-width:639px){
+  .hero{ padding-block:var(--space-7) var(--space-6); }
+}
+/* A single calm anchor wash — a soft lime corner-glow over the base gradient.
+   No character rain (it read dated + fought the type), no per-glyph scrim box. */
+.hero__wash{
+  position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(58% 50% at 8% 0%, rgba(105,255,18,0.10), transparent 58%),
+    radial-gradient(60% 55% at 100% 12%, rgba(26,166,183,0.08), transparent 60%),
+    linear-gradient(180deg, var(--bg-base-2) 0%, var(--bg-base) 70%);
+}
+/* .hero has isolation:isolate, so this wash's opaque base gradient is trapped
+   in the hero's stacking context and would paint over the body side-rails,
+   hiding them in the hero gutters (every OTHER reveal section is transparent
+   and shows the rails). Inset the wash to the content column wherever the
+   rails are live, so the hero gutters reveal the same grid + dashed guide line
+   as the rest of the page. Full-bleed below that — there are no gutters there. */
+@media (min-width:1320px){
+  .hero__wash{ left:var(--rail-w); right:var(--rail-w); }
+}
+/* faint hairline grid for depth, fading out before the stat band */
+.hero__wash::after{
+  content:""; position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size:48px 48px;
+  -webkit-mask-image:radial-gradient(120% 80% at 50% 0%, #000 30%, transparent 75%);
+          mask-image:radial-gradient(120% 80% at 50% 0%, #000 30%, transparent 75%);
+}
+
+/* Split: message left, network-ops panel right. Collapses to one column where
+   the panel would get too narrow to read. */
+.hero__grid{
+  display:grid; grid-template-columns:1fr; gap:clamp(2rem,4vw,3.5rem);
+  align-items:center;
+}
+@media (min-width:920px){
+  .hero__grid{ grid-template-columns:minmax(0,1.05fr) minmax(0,0.95fr); gap:clamp(2.5rem,5vw,5rem); }
+}
+.hero__inner{ position:relative; z-index:1; max-width:640px; }
+
+.hero__title{
+  font-size:var(--text-display); line-height:1.05; letter-spacing:-0.025em;
+  margin-block:var(--space-5) var(--space-6); text-wrap:balance; max-width:18ch;
+}
+/* Controlled break: force "Real Security." / "Built From Real Attacks." onto
+   their own lines once the column is wide enough, without nowrap (which would
+   overflow the narrower split-layout column). */
+.hero__title .brk{ display:none; }
+@media (min-width:560px){
+  .hero__title .brk{ display:block; }
+}
+.hero__body{
+  max-width:52ch; font-size:var(--text-body-lg);
+  color:var(--text-secondary); line-height:1.6;
+}
+.hero__cta{
+  display:flex; flex-wrap:wrap; gap:var(--space-4);
+  margin-top:var(--space-7);
+}
+.proof-line{
+  display:flex; flex-wrap:wrap; gap:var(--space-2) var(--space-5);
+  margin-top:var(--space-6); font-size:var(--text-small); color:var(--text-muted);
+}
+.proof-line li{ display:inline-flex; align-items:center; gap:var(--space-2); }
+.tick{ color:var(--accent); flex:none; }
+
+/* ============================================================
+   PROOF RIBBON
+   ============================================================ */
+.ribbon{
+  border-block:1px solid var(--border-subtle);
+  background:var(--bg-base-2);
+  padding-block:var(--space-5);
+}
+.ribbon__list{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:center;
+  gap:var(--space-3) var(--space-5); text-align:center;
+}
+.ribbon__item{
+  display:inline-flex; align-items:center; gap:var(--space-3);
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted);
+}
+.ribbon__item .dot{ width:5px; height:5px; border-radius:50%; background:var(--accent); flex:none; }
+.ribbon__sep{ width:1px; height:14px; background:var(--border-default); }
+@media (max-width:560px){ .ribbon__sep{ display:none; } }
+
+/* ============================================================
+   SERVICES — "WATCH CONSOLE": one screen, four scan passes
+   ============================================================ */
+.card{
+  position:relative; isolation:isolate;
+  border:1px solid var(--border-default); border-radius:var(--radius-lg); padding:var(--space-6);
+  background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+  transition:border-color var(--dur-slow) var(--ease-out),
+             transform var(--dur-slow) var(--ease-out),
+             box-shadow var(--dur-slow) var(--ease-out);
+}
+
+.console{
+  --pass-dwell:5200ms; /* keep in sync with DWELL in main.js */
+  display:grid; grid-template-columns:1fr; gap:var(--grid-gap);
+  align-items:start;
+}
+@media (min-width:900px){
+  .console{ grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:clamp(1.5rem,3vw,3rem); }
+}
+
+/* ---------- The screen (left) ---------- */
+/* Sticky on ALL sizes: it's a monitor you keep watching. On mobile the rail
+   stacks below and scrolls UNDER the pinned screen, so tapping any pass always
+   shows the Lottie swap (the screen never scrolls out of view). z-index keeps
+   the screen above the later-in-DOM rail; the gradient bg is fully opaque. */
+.console__screen{
+  /* z-index:3 so the pinned monitor sits ABOVE the entire rail as it scrolls
+     under it on mobile — incl. the active row's lime left-edge (::before, z-index:2),
+     which at an equal z-index was painting OVER the opaque screen (later in DOM) and
+     leaving a stray green bar floating at the seam. Stays below the sticky header
+     (z-index:100). Reset to auto at >=900px (two columns, no overlap). */
+  position:sticky; top:72px; z-index:3;
+  isolation:isolate;
+  border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 32px 64px -48px rgba(0,0,0,0.8);
+  overflow:hidden;
+}
+@media (min-width:900px){ .console__screen{ top:96px; z-index:auto; } }
+@media (min-width:900px){ .pass{ scroll-margin-top:120px; } }
+/* On mobile the rail scrolls UNDER the pinned monitor — a crisper bottom edge +
+   drop shadow sells that depth (rail passes beneath) instead of a flat collision. */
+@media (max-width:899px){
+  .console__screen{
+    border-bottom-color:var(--border-strong);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 14px 22px -12px rgba(0,0,0,0.9);
+  }
+}
+
+.console__screen::before{
+  content:""; position:absolute; inset:0; z-index:3; pointer-events:none; border-radius:inherit;
+  box-shadow:inset 0 0 0 1px var(--accent-border), inset 0 0 60px -20px var(--accent-soft);
+  opacity:0; transition:opacity var(--dur-slow) var(--ease-out);
+}
+.console__screen.is-hot::before{ opacity:1; }
+
+/* browser-chrome bar — frames the white art as a real screen */
+.screen-chrome{
+  display:flex; align-items:center; gap:var(--space-3);
+  padding:0.625rem var(--space-4);
+  background:var(--surface-3); border-bottom:1px solid var(--border-default);
+}
+.screen-chrome__dots{ display:inline-flex; gap:6px; }
+.screen-chrome__dots i{ width:9px; height:9px; border-radius:50%; background:var(--border-strong); }
+.screen-chrome__url{
+  display:inline-flex; align-items:center; gap:6px; flex:1;
+  font-family:var(--font-mono); font-size:var(--text-xs); color:var(--text-muted);
+  padding:0.25rem 0.625rem; border-radius:var(--radius-pill);
+  background:var(--surface-inset); border:1px solid var(--border-subtle);
+}
+.screen-chrome__url svg{ color:var(--text-accent); flex:none; }
+.screen-chrome__live{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:600;
+  letter-spacing:0.08em; color:var(--text-accent);
+}
+.screen-chrome__pulse{
+  width:7px; height:7px; border-radius:50%; background:var(--accent);
+  box-shadow:0 0 0 0 var(--accent-border); animation:console-pulse 2.4s var(--ease-out) infinite;
+}
+@keyframes console-pulse{
+  0%{ box-shadow:0 0 0 0 rgba(105,255,18,0.5); }
+  70%{ box-shadow:0 0 0 8px rgba(105,255,18,0); }
+  100%{ box-shadow:0 0 0 0 rgba(105,255,18,0); }
+}
+
+/* the stage that holds the white Lottie — embraced as a "screen" surface */
+.screen-stage{
+  position:relative; aspect-ratio:600 / 400; overflow:hidden;
+  background:radial-gradient(120% 100% at 50% 0%, #fbfdff 0%, #eef2f6 100%);
+}
+/* keep the pinned screen short on phones so it doesn't eat the viewport while
+   the rail scrolls beneath it */
+@media (max-width:899px){
+  .screen-stage{ aspect-ratio:auto; height:min(42vh, 230px); }
+}
+.screen-stage .lottie-mount{ position:absolute; inset:0; }
+.screen-stage .lottie-mount[hidden]{ display:none; }
+.screen-stage .lottie-mount svg{ width:100% !important; height:100% !important; }
+
+/* faint lime grid overlay ties the white screen to the brand */
+.screen-stage__grid{
+  position:absolute; inset:0; pointer-events:none; z-index:1; mix-blend-mode:multiply; opacity:0.5;
+  background-image:linear-gradient(rgba(61,111,60,0.10) 1px, transparent 1px),
+                   linear-gradient(90deg, rgba(61,111,60,0.10) 1px, transparent 1px);
+  background-size:28px 28px;
+}
+/* lime scan line sweeping the screen */
+.screen-stage__scanline{
+  position:absolute; left:0; right:0; top:0; height:64px; z-index:2; pointer-events:none;
+  background:linear-gradient(180deg, transparent 0%, rgba(105,255,18,0.22) 70%, rgba(105,255,18,0.9) 100%);
+  border-bottom:1px solid var(--accent);
+  box-shadow:0 0 24px 4px rgba(105,255,18,0.35);
+  animation:console-scan 3.6s var(--ease-in-out) infinite;
+}
+@keyframes console-scan{
+  0%{ transform:translateY(-70px); opacity:0; }
+  12%{ opacity:1; }
+  88%{ opacity:1; }
+  100%{ transform:translateY(420px); opacity:0; }
+}
+
+/* terminal-style readout strip beneath the screen */
+.screen-readout{
+  display:flex; align-items:center; justify-content:space-between; gap:var(--space-3);
+  padding:0.625rem var(--space-4);
+  background:var(--surface-inset); border-top:1px solid var(--border-default);
+  font-family:var(--font-mono); font-size:var(--text-xs);
+}
+.screen-readout__label{ color:var(--text-muted); letter-spacing:0.02em; }
+.screen-readout__status{ display:inline-flex; align-items:center; gap:6px; color:var(--text-accent); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; }
+.screen-readout__dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px 1px var(--accent-border); }
+
+/* ---------- The scan-pass rail (right) ---------- */
+.console__rail-head{
+  display:flex; align-items:center; justify-content:space-between; gap:var(--space-3);
+  margin-bottom:var(--space-4);
+}
+.console__eyebrow{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--text-accent);
+}
+.console__toggle{
+  display:inline-flex; align-items:center; gap:6px; flex:none; cursor:pointer;
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.04em; text-transform:uppercase; color:var(--text-muted);
+  padding:0.3125rem 0.625rem; border-radius:var(--radius-pill);
+  background:var(--surface-inset); border:1px solid var(--border-subtle);
+  transition:color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+}
+.console__toggle:hover{ color:var(--text-primary); border-color:var(--border-default); }
+.console__toggle:focus-visible{ outline:none; box-shadow:var(--focus-ring-on-surface); }
+.console__toggle-icon{ display:inline-flex; }
+.console__toggle-icon .icon-play{ display:none; }
+/* aria-pressed="true" = user has PAUSED → show the play (resume) affordance */
+.console__toggle[aria-pressed="true"] .icon-pause{ display:none; }
+.console__toggle[aria-pressed="true"] .icon-play{ display:inline; }
+/* The rail reads as a live scan-status panel: every pass is steadily LIVE
+   (the product is continuous monitoring); the active pass is highlighted and
+   "scanning". Quieter than the screen — no per-row cards, a single inset
+   surface that slides to the active row. */
+.passes{
+  position:relative; display:flex; flex-direction:column;
+  list-style:none; margin:0; padding:0;
+  border:1px solid var(--border-subtle); border-radius:var(--radius-md);
+  background:linear-gradient(180deg, var(--surface-1), var(--bg-base-2, var(--surface-1)));
+  overflow:hidden;
+}
+
+/* each pass is a list item: header button + its always-rendered copy panel */
+.pass-item{ position:relative; border-top:1px solid var(--border-subtle); }
+.passes .pass-item:first-child{ border-top:0; }
+
+.pass{
+  position:relative; z-index:1; display:grid;
+  /* keyboard focus / scrollIntoView clears the sticky header + pinned screen */
+  scroll-margin-top:360px;
+  grid-template-columns:auto minmax(0,1fr) auto; align-items:center;
+  gap:var(--space-4); width:100%; text-align:left; cursor:pointer;
+  padding:var(--space-4) var(--space-5); background:none; border:0;
+  color:var(--text-secondary);
+  transition:color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
+}
+.pass:hover{ color:var(--text-primary); background:rgba(255,255,255,0.015); }
+.pass:focus-visible{ outline:none; box-shadow:inset var(--focus-ring-on-surface); border-radius:var(--radius-sm); }
+
+/* ---- status cell: number that becomes a live scan indicator ---- */
+.pass__status{
+  position:relative; display:grid; place-items:center;
+  width:1.75rem; height:1.75rem; flex:none;
+}
+.pass__num{
+  font-family:var(--font-mono); font-size:var(--text-small); font-weight:600;
+  color:var(--text-muted); transition:color var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
+}
+/* quiet "live" dot for non-active passes; scanning ring for the active one */
+.pass__indicator{
+  position:absolute; inset:0; margin:auto; width:7px; height:7px; border-radius:50%;
+  background:var(--text-faint, #5b6479); opacity:0; transform:scale(0.6);
+  transition:opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+
+/* title over a quiet verb sub-label (stacked, like the stats data-tag) — keeps
+   the whole right column free for the live result chip, no collision */
+.pass__main{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.pass__verb{
+  order:-1;
+  font-family:var(--font-mono); font-size:10px; font-weight:500; letter-spacing:0.18em;
+  text-transform:uppercase; color:var(--text-faint);
+  transition:color var(--dur-base) var(--ease-out);
+}
+.pass__title{ font-size:var(--text-body-lg); font-weight:600; color:inherit; line-height:1.15; }
+
+/* ---- live result chip (right): per-site watch result ---- */
+.pass__result{
+  display:flex; flex-direction:column; align-items:flex-end; gap:1px; flex:none;
+  text-align:right; font-family:var(--font-mono);
+}
+.pass__result-state{
+  font-size:9px; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--text-faint, #5b6479); line-height:1;
+  opacity:0; height:0; overflow:hidden; transition:opacity var(--dur-base) var(--ease-out);
+}
+.pass__result-value{
+  font-size:var(--text-xs); font-weight:500; letter-spacing:0.02em;
+  color:var(--text-muted); transition:color var(--dur-base) var(--ease-out);
+}
+@media (max-width:560px){ .pass__result{ display:none; } }
+
+/* ---- cycle clock (intentionally invisible) ----
+   The active row's fill animation is the SINGLE cycle clock: its `animationend`
+   (pass-fill, --pass-dwell long) is what advances the auto-cycle in main.js — there
+   is no JS timer behind it. We removed the visible progress bar (it read as four
+   competing bars / distracting), but the animated element MUST keep running as the
+   clock carrier. So: zero footprint, fully transparent — never `display:none`
+   (that would suppress `animationend` and freeze the cycle). Progress is now
+   communicated purely by the breathing scan dot + the soft row hand-off. */
+.pass__bar{
+  position:absolute; width:0; height:0; overflow:hidden; pointer-events:none;
+}
+.pass__bar-fill{
+  display:block; width:1px; height:1px; transform:scaleX(0); transform-origin:left;
+  background:transparent; opacity:0;
+}
+
+/* ---- ACTIVE pass: the row being scanned right now (visual + aria-current) ----
+   With the progress bar gone, the active highlight IS the cycle's only progress
+   signal — so the hand-off from one row to the next must read as a calm fade, not
+   a snap. The left accent edge is always present but opacity-0 until active, so it
+   cross-fades in/out as the scan moves down the list. */
+.pass-item.is-active .pass{ color:var(--text-primary); background:var(--surface-inset); }
+.pass-item::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:2px; z-index:2;
+  background:linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent) 30%, transparent));
+  opacity:0; transition:opacity var(--dur-slow) var(--ease-out);
+}
+.pass-item.is-active::before{ opacity:1; }
+.pass-item.is-active .pass__num{ opacity:0; }
+.pass-item.is-active .pass__indicator{
+  opacity:1; transform:scale(1); background:var(--accent);
+  box-shadow:0 0 0 0 rgba(105,255,18,0.5); animation:pass-scan 2s var(--ease-out) infinite;
+}
+.pass-item.is-active .pass__verb{ color:var(--text-accent); }
+.pass-item.is-active .pass__result-state{ opacity:1; height:auto; color:var(--text-accent); }
+.pass-item.is-active .pass__result-value{ color:var(--text-primary); }
+/* the invisible clock fill animates over the auto-cycle interval; paused/instant per JS + reduced-motion */
+.pass-item.is-active .pass__bar-fill{
+  animation:pass-fill var(--pass-dwell, 5200ms) linear forwards;
+}
+.console[data-paused="true"] .pass-item.is-active .pass__bar-fill{ animation-play-state:paused; }
+.console[data-paused="true"] .pass-item.is-active .pass__indicator{ animation-play-state:paused; }
+@keyframes pass-fill{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+@keyframes pass-scan{
+  0%{ box-shadow:0 0 0 0 rgba(105,255,18,0.5); }
+  70%{ box-shadow:0 0 0 7px rgba(105,255,18,0); }
+  100%{ box-shadow:0 0 0 0 rgba(105,255,18,0); }
+}
+
+/* the copy panel — ALWAYS rendered (no click to read). Continues the active
+   row's inset surface; the active panel reads as part of the lit row. */
+.pass-panel{
+  position:relative; z-index:1;
+  padding:0 var(--space-5) var(--space-5) calc(1.75rem + var(--space-4) + var(--space-5));
+}
+.pass-item.is-active .pass-panel{ background:var(--surface-inset); }
+.pass-item.is-active .pass-panel::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:linear-gradient(180deg, color-mix(in oklab, var(--accent) 30%, transparent), transparent);
+}
+
+/* ---- "scan sweep" reveal: panels animate open as the scan sweeps down on
+   scroll-in, then STAY open (accumulate). Gated by .is-revealing on .passes so
+   no-JS and reduced-motion render everything open by default. ~110ms stagger,
+   completes in ~1s — fast, not tied to the 5.2s highlight loop. ---- */
+.passes.is-revealing .pass-panel{
+  overflow:hidden;
+  max-height:0; opacity:0; transform:translateY(-6px);
+  transition:max-height 420ms var(--ease-out), opacity 300ms var(--ease-out), transform 300ms var(--ease-out);
+}
+.passes.is-revealing .pass-item.is-revealed .pass-panel{
+  max-height:360px; opacity:1; transform:none;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .screen-stage__scanline,
+  .screen-chrome__pulse,
+  .pass-item.is-active .pass__indicator{ animation:none; }
+  .screen-stage__scanline{ opacity:0; }
+  .pass-item.is-active .pass__bar-fill{ animation:none; transform:scaleX(1); }
+  /* never gate content behind a disabled animation: all panels open + static */
+  .passes.is-revealing .pass-panel{ max-height:none; opacity:1; transform:none; overflow:visible; transition:none; }
+}
+.pass__body{ color:var(--text-secondary); margin-bottom:var(--space-4); }
+
+@media (max-width:560px){
+  .pass-panel{ padding-left:var(--space-5); }
+}
+
+.feature-list{ display:flex; flex-direction:column; gap:var(--space-3); }
+.feature-list li{
+  display:flex; align-items:flex-start; gap:var(--space-3);
+  font-size:var(--text-small); color:var(--text-muted); line-height:1.5;
+  text-wrap:balance;
+}
+.feature-list .tick{ margin-top:2px; }
+
+/* ============================================================
+   HOW IT WORKS — a custom-drawn defense field + the argument as text.
+   The watch console above lists the operational passes; this section's job
+   is the plugin-vs-infrastructure argument, carried by a bespoke canvas
+   figure (js/defense-field.js): attack vectors rain down, BURST against a
+   defended boundary, and our infrastructure layer scans on solid ground
+   below. The figure is the hero; the "can't be switched off" claim and the
+   Watch/Clean/Seal payoff remain as real text beneath it.
+   ============================================================ */
+.how__inner{ max-width:920px; margin-inline:auto; }
+.how__inner .section-head{ margin-bottom:var(--space-7); }
+
+/* ---- The figure: a framed canvas stage with overlaid zone labels. ------- */
+.defense{ margin:0 0 var(--space-7); }
+.defense__stage{
+  position:relative; width:100%; aspect-ratio:4 / 5;   /* tall on mobile so the
+    zones breathe: boundary at 40% leaves real room above AND below the line */
+  border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  background:linear-gradient(180deg, var(--surface-inset), var(--bg-base-2));
+  overflow:hidden;
+}
+@media (min-width:560px){ .defense__stage{ aspect-ratio:16 / 11; } }
+@media (min-width:720px){ .defense__stage{ aspect-ratio:16 / 9; } }
+
+/* Zone annotations — mono labels sitting over the three regions of the canvas.
+   The boundary fraction MUST match `bound` in js/defense-field.js; keeping it
+   in one var stops the label drifting off the line when geometry changes. */
+.defense__stage{ --defense-bound: 40%; }
+.defense__label{
+  position:absolute; z-index:2; pointer-events:none;
+  font-family:var(--font-mono); text-transform:uppercase; letter-spacing:0.14em;
+}
+.defense__label-k{ display:block; font-size:var(--text-xs); font-weight:500; }
+.defense__label-v{ display:block; font-size:var(--text-xs); letter-spacing:0.08em; text-transform:none; }
+.defense__label--surface{ top:var(--space-4); left:var(--space-5); color:var(--text-faint); }
+.defense__label--surface .defense__label-v{ color:var(--text-faint); opacity:0.75; }
+/* The boundary label names the defended line. It sits ON the line, so it needs
+   a solid dark chip to stay legible — without it the glowing lime rule strikes
+   through the text. The chip's matching box-shadow masks the line behind it. */
+.defense__label--boundary{
+  top:calc(var(--defense-bound) - 1.05em); right:var(--space-5);
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  font-size:var(--text-xs); font-weight:600; color:var(--accent-2-text);
+  letter-spacing:0.12em;
+  padding:var(--space-1) var(--space-3); border-radius:var(--radius-pill);
+  background:var(--bg-base); border:1px solid var(--accent-border);
+  box-shadow:0 0 0 4px var(--bg-base), 0 2px 8px rgba(0,0,0,0.5);
+}
+/* a small lime node on the chip, tying it to the line it labels */
+.defense__label--boundary::before{
+  content:""; width:5px; height:5px; border-radius:50%; flex:none;
+  background:var(--accent); box-shadow:var(--glow-lime-sm);
+}
+.defense__label--floor{ bottom:var(--space-4); left:var(--space-5); color:var(--accent-2-text); }
+.defense__label--floor .defense__label-v{ color:var(--text-muted); letter-spacing:0.06em; }
+@media (max-width:519px){
+  .defense__label-v{ display:none; }              /* keep mobile uncluttered */
+  .defense__label--surface, .defense__label--floor{ left:var(--space-4); }
+  /* Drop the boundary chip on mobile. A floating tag in the narrow attack
+     airspace always read awkward; the burst lands ON the line and the floor
+     label ("one layer below · out of reach") already carries the meaning. The
+     figure's aria-label still states "reach ends here" for assistive tech. */
+  .defense__label--boundary{ display:none; }
+}
+
+/* ---- The statement: argument (left) + payoff spec row (right/below). ----- */
+.defense__statement{ display:grid; grid-template-columns:1fr; gap:var(--space-6); }
+@media (min-width:760px){
+  .defense__statement{ grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:var(--space-8); align-items:start; }
+}
+.defense__eyebrow{
+  display:flex; align-items:center; gap:var(--space-2);
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--accent-2-text); margin-bottom:var(--space-3);
+}
+.defense__dot{
+  width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:var(--glow-lime-sm);
+  animation:depth-pulse 2.4s var(--ease-in-out) infinite;
+}
+@keyframes depth-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
+.defense__claim{
+  margin:0; color:var(--text-secondary);
+  font-size:var(--text-h5); line-height:1.5; font-family:var(--font-display); font-weight:400;
+}
+.defense__claim strong{ color:var(--text-primary); font-weight:600; }
+
+/* Payoff roles — a crafted spec list. Each role carries a custom glyph mark
+   (radar / clear / sealed-shield) echoing the brand's scan language, set in a
+   soft inset chip. Watch + Clean stay quiet (muted marks); Seal is the visual
+   climax — the only non-redundant role — and carries the lime + glow. */
+.defense__roles{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; }
+.defense__role{
+  position:relative; display:flex; align-items:center; gap:var(--space-4);
+  padding:var(--space-4) 0;
+}
+.defense__role + .defense__role{ border-top:1px solid var(--border-subtle); }
+.defense__role:first-child{ padding-top:0; }
+.defense__role:last-child{ padding-bottom:0; }
+
+/* The glyph chip — inset square, hairline border, muted icon by default. */
+.defense__role-mark{
+  flex:none; width:44px; height:44px; display:grid; place-items:center;
+  border-radius:var(--radius-md);
+  background:var(--surface-inset);
+  border:1px solid var(--border-default);
+  color:var(--text-muted);
+  transition:color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+}
+.defense__role-mark svg{ width:22px; height:22px; display:block; }
+.defense__mark-ring{ opacity:0.55; }
+.defense__mark-sweep{ color:var(--accent); opacity:0.9; }
+.defense__role:hover .defense__role-mark{ color:var(--text-secondary); border-color:var(--border-strong); }
+
+.defense__role-text{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.defense__role-k{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.16em; text-transform:uppercase; color:var(--text-faint);
+}
+.defense__role-v{ font-size:var(--text-body); color:var(--text-primary); line-height:1.3; }
+
+/* Seal — the hero. Lime mark, accent chip, soft glow; the climax of the row. */
+.defense__role--key .defense__role-mark{
+  background:var(--accent-soft);
+  border-color:var(--accent-border);
+  color:var(--accent);
+  box-shadow:var(--glow-lime-sm);
+}
+.defense__role--key:hover .defense__role-mark{ border-color:var(--accent); }
+.defense__role--key .defense__mark-shield{ fill:rgba(105,255,18,0.10); }
+.defense__role--key .defense__role-k{ color:var(--accent-2-text); }
+
+@media (prefers-reduced-motion: reduce){
+  .defense__dot{ animation:none; }
+}
+
+/* ============================================================
+   LIVE MONITORING — asymmetric: scan radar | heading + real numbers
+   ============================================================ */
+.monitor__grid{ display:grid; grid-template-columns:1fr; gap:var(--space-8); align-items:center; }
+@media (min-width:960px){
+  .monitor__grid{ grid-template-columns:minmax(0,0.85fr) minmax(0,1fr); gap:var(--space-9); }
+}
+.monitor__viz{ position:relative; display:flex; flex-direction:column; align-items:center; }
+.monitor__radar{
+  position:relative; width:100%; max-width:340px; aspect-ratio:1; margin-inline:auto;
+}
+@media (min-width:960px){ .monitor__radar{ max-width:440px; } }
+/* Soft atmosphere behind the dial so it sits on something instead of floating
+   in the void — reuses the page's lime+teal radial-glow vocabulary. Bleeds
+   well past the dial (it's decorative) and sits BEHIND the transparent canvas. */
+.monitor__radar::before{
+  content:""; position:absolute; z-index:0; pointer-events:none;
+  inset:-18%; border-radius:50%;
+  background:
+    radial-gradient(closest-side, rgba(105,255,18,0.14), rgba(105,255,18,0.05) 45%, transparent 72%),
+    radial-gradient(closest-side at 64% 70%, rgba(26,166,183,0.10), transparent 60%);
+}
+/* On phones the dial sits near the viewport edge, so the -18% horizontal glow
+   bleed pokes past the right edge and gives the page a hidden horizontal drag
+   (~36px). Drop the side bleed to 0 there (keep the vertical bleed, which stays
+   on-screen) — fixing it at the source rather than clipping an ancestor, the
+   same pattern .section-head__terminal uses above. */
+@media (max-width:639px){
+  .monitor__radar::before{ inset:-18% 0; }
+}
+.scan-radar__canvas{ display:block; position:relative; z-index:1; }
+/* "live" readout under the dial */
+.monitor__readout{
+  display:flex; align-items:center; gap:var(--space-3); margin-top:var(--space-4);
+  font-family:var(--font-mono);
+}
+.monitor__pulse{
+  width:8px; height:8px; border-radius:50%; background:var(--accent);
+  box-shadow:var(--glow-lime-sm); flex:none; animation:pulse 2s var(--ease-in-out) infinite;
+}
+@media (prefers-reduced-motion: reduce){ .monitor__pulse{ animation:none; } }
+.monitor__readout-num{ font-size:var(--text-h5); font-weight:600; color:var(--text-primary); font-feature-settings:"tnum"; }
+.monitor__readout-label{ font-size:var(--text-xs); letter-spacing:0.04em; text-transform:uppercase; color:var(--text-muted); }
+
+/* Faulty-terminal CRT field behind the heading block. Low opacity + edge
+   mask so it reads as atmosphere, never as noise behind the words. The
+   heading + lede are lifted above it via z-index. */
+.section-head--terminal{ position:relative; isolation:isolate; }
+.section-head--terminal > .section-title,
+.section-head--terminal > .section-lede{ position:relative; z-index:1; }
+.section-head__terminal{
+  position:absolute; z-index:0; pointer-events:none;
+  /* bleed past the text box so the CRT field fills the heading area */
+  inset:-1.25rem -1.5rem;
+  opacity:0.16;
+  /* fade the field out toward the edges so it never reads as a hard panel */
+  -webkit-mask-image:radial-gradient(120% 140% at 30% 35%, #000 0%, #000 42%, transparent 78%);
+  mask-image:radial-gradient(120% 140% at 30% 35%, #000 0%, #000 42%, transparent 78%);
+}
+/* On phones the heading block sits near the viewport edge, so the -1.5rem
+   horizontal bleed pokes a few px past the right edge and gives the page a
+   small horizontal drag. Drop the side bleed to 0 there (keep the vertical
+   bleed) — fixing it at the source rather than clipping an ancestor, which
+   would break the sticky watch-console + header pins below it. */
+@media (max-width:639px){
+  .section-head__terminal{ inset:-1.25rem 0; }
+}
+.faulty-terminal__canvas{ display:block; width:100%; height:100%; }
+@media (prefers-reduced-motion: reduce){
+  /* static frame already; trim opacity further so it's pure texture */
+  .section-head__terminal{ opacity:0.10; }
+}
+
+/* ============================================================
+   STATS GRID (inside the monitor body)
+   ============================================================ */
+.stats-grid{
+  display:grid; grid-template-columns:1fr;
+  gap:var(--space-6) var(--space-6);
+}
+/* Hero stat (re-infection rate) full-width on top; the three supporting stats
+   sit in an even row below — no lopsided 1-2-1. */
+@media (min-width:480px){ .stats-grid{ grid-template-columns:repeat(3, minmax(0,1fr)); } }
+.stat--hero{ grid-column:1 / -1; padding-bottom:var(--space-5); border-bottom:1px solid var(--border-subtle); }
+.stat--hero .stat__num{ font-size:clamp(3.25rem, 2rem + 5vw, 5rem); }
+.stat--hero .stat__label{ max-width:38ch; }
+
+/* Hairline-anchored stat (no box): a left rule with a lime cap, a mono data-tag,
+   the big number, then the label. Reads as a technical readout, not a card. */
+.stat{
+  position:relative; padding-left:var(--space-5);
+  border-left:1px solid var(--border-default);
+}
+.stat::before{
+  content:""; position:absolute; left:-1px; top:0; width:2px; height:34px;
+  background:linear-gradient(180deg, var(--accent), transparent);
+  border-radius:2px;
+}
+.stat__tag{
+  font-family:var(--font-mono); font-size:10px; font-weight:500;
+  letter-spacing:0.22em; text-transform:uppercase; color:var(--text-faint);
+  display:block; margin-bottom:var(--space-3);
+}
+.stat__num{
+  font-family:var(--font-display); font-weight:600;
+  font-size:clamp(1.75rem, 1.2rem + 1.6vw, 2.25rem); line-height:0.95;
+  font-feature-settings:"tnum"; letter-spacing:-0.03em;
+  white-space:nowrap; min-width:0;
+  color:var(--accent);
+}
+.stat__num .stat__sup{
+  color:var(--text-secondary);
+  font-size:0.45em; font-weight:500; vertical-align:0.55em; margin-left:0.05em;
+  letter-spacing:0;
+}
+.stat__label{
+  margin-top:var(--space-4); font-family:var(--font-mono);
+  font-size:var(--text-xs); letter-spacing:0.04em; color:var(--text-muted);
+  line-height:1.5; text-transform:uppercase; max-width:22ch; text-wrap:balance;
+}
+
+/* ============================================================
+   PRICING — card primitives (layout lives in the .pricing-engine
+   "two doors, one engine" system further down this file)
+   ============================================================ */
+.price-card{
+  position:relative; display:flex; flex-direction:column;
+  border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  padding:var(--space-6);
+  /* Glassmorphic surface: a top-lit gradient + an inset hairline highlight build
+     depth without a heavy drop-shadow (which reads dated / "floating"). */
+  background:
+    linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+  transition:border-color var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out), box-shadow var(--dur-slow) var(--ease-out);
+  isolation:isolate;
+}
+/* Accent bloom on hover (restrained — no scale): a faint lime wash from the top. */
+.price-card::before{
+  content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit;
+  background:radial-gradient(120% 80% at 50% -10%, var(--accent-soft), transparent 60%);
+  opacity:0; transition:opacity var(--dur-slow) var(--ease-out);
+}
+.price-card:hover{ border-color:var(--border-strong); transform:translateY(-4px); }
+@media (hover:hover){ .price-card:hover::before{ opacity:1; } }
+
+.price-card--featured{
+  border-color:var(--accent-border);
+  background:linear-gradient(180deg, var(--surface-3) 0%, var(--surface-2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 40px 80px -44px rgba(105,255,18,0.28);
+}
+/* Extra top room on the featured card so the "Most Popular" pill clears the
+   content; the pill straddles the top edge. The lime border + glow + pill already
+   carry the emphasis, so no extra accent line (avoid over-decoration). */
+.price-card--featured{ padding-top:var(--space-7); }
+@media (min-width:880px){ .price-card--featured{ transform:translateY(-12px); } }
+@media (min-width:880px){ .price-card--featured:hover{ transform:translateY(-16px); } }
+
+.price-card__pill{
+  position:absolute; top:0; left:50%; transform:translate(-50%,-50%); z-index:2;
+}
+/* Solid lime badge w/ dark text for the featured pill — far higher contrast and a
+   more "premium product badge" feel than a translucent tinted chip. */
+.price-card__pill .badge{
+  background:var(--accent); color:var(--text-on-accent);
+  border-color:transparent; box-shadow:var(--glow-lime-sm); font-weight:600;
+  padding:0.4rem 0.85rem;
+}
+.price-card__pill .badge .status-dot{ background:var(--text-on-accent); box-shadow:none; }
+.price-card__name{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--text-accent);
+  margin-bottom:var(--space-4);
+}
+.price-card__price{
+  display:flex; align-items:baseline; gap:var(--space-2); flex-wrap:wrap;
+  margin-bottom:var(--space-2);
+}
+.price-card__amount{
+  font-family:var(--font-display); font-weight:600;
+  font-size:var(--text-h2); color:var(--text-primary);
+  font-feature-settings:"tnum"; letter-spacing:-0.02em; line-height:1;
+}
+.price-card__suffix{ font-size:var(--text-small); color:var(--text-muted); }
+.price-card__note{
+  display:inline-block; font-family:var(--font-mono); font-size:var(--text-xs);
+  color:var(--text-faint); text-transform:uppercase; letter-spacing:0.04em;
+  margin-bottom:var(--space-2);
+}
+.price-card__for{ color:var(--text-muted); font-size:var(--text-small); margin-bottom:var(--space-5); text-wrap:balance; }
+.price-card .feature-list{ margin-bottom:var(--space-6); flex:1; }
+.price-card .feature-list li{ color:var(--text-secondary); }
+
+/* Hallmark · component: pricing-band · genre: modern-minimal · theme: project tokens
+ * states: link/btn states inherited from .btn--primary + .link-arrow · contrast: pass */
+/* ---- Enterprise & Platform band -------------------------------------------
+   Deliberately NOT a third card. After two framed product cards, a third dark
+   box would flatten the flow — so the enterprise offer is an OPEN band: no
+   border, no rounded surface, just a teal leading edge + a top hairline rule.
+   Teal (--accent-2) is the site's secondary / through-line accent (it marks the
+   GLASSWORM ledger key-row and the "Available" partner state), so it reads as a
+   different KIND of element than the lime product cards — distinct in form and
+   hue. The action stays lime (--accent): site-wide, primary CTA = lime. */
+.enterprise{
+  position:relative; isolation:isolate;
+  margin-top:var(--space-7); padding-top:var(--space-6);
+  padding-left:clamp(1.25rem, 3vw, 2rem);
+  display:grid; grid-template-columns:1fr; gap:var(--space-6);
+  /* Open band, but the top + leading edge rules turn a rounded corner so the
+     junction reads softened, not a hard 90° — a quiet nod to the rounded cards
+     above without becoming a boxed panel. The top hairline and the teal edge
+     are both drawn as borders here so the radius actually curves the corner. */
+  border-top:1px solid var(--border-subtle);
+  border-left:2px solid var(--accent-2);
+  border-top-left-radius:var(--radius-lg);
+}
+/* The teal edge fades downward — overlay a transparent-to-bg gradient on the
+   lower border so only the top of the leading edge stays full teal, matching
+   the .ledger-row--key through-line look. */
+.enterprise::before{
+  content:""; position:absolute; left:-2px; top:40%; bottom:0; width:2px;
+  background:linear-gradient(180deg, var(--accent-2), transparent 95%);
+}
+/* A very faint teal wash hugging the leading edge — depth without a panel. */
+.enterprise::after{
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:radial-gradient(60% 90% at 0% 0%, var(--accent-2-soft), transparent 60%);
+}
+
+.enterprise__kicker{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--accent-2-text);
+  margin-bottom:var(--space-4);
+}
+/* Teal kicker dot (not the lime status-dot) — keeps the band's identity teal. */
+.enterprise__dot{
+  width:6px; height:6px; border-radius:50%; flex:none;
+  background:var(--accent-2); box-shadow:var(--glow-teal-sm);
+}
+.enterprise__title{ font-size:var(--text-h3); color:var(--text-primary); margin-bottom:var(--space-4); }
+.enterprise__price{ display:flex; align-items:baseline; gap:var(--space-3); flex-wrap:wrap; margin-bottom:var(--space-4); }
+.enterprise__amount{
+  font-family:var(--font-display); font-weight:600; font-size:var(--text-h2);
+  color:var(--accent-2-text); letter-spacing:-0.02em; line-height:1;
+}
+.enterprise__suffix{ font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.04em; text-transform:uppercase; color:var(--text-faint); }
+.enterprise__for{ color:var(--text-secondary); font-size:var(--text-body); line-height:1.6; max-width:46ch; }
+
+.enterprise__detail{ display:flex; flex-direction:column; gap:var(--space-6); }
+.enterprise__features{ gap:var(--space-4); }
+.enterprise__features li{ font-size:var(--text-body); color:var(--text-secondary); }
+/* Teal ticks in the band — reinforces the secondary-accent identity. */
+.enterprise__features .tick{ color:var(--accent-2-text); }
+.enterprise__actions{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-4) var(--space-5); }
+/* The arrow link to #partners rides the teal identity too. */
+.enterprise__actions .link-arrow{ color:var(--accent-2-text); }
+.enterprise__actions .link-arrow:hover{ color:var(--accent-2-hover); }
+
+/* Desktop: identity left / capabilities right, split by a hairline. The open
+   band stays full-bleed within the container — no max-width box. */
+@media (min-width:880px){
+  .enterprise{
+    grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);
+    gap:clamp(2.5rem, 5vw, 4.5rem); align-items:center;
+  }
+  .enterprise__detail{ position:relative; padding-left:clamp(2.5rem, 5vw, 4.5rem); }
+  .enterprise__detail::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:1px;
+    background:var(--border-subtle);
+  }
+}
+
+.pricing__note{
+  margin-top:var(--space-7); text-align:center;
+  font-size:var(--text-small); color:var(--text-muted);
+  text-wrap:balance;
+}
+.pricing__note a{ color:var(--text-accent); }
+.pricing__note a:hover{ color:var(--text-link-hover); text-decoration:underline; }
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+/* ---- FAQ as a primary-source artifact ----
+   Not a stack of floating cards: a titled Q&A log (sibling to the incident
+   ledger / status board) beside a sticky rail that carries the section head
+   and the escalation CTA. The rail earns the column the old narrow layout
+   left void. Mono case-IDs + category tags reuse the ledger's provenance
+   grammar; rows are hairline-seamed, not bordered boxes. Reads with no JS. */
+/* Three grid children — head, escalation CTA, log — placed by named areas so
+   the reading order can differ between mobile and desktop without reordering
+   the DOM. Mobile: head → log → CTA (the escalation reads AFTER the questions).
+   Desktop: head + CTA stack in the left sticky column, log on the right. */
+.faq-layout{
+  display:grid; grid-template-columns:1fr; gap:var(--space-7);
+  grid-template-areas:"head" "log" "esc";
+}
+.faq-rail{ grid-area:head; }
+.faq-log{ grid-area:log; }
+.faq-rail__esc{ grid-area:esc; }
+@media (min-width:920px){
+  .faq-layout{
+    grid-template-columns:minmax(0,20rem) minmax(0,1fr);
+    grid-template-areas:
+      "head log"
+      "esc  log";
+    grid-template-rows:auto 1fr;
+    gap:var(--space-6) clamp(2rem, 5vw, 4.5rem); align-items:start;
+  }
+}
+
+/* Left-column rail (head). NOT sticky: the head and the escalation card share
+   the left column but are separate grid rows, so pinning the head let the
+   static esc card scroll up and paint over the transparent heading text. The
+   whole artifact fits one viewport anyway, so there's nothing to keep in view —
+   plain grid flow, no overlap. */
+.faq-rail{ display:flex; flex-direction:column; gap:var(--space-6); }
+
+/* Intro block — tuned for the narrow left column, NOT the global .section-head
+   (whose 656px lede measure was sized for full-width heads and read cramped
+   here). A mono label parallels the log's chrome label on the right — left
+   says what the section is, right says what the artifact is — and a hairline
+   under the heading gives structure without a second box. */
+.faq-intro{ display:flex; flex-direction:column; }
+.faq-intro__label{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--text-faint);
+  margin-bottom:var(--space-4);
+}
+.faq-intro__title{
+  font-size:var(--text-h3); line-height:1.15;
+  padding-bottom:var(--space-5);
+  border-bottom:1px solid var(--border-subtle);
+  text-wrap:balance;
+}
+/* At the full h2 size each clause is wider than the ~320px left column, so the
+   headline cascaded into four ragged lines. Stepping to h3 lets the two clauses
+   sit one-per-line. The <br> forces the break on the comma — the semantic pause
+   — for two near-even lines. Forced only on the wide desktop column; on mobile
+   the column is narrower still, so drop the break and let it wrap naturally. */
+.faq-intro__br{ display:none; }
+@media (min-width:920px){
+  .faq-intro__title{ white-space:nowrap; }
+  .faq-intro__br{ display:inline; }
+}
+.faq-intro__lede{
+  margin-top:var(--space-5);
+  font-size:var(--text-body-lg); line-height:1.6; color:var(--text-muted);
+  font-weight:300;
+  max-width:34ch; text-wrap:pretty;
+}
+/* Escalation card — deliberately NOT another data-card. The log / ledger /
+   status board are read-only surfaces (raised, surface-1→bg-base-2). This is
+   the one invitation to act, so it joins the page's action family instead: a
+   recessed inset base, an accent-soft wash, an accent-border hairline, and a
+   lime rule down its leading edge (the eyebrow tick / [open] spine, promoted
+   to the card's identity). Restraint over glow — the tint does the signalling. */
+.faq-rail__esc{
+  position:relative; overflow:hidden;
+  padding:var(--space-5) var(--space-5) var(--space-5) calc(var(--space-5) + 3px);
+  border:1px solid var(--accent-border); border-radius:var(--radius-md);
+  background:
+    linear-gradient(180deg, var(--accent-soft) 0%, transparent 70%),
+    var(--surface-inset);
+}
+/* Lime leading edge — the card's "this is the action" marker. */
+.faq-rail__esc::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:linear-gradient(180deg, var(--accent), transparent 85%);
+}
+.faq-rail__esc-q{
+  font-family:var(--font-display); font-weight:600; font-size:var(--text-h6);
+  color:var(--text-primary); margin-bottom:var(--space-3);
+}
+.faq-rail__esc-link{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  font-family:var(--font-display); font-weight:700; font-size:var(--text-body);
+  color:var(--text-accent);
+}
+.faq-rail__esc-link svg{
+  width:18px; height:18px; flex:none;
+  transition:transform var(--dur-base) var(--ease-out);
+}
+.faq-rail__esc-link:hover{ color:var(--accent-hover); }
+.faq-rail__esc-link:hover svg{ transform:translateX(3px); }
+.faq-rail__esc-note{
+  display:block; margin-top:var(--space-3);
+  color:var(--text-secondary); font-size:var(--text-small); line-height:1.5;
+  text-wrap:balance;
+}
+
+/* The log shell — one bordered artifact, rows divided by internal seams.
+   Mirrors the ledger chrome so the two read as the same family. */
+.faq-log{
+  overflow:hidden;
+  border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  background:linear-gradient(180deg, var(--surface-1) 0%, var(--bg-base-2) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.04), var(--shadow-sm);
+}
+.faq-log__chrome{
+  display:flex; align-items:center; gap:var(--space-3);
+  padding:var(--space-3) var(--space-5);
+  border-bottom:1px solid var(--border-subtle); background:var(--surface-inset);
+  font-family:var(--font-mono); font-size:var(--text-xs);
+}
+.faq-log__mark{
+  width:9px; height:9px; flex:none; border-radius:2px;
+  background:var(--accent); box-shadow:var(--glow-lime-sm);
+}
+.faq-log__title{
+  color:var(--text-secondary); font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase;
+}
+.faq-log__meta{
+  margin-left:auto; color:var(--text-faint); white-space:nowrap;
+  letter-spacing:0.04em; text-transform:uppercase; font-size:10px;
+}
+@media (max-width:520px){ .faq-log__meta{ display:none; } }
+
+/* Each row is a native <details>; seams are top borders, not card gaps. */
+.faq-item{
+  position:relative;
+  border-top:1px solid var(--border-subtle);
+  transition:background var(--dur-base) var(--ease-out);
+}
+.faq-item:first-of-type{ border-top:0; }
+.faq-item:hover{ background:var(--surface-1); }
+.faq-item[open]{ background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%); }
+/* Lime spine on the open row — the ledger's "this one's active" marker. */
+.faq-item::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:var(--accent); opacity:0;
+  transition:opacity var(--dur-base) var(--ease-out);
+}
+.faq-item[open]::before{ opacity:1; }
+/* The through-line case (reinfection) — teal leading edge, as in the ledger. */
+.faq-item--key[open]::before{ background:linear-gradient(180deg, var(--accent-2), transparent); }
+
+.faq-item__q{
+  display:grid; align-items:baseline; gap:var(--space-2) var(--space-5);
+  grid-template-columns:1fr auto;
+  padding:var(--space-4) var(--space-5); cursor:pointer; list-style:none;
+}
+.faq-item__q::-webkit-details-marker{ display:none; }
+@media (min-width:560px){
+  .faq-item__q{ grid-template-columns:9rem minmax(0,1fr) auto; }
+}
+/* The ancestor .faq-log has overflow:hidden, which clips an outset box-shadow
+   focus ring. A real outline with a NEGATIVE offset draws inside the clip box,
+   so the keyboard focus indicator stays visible. */
+.faq-item__q:focus-visible{ outline:2px solid var(--accent-ring); outline-offset:-2px; border-radius:var(--radius-sm); }
+
+/* Provenance stamp — mono case ID over a category tag, echoing the ledger. */
+.faq-item__id{ grid-row:1; display:flex; flex-wrap:wrap; align-items:baseline; gap:var(--space-2); min-width:0; }
+@media (min-width:560px){ .faq-item__id{ flex-direction:column; gap:3px; } }
+.faq-item__case{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:600;
+  letter-spacing:0.08em; color:var(--text-accent); font-variant-numeric:tabular-nums;
+}
+.faq-item__tag{
+  font-family:var(--font-mono); font-size:10px; font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--text-faint);
+}
+.faq-item__title{
+  grid-column:1 / -1; min-width:0; overflow-wrap:anywhere;
+  font-family:var(--font-display); font-weight:600; font-size:var(--text-h5);
+  color:var(--text-primary); line-height:1.3;
+}
+@media (min-width:560px){ .faq-item__title{ grid-column:2; } }
+.faq-item__icon{
+  grid-row:1; grid-column:-1; flex:none; width:22px; height:22px;
+  align-self:center; color:var(--text-accent);
+  transition:transform var(--dur-base) var(--ease-out);
+}
+.faq-item[open] .faq-item__icon{ transform:rotate(45deg); }
+
+.faq-item__a{
+  color:var(--text-secondary); font-size:var(--text-body); line-height:1.65;
+}
+.faq-item__a p{ padding:0 var(--space-5) var(--space-5); max-width:64ch; }
+@media (min-width:560px){ .faq-item__a p{ padding-left:calc(9rem + var(--space-5) + var(--space-5)); } }
+
+/* Modern native-details reveal (Baseline 2025): animate the height + fade of
+   ::details-content. interpolate-size lets height transition from 0 to auto.
+   Older engines simply skip the animation — the <details> still opens. The
+   --dur-* tokens zero out under prefers-reduced-motion, so this is motion-safe
+   without a separate query. */
+@supports (interpolate-size: allow-keywords){
+  :root{ interpolate-size:allow-keywords; }
+  .faq-item::details-content{
+    height:0; overflow:hidden; opacity:0;
+    transition:height var(--dur-slow) var(--ease-out),
+               opacity var(--dur-slow) var(--ease-out),
+               content-visibility var(--dur-slow) allow-discrete;
+  }
+  .faq-item[open]::details-content{ height:auto; opacity:1; }
+}
+
+/* ============================================================
+   FINAL CTA
+   ============================================================ */
+.final-cta{
+  position:relative; isolation:isolate; overflow:hidden;
+  text-align:center;
+}
+.final-cta__bg{ position:absolute; inset:0; z-index:-2; background:#000; }
+.final-cta__bg-fade{
+  position:absolute; inset:0; z-index:-1;
+  background:var(--grad-hero-vignette);
+}
+.final-cta__bg-fade::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, var(--bg-base) 0%, transparent 30%, transparent 70%, var(--bg-base) 100%);
+}
+.final-cta__inner{
+  position:relative; z-index:1; max-width:720px; margin-inline:auto;
+  /* Mirror of the hero scrim — centered focal point since the CTA is centered.
+     High 0.88 mid-stop keeps effective alpha >=0.85 across the copy; edges fade
+     to transparent so the glitch stays visible as texture, not characters. */
+  background:radial-gradient(120% 120% at 50% 50%,
+    rgba(5,6,10,0.9) 0%,
+    rgba(5,6,10,0.88) 55%,
+    rgba(5,6,10,0.6) 80%,
+    transparent 100%);
+  padding:var(--space-7) var(--space-6);
+  border-radius:var(--radius-xl);
+}
+/* Eyebrow is inline-flex; center its inner content to match the centered CTA
+   (replaces a former inline justify-content style). */
+.final-cta__inner .eyebrow{ justify-content:center; }
+.final-cta__title{ font-size:var(--text-h1); margin-block:0 var(--space-5); text-wrap:balance; }
+.final-cta__body{ font-size:var(--text-body-lg); color:var(--text-secondary); margin-bottom:var(--space-7); }
+.final-cta__aside{ font-weight:300; font-style:italic; }
+.final-cta__cta{ display:flex; flex-wrap:wrap; gap:var(--space-4); justify-content:center; }
+.final-cta .proof-line{ justify-content:center; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer{
+  position:relative; isolation:isolate; overflow:hidden;
+  border-top:1px solid var(--border-subtle);
+  padding-block:var(--section-py) var(--space-6);
+}
+/* Footer glitch is a SUBTLE backdrop, not a third hero. The canvas itself is
+   dimmed (opacity) so the matrix reads as faint texture, and the fade keeps a
+   high opacity floor across the whole footer (text lives top-to-bottom here, so
+   unlike the hero there is no "empty zone" to let the glitch run hot). */
+.site-footer__bg{ position:absolute; inset:0; z-index:-2; background:#000; opacity:0.38; }
+.site-footer__bg-fade{
+  position:absolute; inset:0; z-index:-1;
+  background:linear-gradient(180deg, rgba(5,6,10,0.86) 0%, rgba(5,6,10,0.78) 55%, rgba(5,6,10,0.82) 100%);
+}
+.footer-grid{
+  position:relative; z-index:1;
+  display:grid; grid-template-columns:1fr; gap:var(--space-7);
+}
+@media (min-width:680px){ .footer-grid{ grid-template-columns:1.5fr 1fr 1fr 1fr; gap:var(--space-6); } }
+
+.footer-brand__logo{ height:53px; width:auto; margin-bottom:var(--space-4); }
+.footer-brand__tag{ color:var(--text-muted); font-size:var(--text-small); max-width:34ch; margin-bottom:var(--space-4); text-wrap:balance; }
+
+.footer-col__title{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--text-faint);
+  margin-bottom:var(--space-4);
+}
+.footer-col__list{ display:flex; flex-direction:column; gap:var(--space-3); }
+/* :not(.btn) so the link colour never bleeds onto a CTA in the list (the
+   "Get Started" column holds lime buttons — grey text on lime fails AA). */
+.footer-col__list a:not(.btn){ color:var(--text-muted); font-size:var(--text-small); }
+.footer-col__list a:not(.btn):hover{ color:var(--text-primary); }
+.footer-get a{ display:inline-flex; }
+
+.footer-legal{
+  position:relative; z-index:1;
+  margin-top:var(--space-8); padding-top:var(--space-5);
+  border-top:1px solid var(--border-subtle);
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+  gap:var(--space-3); font-size:var(--text-xs); color:var(--text-faint);
+}
+.footer-legal__links{ display:flex; gap:var(--space-5); }
+.footer-legal__links a{ color:var(--text-faint); }
+.footer-legal__links a:hover{ color:var(--text-muted); }
+.footer-legal__guarantee{ width:100%; color:var(--text-faint); font-family:var(--font-mono); letter-spacing:0.04em; }
+@media (min-width:680px){ .footer-legal__guarantee{ width:auto; order:1; } }
+/* Mobile (<680px): the row layout collapses to one-item-per-line, so
+   `space-between` no longer balances anything — it just left-aligns each
+   child with the ragged, uneven vertical rhythm `flex-wrap` produces.
+   Stack deliberately instead: a single left-aligned column with one even
+   `gap`, mirroring the left edge of the footer nav columns above.
+
+   DOM order (copyright → guarantee → pause → links) is preserved so
+   visual order matches focus order (WCAG 2.4.3). Spacing is `gap`, never
+   margins — so the pause toggle being absent (hidden until JS arms it,
+   removed entirely under reduced-motion) collapses cleanly with no
+   phantom gap, in every state. */
+@media (max-width:679.98px){
+  .footer-legal{ flex-direction:column; align-items:flex-start; justify-content:flex-start; gap:var(--space-4); }
+  /* The guarantee is the only multi-line item; left to itself the mono
+     copy wraps to a full first line + a stub second line ("No per-clean
+     fees." alone), which reads as unbalanced. `balance` evens the two
+     line widths. Engines without it just fall back to the default wrap. */
+  .footer-legal__guarantee{ text-wrap:balance; }
+}
+
+/* WCAG 2.2.2 "Pause animations" control. Mono pill matching the footer voice;
+   small glyph flips pause↔play via aria-pressed. Reveals only once JS confirms
+   it can drive the canvases (button[hidden] lifted in motionControl()), and is
+   removed entirely under reduced-motion (no motion to stop). */
+.motion-toggle{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  min-height:32px; padding:var(--space-2) var(--space-3);
+  border:1px solid var(--border-subtle); border-radius:var(--radius-pill);
+  background:var(--surface-1); color:var(--text-faint);
+  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.02em;
+  cursor:pointer; transition:color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
+}
+/* Honor the `hidden` attribute. The base `display:inline-flex` (a class)
+   outranks the UA `[hidden]{display:none}`, so without this the button stays
+   visible AND occupies layout in its closed state — no-JS, before JS arms it,
+   or under reduced-motion (motionControl() returns early, never lifting it).
+   `.motion-toggle[hidden]` (class+attribute) beats the base rule; JS revealing
+   the button removes the attribute, so the selector stops matching and the
+   inline-flex applies. */
+.motion-toggle[hidden]{ display:none; }
+.motion-toggle:hover{ color:var(--text-secondary); border-color:var(--border-default); background:var(--surface-2); }
+.motion-toggle:focus-visible{ outline:none; box-shadow:var(--focus-ring-on-surface); }
+/* Glyph: two bars (pause) by default; a triangle (play) when paused. */
+.motion-toggle__icon{
+  width:10px; height:10px; flex:0 0 auto;
+  background:currentColor;
+  clip-path:polygon(0 0, 38% 0, 38% 100%, 0 100%, 0 0, 62% 0, 100% 0, 100% 100%, 62% 100%, 62% 0);
+}
+.motion-toggle[aria-pressed="true"] .motion-toggle__icon{
+  clip-path:polygon(15% 0, 100% 50%, 15% 100%);
+}
+.motion-toggle[aria-pressed="true"]{ color:var(--text-accent); border-color:var(--accent-border); }
+@media (forced-colors: active){
+  .motion-toggle__icon{ background:ButtonText; }
+}
+/* Reduced motion: nothing to pause — hide the control even if JS un-hides it. */
+@media (prefers-reduced-motion: reduce){ .motion-toggle{ display:none; } }
+
+/* When the global control is engaged, freeze EVERY running CSS animation in
+   place (the many decorative pulses/scans/carets) so "Pause" is honest about
+   ALL ambient motion, not just the JS canvas layer (those freeze via the
+   "wwyw:motion" event). animation-play-state freezes loops without dropping
+   transitions, and is fully reversible on resume. The !important is needed to
+   beat the per-animation shorthands (same specificity necessity as the
+   reduced-motion overrides). */
+:root[data-motion="paused"] *,
+:root[data-motion="paused"] *::before,
+:root[data-motion="paused"] *::after{ animation-play-state:paused !important; }
+
+/* ============================================================
+   SECTION DIVIDER (thin glitch strip)
+   ============================================================ */
+.divider{
+  position:relative; height:64px; overflow:hidden; background:#000;
+  border-block:1px solid var(--border-subtle);
+}
+.divider .glitch{ z-index:0; }
+.divider__fade{
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(180deg, var(--bg-base) 0%, transparent 50%, var(--bg-base) 100%);
+}
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.reveal{ opacity:0; transform:translateY(18px); transition:opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
+.reveal.is-visible{ opacity:1; transform:none; }
+/* Staggered children: each successive item delays by --i * step so a group reads
+   as one choreographed gesture rather than N independent pops. JS sets --i. */
+.reveal-group > *{
+  opacity:0; transform:translateY(18px);
+  transition:opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+  transition-delay:calc(var(--i, 0) * 70ms);
+}
+.reveal-group.is-visible > *{ opacity:1; transform:none; }
+@media (prefers-reduced-motion: reduce){
+  .reveal, .reveal-group > *{ opacity:1; transform:none; transition:none; }
+}
+/* No-JS fallback: the reveal is a JS-driven enhancement (an IntersectionObserver
+   adds .is-visible). Without scripting there's nothing to un-hide the content, so
+   rest it visible — otherwise reveal-wrapped sections render blank. Keeps the
+   "reads with no JS" promise for the FAQ artifact and the rest of the page. */
+@media (scripting: none){
+  .reveal, .reveal-group > *{ opacity:1; transform:none; transition:none; }
+}
+
+/* ============================================================
+   REVERSED WORDMARK
+   The dark-on-light logo is recolored for the dark surface INSIDE the
+   inline <symbol>'s own <style> (index.html). That is required: <use>
+   clones the symbol into a shadow tree, so document rules here would not
+   reach the cloned paths — only the symbol's own styles (and inherited
+   custom properties) cross the boundary. The lime shield glyph
+   (.wm-cls-21) and radial gradient are intentionally left untouched.
+   ============================================================ */
+
+/* ============================================================
+   HERO STATS — six field metrics under the hero CTA. A mono readout
+   row, not cards: hairline-separated cells that wrap responsively.
+   ============================================================ */
+/* Full-width readout band beneath the split, divided from it by a hairline. */
+.hero-stats{
+  display:grid; grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:var(--space-5) var(--space-5);
+  margin-top:clamp(2rem, 5vw, 4rem); padding-top:var(--space-6);
+  border-top:1px solid var(--border-default);
+}
+/* Hidden on phones: the network-ops panel above already carries the key
+   numbers, so the band read as stat-overload when everything stacked. Shown
+   from the small-tablet breakpoint up, where there's room for it to breathe. */
+@media (max-width:639px){
+  .hero-stats{ display:none; }
+}
+@media (min-width:560px){ .hero-stats{ grid-template-columns:repeat(4, minmax(0,1fr)); } }
+.hero-stat{ margin:0; position:relative; padding-left:var(--space-4); border-left:1px solid var(--border-default); }
+.hero-stat::before{
+  content:""; position:absolute; left:-1px; top:0; width:2px; height:20px;
+  background:linear-gradient(180deg, var(--accent), transparent); border-radius:2px;
+}
+.hero-stat__num{
+  font-family:var(--font-display); font-weight:600; line-height:1;
+  font-size:clamp(1.5rem, 1.2rem + 1vw, 2rem); letter-spacing:-0.03em;
+  font-feature-settings:"tnum"; color:var(--text-primary); white-space:nowrap;
+}
+/* The count-up JS rewrites the inner suffix span to .stat__sup, so style both. */
+.hero-stat__num .hero-stat__sup,
+.hero-stat__num .stat__sup{
+  font-size:0.5em; font-weight:500; color:var(--text-secondary);
+  vertical-align:0.5em; margin-left:0.04em; letter-spacing:0;
+}
+/* The re-infection rate is the brand's single best number — give its cap a
+   little more presence (taller, glowing) so the eye lands there, without a
+   heavier card treatment that would break the readout row. */
+.hero-stat--accent .hero-stat__num{ color:var(--accent); }
+.hero-stat--accent::before{ height:100%; box-shadow:var(--glow-lime-sm); }
+.hero-stat__label{
+  margin:var(--space-2) 0 0; font-family:var(--font-mono);
+  font-size:var(--text-xs); letter-spacing:0.03em; color:var(--text-muted);
+  line-height:1.4; text-transform:uppercase;
+}
+
+/* ============================================================
+   HERO NETWORK DEFENSE MONITOR — the hero's bespoke right-side object.
+   Tells the AGGREGATE story (whole network at scale) so it never duplicates the
+   per-site watch console further down. Signature motif: a live defense WAVEFORM
+   (network "heartbeat" of blocked threats) scrolling right→left, distinct from
+   the radar sweep / code editor / case ledger / glitch terminal used elsewhere.
+   Live trace + count tick + rolling event tape (js/netops.js); fully static +
+   readable under reduced-motion / no-JS.
+   ============================================================ */
+.netops{
+  position:relative; z-index:1;
+  border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 40px 90px -56px rgba(0,0,0,0.85);
+  overflow:hidden; isolation:isolate;
+}
+/* faint lime top-edge sheen so the panel reads "powered/live" */
+.netops::before{
+  content:""; position:absolute; inset:0 0 auto; height:1px; z-index:3;
+  background:linear-gradient(90deg, transparent, var(--accent-border), transparent);
+}
+
+/* Instrument-bezel corner ticks — small lime L-brackets at each corner so the
+   panel reads as a piece of monitoring hardware. The outer corner of each
+   bracket is rounded CONCENTRIC with the container: radius = container radius
+   (--radius-lg) − inset (8px), so the bracket arcs parallel to the panel's
+   rounded edge instead of cutting a hard 90° across it. --netops-corner-r keeps
+   that relationship in one place if either value changes. */
+.netops{ --netops-corner-r:calc(var(--radius-lg) - 8px); }
+.netops__corner{
+  position:absolute; z-index:3; width:14px; height:14px; pointer-events:none;
+  border:0 solid var(--accent-border); /* lifted to 0.55 lime below for presence */
+  border-color:rgba(105,255,18,0.55);
+}
+.netops__corner--tl{ top:8px; left:8px; border-top-width:1px; border-left-width:1px; border-top-left-radius:var(--netops-corner-r); }
+.netops__corner--tr{ top:8px; right:8px; border-top-width:1px; border-right-width:1px; border-top-right-radius:var(--netops-corner-r); }
+.netops__corner--bl{ bottom:8px; left:8px; border-bottom-width:1px; border-left-width:1px; border-bottom-left-radius:var(--netops-corner-r); }
+.netops__corner--br{ bottom:8px; right:8px; border-bottom-width:1px; border-right-width:1px; border-bottom-right-radius:var(--netops-corner-r); }
+
+.netops__head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:var(--space-4) var(--space-5);
+  border-bottom:1px solid var(--border-subtle);
+  font-family:var(--font-mono);
+}
+.netops__title{
+  font-size:var(--text-xs); letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--text-secondary);
+}
+.netops__live{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:var(--text-xs); font-weight:600; letter-spacing:0.1em; color:var(--text-accent);
+}
+.netops__live-dot{
+  width:7px; height:7px; border-radius:50%; background:var(--accent);
+  box-shadow:0 0 0 0 var(--accent-border); animation:console-pulse 2.4s var(--ease-out) infinite;
+}
+
+/* ---- THE WAVEFORM — the signature object ----
+   A scrolling threat-activity trace on a darkened scope. The SVG is drawn in a
+   fixed 300×80 grid and stretched to fit (preserveAspectRatio:none), so JS works
+   only in grid units. A live rate counter + caption sit on the scope. */
+.netops__wave{
+  position:relative; overflow:hidden;
+  height:96px; margin:0; padding:0;
+  background:
+    radial-gradient(120% 140% at 100% 50%, var(--accent-soft), transparent 62%),
+    var(--surface-inset);
+  border-bottom:1px solid var(--border-subtle);
+}
+/* the "live edge" — a faint accent rule at the right where new data enters,
+   anchoring the scan head as "now". */
+.netops__wave::after{
+  content:""; position:absolute; top:0; bottom:0; right:0; width:1px; z-index:2;
+  background:linear-gradient(180deg, transparent, var(--accent-border), transparent);
+  pointer-events:none;
+}
+.netops__wave-svg{
+  position:absolute; inset:0; width:100%; height:100%; display:block;
+}
+.netops__wave-area{ fill:url(#netops-wave-fill); stroke:none; }
+/* Gradient stops in CSS, not as stop-color="var(--accent)" presentation
+   attributes — var() resolves reliably as a CSS property but is unsupported in
+   SVG presentation attributes in some engines (would fall back to black). */
+.netops__wave-stop--top{ stop-color:var(--accent); stop-opacity:0.22; }
+.netops__wave-stop--bot{ stop-color:var(--accent); stop-opacity:0; }
+.netops__wave-line{
+  fill:none; stroke:var(--accent); stroke-width:1.6;
+  stroke-linejoin:round; stroke-linecap:round;
+  /* vector-effect keeps the trace a hairline despite the non-uniform x-stretch */
+  vector-effect:non-scaling-stroke;
+  filter:drop-shadow(0 0 3px rgba(105,255,18,0.55));
+}
+.netops__wave-head{
+  fill:var(--accent);
+  filter:drop-shadow(0 0 5px rgba(105,255,18,0.9));
+}
+/* faint vertical scope graticule, fading toward the left (history) edge */
+.netops__wave-grid{
+  position:absolute; inset:0; pointer-events:none;
+  background-image:linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+  background-size:30px 100%;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 40%);
+          mask-image:linear-gradient(90deg, transparent, #000 40%);
+}
+.netops__wave-rate{
+  position:absolute; top:var(--space-3); left:var(--space-5); z-index:2;
+  font-family:var(--font-display); font-weight:600; line-height:1;
+  font-size:1.375rem; letter-spacing:-0.02em; color:var(--text-primary);
+  font-feature-settings:"tnum";
+}
+.netops__wave-cap{
+  position:absolute; bottom:var(--space-3); left:var(--space-5); z-index:2;
+  font-family:var(--font-mono); font-size:10px; letter-spacing:0.08em;
+  text-transform:uppercase; color:var(--text-faint);
+}
+
+/* primary aggregate figure */
+.netops__primary{
+  padding:var(--space-5) var(--space-5) var(--space-4);
+  display:flex; flex-direction:column; gap:var(--space-2);
+}
+.netops__primary-row{ display:flex; align-items:baseline; gap:var(--space-3); flex-wrap:wrap; }
+.netops__primary-num{
+  font-family:var(--font-display); font-weight:600; letter-spacing:-0.03em; line-height:1;
+  font-size:clamp(2.25rem, 1.6rem + 2.6vw, 3rem);
+  font-feature-settings:"tnum"; color:var(--text-primary);
+}
+/* small "live ↑" delta chip beside the count — reinforces "right now" */
+.netops__primary-delta{
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:var(--font-mono); font-size:10px; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--text-accent);
+  padding:3px 8px; border:1px solid var(--accent-border); border-radius:var(--radius-pill);
+  background:var(--accent-soft);
+}
+.netops__primary-delta-caret{
+  width:0; height:0; border-left:3px solid transparent; border-right:3px solid transparent;
+  border-bottom:5px solid var(--accent);
+  animation:netops-caret 2.4s var(--ease-out) infinite;
+}
+@keyframes netops-caret{ 0%,100%{ transform:translateY(1px); opacity:0.65; } 50%{ transform:translateY(-1px); opacity:1; } }
+.netops__primary-label{
+  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.04em;
+  text-transform:uppercase; color:var(--text-muted);
+}
+
+/* the two products as armed signal channels — a segmented strength readout, not
+   a generic progress bar. All segments lit = armed; the trailing pair breathe. */
+.netops__channels{
+  display:flex; flex-direction:column; gap:var(--space-3);
+  padding:0 var(--space-5) var(--space-5);
+}
+.netops__channel{
+  display:grid; grid-template-columns:1fr auto; align-items:center;
+  gap:6px var(--space-3);
+  font-family:var(--font-mono); font-size:var(--text-xs);
+}
+.netops__channel-k{ color:var(--text-secondary); letter-spacing:0.02em; }
+.netops__channel-v{ color:var(--text-accent); letter-spacing:0.08em; text-transform:uppercase; font-weight:600; }
+.netops__channel-bars{
+  grid-column:1 / -1; display:flex; gap:3px; align-items:flex-end; height:11px;
+}
+/* Tonal-depth signal meter: segments climb the lime ramp left→right, deep green
+   at the tail rising to full neon at the live (trailing) end — so the row reads
+   as a lit signal with intensity, not a flat wall. Neon is kept at full strength
+   on the peak segments. */
+.netops__channel-bars i{
+  flex:1; height:100%; border-radius:1px;
+  background:var(--lime-400); transform-origin:bottom;
+}
+.netops__channel-bars i:nth-child(n+3){ background:var(--lime-300); }
+.netops__channel-bars i:nth-child(n+5){ background:var(--lime-200); }
+.netops__channel-bars i:nth-last-child(-n+2){
+  background:var(--lime-100); box-shadow:var(--lime-glow-peak);
+}
+/* the last two segments pulse so the "signal" looks live (staggered) */
+.netops__channel-bars i:nth-last-child(2){ animation:netops-seg 1.8s var(--ease-in-out) infinite; }
+.netops__channel-bars i:nth-last-child(1){ animation:netops-seg 1.8s var(--ease-in-out) 0.35s infinite; }
+@keyframes netops-seg{ 0%,100%{ opacity:1; transform:scaleY(1); } 50%{ opacity:0.5; transform:scaleY(0.7); } }
+
+/* rolling event tape — the network living its life */
+.netops__feed{
+  list-style:none; margin:0; padding:var(--space-4) var(--space-5);
+  border-top:1px solid var(--border-subtle);
+  display:flex; flex-direction:column; gap:var(--space-3);
+}
+.netops__event{
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:var(--space-3);
+  font-family:var(--font-mono); font-size:var(--text-xs); color:var(--text-muted);
+  opacity:0; transform:translateY(4px);
+  animation:netops-in var(--dur-slow) var(--ease-out) forwards;
+}
+.netops .netops__event:nth-child(1){ animation-delay:.05s; }
+.netops .netops__event:nth-child(2){ animation-delay:.20s; }
+.netops .netops__event:nth-child(3){ animation-delay:.35s; }
+.netops .netops__event:nth-child(4){ animation-delay:.50s; }
+@keyframes netops-in{ to{ opacity:1; transform:none; } }
+.netops__event-dot{
+  width:6px; height:6px; border-radius:50%; background:var(--accent);
+  box-shadow:var(--glow-lime-sm); flex:none;
+}
+.netops__event-dot--teal{ background:var(--accent-2-text); box-shadow:0 0 8px 1px rgba(61,214,232,0.4); }
+.netops__event-txt{ color:var(--text-secondary); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.netops__event-t{ color:var(--text-faint); }
+
+.netops__foot{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:var(--space-3) var(--space-5);
+  border-top:1px solid var(--border-subtle); background:var(--surface-inset);
+  font-family:var(--font-mono); font-size:var(--text-xs); color:var(--text-muted);
+}
+.netops__foot-v{ color:var(--text-accent); font-weight:600; letter-spacing:0.06em; }
+
+@media (prefers-reduced-motion: reduce){
+  .netops__live-dot{ animation:none; }
+  .netops__event{ animation:none; opacity:1; transform:none; }
+  .netops__primary-delta-caret{ animation:none; }
+  .netops__channel-bars i{ animation:none !important; opacity:1; transform:none; }
+}
+
+/* ============================================================
+   CODE ANALYZER — second product. Glitch backdrop (low-text zone framing
+   the pipeline), headline numbers, then the eight-stage pipeline conveyor.
+   ============================================================ */
+/* Match the section tone to its neighbours (both .section--alt = --bg-base-2)
+   so there's no flat-colour step at either seam, and feather the glitch edges to
+   the SAME tone over a long ramp so the texture emerges/dissolves gradually
+   instead of snapping on at a hard line. Edge-only feathering — the mid-section
+   band keeps its glitch opacity (the stat labels' AA contrast was verified
+   against that, leave it). */
+.analyzer{ position:relative; isolation:isolate; overflow:hidden; background:var(--bg-base-2); }
+.analyzer__bg{ position:absolute; inset:0; z-index:-2; background:#000; opacity:0.30; }
+.analyzer__bg-fade{
+  position:absolute; inset:0; z-index:-1;
+  background:linear-gradient(180deg, var(--bg-base-2) 0%, rgba(5,6,10,0.86) 22%, rgba(5,6,10,0.86) 78%, var(--bg-base-2) 100%);
+}
+
+/* De-boxed stat row: numbers + labels separated by hairlines, no cards — so the
+   section opens with a clean band of figures, not a grid of boxes. Labels read
+   in --text-secondary (not muted) since they sit directly over the live glitch
+   backdrop here with no card scrim. */
+.analyzer-stats{
+  display:grid; grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:var(--space-5) 0; margin-bottom:var(--section-gap);
+  /* Reset the UA list defaults (padding-inline-start + bullets) so the row
+     isn't pushed right of the centered lede above it. */
+  list-style:none; margin-top:0; padding-left:0;
+}
+@media (min-width:780px){ .analyzer-stats{ grid-template-columns:repeat(4, minmax(0,1fr)); } }
+/* Each cell centers its number + label so the row shares the centered
+   axis of the heading/lede above it (no left- or right-weighting). */
+.analyzer-stat{ padding:var(--space-1) var(--space-5); text-align:center; }
+/* Hairline separators between items; suppressed at each row's start. */
+.analyzer-stat + .analyzer-stat{ border-left:1px solid var(--border-default); }
+@media (max-width:779px){
+  .analyzer-stat{ padding-inline:var(--space-4); }
+  .analyzer-stat:nth-child(odd){ border-left:0; }
+}
+.analyzer-stat__num{
+  display:block; font-family:var(--font-display); font-weight:600; line-height:1;
+  font-size:clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); letter-spacing:-0.03em;
+  font-feature-settings:"tnum"; color:var(--accent);
+}
+.analyzer-stat__num .analyzer-stat__sup,
+.analyzer-stat__num .stat__sup{
+  font-size:0.5em; font-weight:500; color:var(--text-secondary); vertical-align:0.5em; letter-spacing:0;
+}
+.analyzer-stat__num--text{ color:var(--accent-2-text); letter-spacing:0.02em; }
+.analyzer-stat__label{
+  display:block; margin-top:var(--space-3); font-size:var(--text-small);
+  color:var(--text-secondary); line-height:1.5; max-width:22ch; margin-inline:auto;
+}
+
+/* ============================================================
+   The inspection: the figure IS the artifact under analysis.
+   Left = a code editor panel holding a real-looking, clean-at-a-glance
+   vibe-coded file with threats hidden in plain sight. Right = the findings
+   ledger (the eight real analysis stages, the load-bearing content). A scan
+   sweeps the code; threats surface in place and resolve their ledger stage;
+   the verdict assembles. The code/sweep/threats are decorative (aria-hidden);
+   the ledger carries all meaning and reads with no JS.
+   ============================================================ */
+/* ONE window: a single bordered frame, one title bar, and a body split into the
+   source (left) and a docked analysis panel (right) by an internal seam. Reads as
+   one tool — an editor with its problems pane — not two cards. */
+.inspect{
+  max-width:1080px; margin-inline:auto; overflow:hidden;
+  border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  background:linear-gradient(180deg, var(--surface-1) 0%, var(--bg-base-2) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.04), var(--shadow-sm);
+}
+
+/* Shared window chrome — spans the full frame width. */
+.inspect__chrome{
+  display:flex; align-items:center; gap:var(--space-3);
+  padding:var(--space-3) var(--space-4);
+  border-bottom:1px solid var(--border-subtle); background:var(--surface-inset);
+  font-family:var(--font-mono); font-size:var(--text-xs);
+}
+.inspect__dots{ display:inline-flex; gap:6px; }
+.inspect__dots i{ width:9px; height:9px; border-radius:50%; background:var(--surface-3); }
+.inspect__file{ color:var(--text-secondary); letter-spacing:0.01em; }
+.inspect__lang{
+  margin-left:auto; color:var(--text-faint); letter-spacing:0.04em;
+  text-transform:uppercase; font-size:10px;
+}
+
+/* Body: source | seam | analysis. Single column on mobile (seam becomes a
+   horizontal divider via the panel's top border). */
+.inspect__body{ display:grid; grid-template-columns:1fr; }
+@media (min-width:900px){
+  .inspect__body{ grid-template-columns:minmax(0,1.06fr) minmax(0,0.94fr); }
+}
+
+/* ---- LEFT: the source region (no own frame — it's part of the window) ---- */
+.inspect__code{ position:relative; margin:0; overflow:hidden; min-width:0; }
+
+/* The scan sweep — a band of light that travels down the code as it's analyzed.
+   Positioned by JS via --scan-y (px from the top of the code body). */
+.inspect__scan{
+  position:absolute; left:0; right:0; top:0; height:46px; z-index:2;
+  pointer-events:none; opacity:0; transform:translateY(var(--scan-y, 0));
+  background:linear-gradient(180deg, transparent, var(--accent-soft) 45%, transparent);
+  border-bottom:1px solid var(--accent-border);
+  box-shadow:0 6px 18px -6px rgba(105,255,18,0.45);
+}
+.inspect.is-scanning .inspect__scan{ opacity:1; }
+
+.inspect__pre{
+  margin:0; padding:var(--space-4) var(--space-5) var(--space-5);
+  overflow-x:auto; font-family:var(--font-mono);
+  font-size:clamp(0.72rem, 0.66rem + 0.3vw, 0.8125rem); line-height:1.85;
+  color:var(--text-secondary); -webkit-overflow-scrolling:touch;
+}
+.inspect__pre code{ display:block; white-space:pre; min-width:max-content; }
+.cl{ display:block; }
+/* Line-number gutter — quiet, non-selectable. */
+.ln{
+  display:inline-block; width:2.25em; margin-right:var(--space-3);
+  text-align:right; color:var(--text-faint); opacity:0.5;
+  user-select:none; -webkit-user-select:none;
+}
+/* Syntax tokens, mapped to the locked palette (no new colors). */
+.inspect__pre .k{ color:var(--accent-2-text); }     /* keywords — teal   */
+.inspect__pre .s{ color:var(--text-secondary); }    /* strings           */
+.inspect__pre .fn{ color:var(--text-primary); }     /* calls             */
+.inspect__pre .o{ color:var(--text-muted); }        /* operators         */
+.inspect__pre .lit{ color:var(--text-muted); }      /* literals          */
+
+/* A threat token: looks like ordinary code until the sweep reaches its line,
+   then surfaces — highlighted, underlined, with a severity glow. */
+.threat{
+  position:relative; border-radius:var(--radius-xs);
+  transition:background var(--dur-slow) var(--ease-out), color var(--dur-slow) var(--ease-out),
+             box-shadow var(--dur-slow) var(--ease-out);
+}
+.cl.is-flagged .threat{
+  background:var(--accent-soft); color:var(--text-accent);
+  box-shadow:0 0 0 1px var(--accent-border), 0 0 12px rgba(105,255,18,0.22);
+}
+/* The zero-width GLASSWORM glyph: invisible at rest, becomes a visible marker
+   once surfaced — the headline's "hidden character" made literal. */
+.threat--glyph{
+  display:inline-block; width:0; overflow:hidden; vertical-align:middle;
+  text-align:center; color:var(--text-on-accent); font-size:0.7em; font-weight:700;
+  transition:width var(--dur-slow) var(--ease-out), background var(--dur-slow) var(--ease-out);
+}
+.cl.is-flagged .threat--glyph{
+  width:1.1em; margin:0 1px; border-radius:var(--radius-xs);
+  background:var(--accent); box-shadow:0 0 10px rgba(105,255,18,0.5);
+}
+.cl.is-flagged .threat--glyph::before{ content:"\200B"; }
+.cl.is-flagged .threat--glyph::after{ content:"⌫"; }
+
+/* ---- RIGHT: the findings ledger ---- */
+/* Docked analysis panel — a region of the window, not a card. The seam is its
+   leading edge: a left border on desktop, a top border when stacked on mobile.
+   A faint surface tint sets it apart from the darker code pane. */
+.inspect__panel{
+  display:flex; flex-direction:column; gap:var(--space-2);
+  padding:var(--space-5);
+  border-top:1px solid var(--border-default);
+  background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
+}
+@media (min-width:900px){
+  .inspect__panel{ border-top:0; border-left:1px solid var(--border-default); }
+}
+.inspect__panel-head{
+  display:flex; align-items:baseline; justify-content:space-between; gap:var(--space-3);
+  margin:0 0 var(--space-2); padding-bottom:var(--space-3);
+  border-bottom:1px solid var(--border-subtle);
+}
+.inspect__panel-title{ font-family:var(--font-display); font-weight:600; font-size:var(--text-h6); color:var(--text-primary); letter-spacing:0.01em; }
+.inspect__progress{ font-family:var(--font-mono); font-size:var(--text-xs); color:var(--text-faint); }
+.inspect__progress-n{ font-variant-numeric:tabular-nums; color:var(--text-accent); }
+
+.inspect__stages{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; }
+.inspect-stage{
+  position:relative; display:grid; grid-template-columns:auto 1fr; gap:var(--space-3);
+  padding:var(--space-3) 0; border-top:1px solid var(--border-subtle);
+}
+.inspect-stage:first-child{ border-top:0; }
+.inspect-stage__num{
+  flex:none; width:1.625rem; height:1.625rem; display:grid; place-items:center;
+  border-radius:var(--radius-sm); background:var(--surface-inset); border:1px solid var(--border-strong);
+  font-family:var(--font-mono); font-size:10px; font-weight:600; color:var(--text-muted);
+  transition:color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out),
+             background var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+}
+.inspect-stage__body{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.inspect-stage__head{ display:flex; align-items:baseline; flex-wrap:wrap; gap:var(--space-2) var(--space-3); }
+.inspect-stage__title{ font-family:var(--font-display); font-weight:600; font-size:var(--text-h6); color:var(--text-primary); line-height:1.3; }
+.inspect-stage__desc{ font-size:var(--text-small); color:var(--text-muted); line-height:1.45; }
+.inspect-stage__find{
+  flex:none; font-family:var(--font-mono); font-size:10px; font-weight:600;
+  letter-spacing:0.03em; line-height:1; padding:0.32em 0.5em; border-radius:var(--radius-pill);
+  border:1px solid var(--border-subtle); color:var(--text-faint); background:var(--surface-inset);
+  opacity:0; transform:translateY(-2px);
+  transition:opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out),
+             color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+}
+.inspect-stage__find-n{ font-variant-numeric:tabular-nums; }
+
+/* Resolved state — set by JS as the sweep surfaces each stage's threat. */
+.inspect-stage.is-lit .inspect-stage__num{
+  color:var(--text-on-accent); background:var(--accent); border-color:var(--accent);
+  box-shadow:var(--glow-lime-sm);
+}
+.inspect-stage.is-lit[data-find="verify"] .inspect-stage__num{
+  color:var(--bg-base); background:var(--accent-2-text); border-color:var(--accent-2-text);
+  box-shadow:0 0 10px rgba(61,214,232,0.35);
+}
+.inspect-stage.is-lit .inspect-stage__find{ opacity:1; transform:none; }
+.inspect-stage.is-lit[data-find="hit"] .inspect-stage__find{
+  color:var(--text-accent); border-color:var(--accent-border); background:var(--accent-soft);
+}
+.inspect-stage.is-lit[data-find="clean"] .inspect-stage__find{ color:var(--text-muted); }
+.inspect-stage.is-lit[data-find="verify"] .inspect-stage__find{
+  color:var(--accent-2-text); border-color:rgba(61,214,232,0.32);
+}
+
+/* Verdict — assembles once every stage is resolved. */
+.inspect__verdict{
+  display:grid; grid-template-columns:auto 1fr; grid-template-rows:auto auto;
+  column-gap:var(--space-3); row-gap:1px; align-items:center;
+  margin:var(--space-3) 0 0; padding:var(--space-4);
+  border:1px solid var(--border-default); border-radius:var(--radius-md);
+  background:var(--surface-inset); font-family:var(--font-mono);
+  transition:border-color var(--dur-slow) var(--ease-out), background var(--dur-slow) var(--ease-out),
+             box-shadow var(--dur-slow) var(--ease-out);
+}
+.inspect__verdict-icon{
+  grid-row:1 / 3; width:1.75rem; height:1.75rem; border-radius:50%;
+  border:1px solid var(--border-strong); background:var(--surface-2);
+  position:relative; transition:background var(--dur-slow) var(--ease-out), border-color var(--dur-slow) var(--ease-out);
+}
+.inspect__verdict-text{ font-size:var(--text-small); font-weight:600; color:var(--text-muted); letter-spacing:0.01em; transition:color var(--dur-slow) var(--ease-out); }
+.inspect__verdict-sub{ font-size:10px; color:var(--text-faint); letter-spacing:0.04em; }
+.inspect.is-complete .inspect__verdict{
+  border-color:var(--accent-border); background:var(--accent-soft); box-shadow:var(--glow-lime-sm);
+}
+.inspect.is-complete .inspect__verdict-text{ color:var(--text-accent); }
+.inspect.is-complete .inspect__verdict-icon{ background:var(--accent); border-color:var(--accent); }
+.inspect.is-complete .inspect__verdict-icon::after{
+  content:""; position:absolute; left:36%; top:18%; width:24%; height:48%;
+  border:solid var(--text-on-accent); border-width:0 2px 2px 0; transform:rotate(45deg);
+}
+
+.analyzer__cta{ display:flex; flex-wrap:wrap; gap:var(--space-4); justify-content:center; margin-top:var(--section-gap); }
+
+/* Reduced-motion: everything settles resolved immediately (JS reveals all; see
+   pipeline.js), threats surfaced, no travelling sweep. */
+@media (prefers-reduced-motion: reduce){
+  .inspect-stage__num, .inspect-stage__find, .threat, .threat--glyph,
+  .inspect__verdict, .inspect__verdict-text, .inspect__verdict-icon{ transition:none; }
+  .inspect__scan{ display:none; }
+}
+
+/* ============================================================
+   ANALYZER SCANNER PAGE (/scanner/)
+   The interactive Code Analyzer: a real submit form ("launch bar") that drives
+   the shared .inspect window through a live run, then resolves a findings report.
+   Reuses .inspect*/.btn*/.proof-line as-is; everything here is the launch bar,
+   the demo notice, and the results report. State is on [data-state] of the
+   section root (idle | scanning | done), set by js/analyzer-scan.js. Tokens only.
+   ============================================================ */
+.scanner{
+  position:relative; isolation:isolate; overflow:hidden;
+  background:var(--bg-base-2);
+  padding-block:calc(var(--section-gap) + 64px) var(--section-gap);
+}
+.scanner__bg{ position:absolute; inset:0; z-index:-2; background:#000; opacity:0.28; }
+.scanner__bg-fade{
+  position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(120% 80% at 50% 0%, transparent 0%, rgba(4,5,10,0.55) 60%, var(--bg-base-2) 92%),
+    linear-gradient(180deg, transparent 60%, var(--bg-base-2) 100%);
+}
+.scanner .section-title{ max-width:24ch; }
+/* drop the leading dash glyph on the scanner eyebrow only (home eyebrows keep it) */
+.scanner .eyebrow::before{ display:none; }
+.scanner__proof{ justify-content:center; }
+
+/* ---- Launch bar — the submit UI ----------------------------------------- */
+.scan-launch{
+  max-width:1080px; margin:var(--space-7) auto 0;
+  border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.04), var(--shadow-sm);
+  padding:var(--space-5);
+}
+.scan-launch__field{ display:flex; flex-direction:column; gap:var(--space-2); }
+.scan-launch__label{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--text-faint);
+}
+.scan-launch__row{
+  display:flex; flex-wrap:wrap; align-items:stretch; gap:var(--space-3);
+}
+/* the input is an instrument field: inset surface, mono, lime focus. The
+   prefix icon is positioned within .scan-launch__field-wrap (its containing
+   block), so it stays glued to the input's left edge as the row wraps. */
+.scan-launch__field-wrap{ position:relative; flex:1 1 320px; min-width:0; display:flex; }
+.scan-launch__prefix{
+  position:absolute; left:var(--space-4); top:50%; transform:translateY(-50%);
+  color:var(--text-faint); display:inline-flex; pointer-events:none; z-index:1;
+}
+.scan-launch__input{
+  flex:1 1 auto; min-width:0; width:100%;
+  padding:0.95rem 1rem 0.95rem 2.85rem;
+  font-family:var(--font-mono); font-size:var(--text-small); color:var(--text-primary);
+  background:var(--surface-inset); border:1px solid var(--border-strong);
+  border-radius:var(--radius-md); outline:none;
+  transition:border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+}
+.scan-launch__input::placeholder{ color:var(--text-faint); }
+.scan-launch__input:hover{ border-color:var(--border-strong); }
+.scan-launch__input:focus-visible{ border-color:var(--accent-border); box-shadow:var(--focus-ring-on-surface); }
+.scan-launch__input[aria-invalid="true"]{ border-color:var(--sev-crit-border); }
+
+.scan-launch__submit{ flex:0 0 auto; min-width:9.5rem; position:relative; }
+.scan-launch__spinner{
+  display:none; width:1rem; height:1rem; margin-left:var(--space-2);
+  border:2px solid rgba(0,0,51,0.35); border-top-color:var(--text-on-accent);
+  border-radius:50%; animation:scan-spin 0.7s linear infinite;
+}
+[data-state="scanning"] .scan-launch__spinner{ display:inline-block; }
+@keyframes scan-spin{ to{ transform:rotate(360deg); } }
+
+.scan-launch__error{
+  margin:var(--space-1) 0 0; font-family:var(--font-mono); font-size:var(--text-xs);
+  color:var(--sev-error-text); letter-spacing:0.01em;
+}
+
+.scan-launch__meta{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+  gap:var(--space-3) var(--space-5); margin-top:var(--space-4);
+  padding-top:var(--space-4); border-top:1px solid var(--border-subtle);
+}
+.scan-launch__help{
+  margin:0; display:inline-flex; align-items:center; gap:var(--space-2);
+  font-family:var(--font-mono); font-size:var(--text-xs); color:var(--text-muted);
+  letter-spacing:0.01em;
+}
+.scan-launch__lock{ color:var(--accent); display:inline-flex; }
+.scan-launch__samples{
+  margin:0; display:inline-flex; flex-wrap:wrap; align-items:center; gap:var(--space-2);
+  font-family:var(--font-mono); font-size:var(--text-xs);
+}
+.scan-launch__samples-k{ color:var(--text-faint); }
+
+/* sample-target chips — quiet, monospaced, lime on hover/focus */
+.chip{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  color:var(--text-secondary); background:var(--surface-inset);
+  border:1px solid var(--border-default); border-radius:var(--radius-pill);
+  padding:0.32em 0.7em; cursor:pointer;
+  transition:color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out),
+             background var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+.chip:hover{ color:var(--text-accent); border-color:var(--accent-border); background:var(--accent-soft); transform:translateY(-1px); }
+.chip:active{ transform:translateY(0); }
+.chip:focus-visible{ outline:none; box-shadow:var(--focus-ring-on-surface); }
+
+/* demo-mode notice — honest framing; CLIENT deletes when wiring real API */
+.scan-demo-note{
+  max-width:1080px; margin:var(--space-4) auto 0;
+  display:flex; align-items:center; gap:var(--space-3);
+  font-family:var(--font-mono); font-size:var(--text-xs); color:var(--text-faint);
+  letter-spacing:0.01em; line-height:1.5;
+}
+.scan-demo-note__tag{
+  flex:none; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent-2-text); background:var(--accent-2-soft);
+  border:1px solid rgba(61,214,232,0.32); border-radius:var(--radius-xs);
+  padding:0.2em 0.5em;
+}
+
+/* live scan status strip — shown only while a scan is running. A spinner + the
+   current "Stage n/8 · pass" narration, mono, lime accent. */
+.scan-status{
+  max-width:1080px; margin:var(--space-4) auto 0;
+  display:flex; align-items:center; gap:var(--space-2);
+  font-family:var(--font-mono); font-size:var(--text-xs); color:var(--text-secondary);
+  letter-spacing:0.01em; line-height:1.4;
+}
+.scan-status[hidden]{ display:none; }
+.scan-status__spin{
+  flex:none; width:0.9rem; height:0.9rem; border-radius:50%;
+  border:2px solid var(--accent-soft); border-top-color:var(--accent);
+  animation:scan-spin 0.7s linear infinite;
+}
+.scan-status__stage{ flex:none; color:var(--text-accent); font-weight:600; }
+.scan-status__sep{ color:var(--text-faint); }
+.scan-status__text{ color:var(--text-secondary); }
+/* animated trailing dots ("…") — pure CSS, no JS churn */
+.scan-status__dots{ flex:none; width:1.1em; color:var(--text-accent); }
+.scan-status__dots::after{ content:"…"; animation:scan-dots 1.4s steps(4,end) infinite; clip-path:inset(0 100% 0 0); }
+@keyframes scan-dots{ to{ clip-path:inset(0 0 0 0); } }
+
+/* the inspect window sits directly under the launch bar on this page */
+.scanner .inspect{ margin-top:var(--space-5); }
+
+/* "now running" cue on the stage currently being analyzed: its number ring
+   pulses in the lime accent until the stage resolves (then .is-lit takes over). */
+.inspect-stage.is-running .inspect-stage__num{
+  color:var(--text-accent); border-color:var(--accent-border);
+  background:var(--accent-soft); animation:scan-stage-pulse 1s ease-in-out infinite;
+}
+.inspect-stage.is-running .inspect-stage__title{ color:var(--text-primary); }
+@keyframes scan-stage-pulse{
+  0%,100%{ box-shadow:0 0 0 0 rgba(105,255,18,0.0); }
+  50%{ box-shadow:0 0 0 4px rgba(105,255,18,0.14); }
+}
+
+/* ---- Results report ------------------------------------------------------ */
+.scan-report{
+  max-width:1080px; margin:var(--space-6) auto 0;
+  border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  background:linear-gradient(180deg, var(--surface-1) 0%, var(--bg-base-2) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.04), var(--shadow-sm);
+  padding:var(--space-6) var(--space-5);
+  animation:scan-report-in var(--dur-slow) var(--ease-out) both;
+}
+@keyframes scan-report-in{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+
+.scan-report__head{
+  display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between;
+  gap:var(--space-3) var(--space-5); margin-bottom:var(--space-5);
+  padding-bottom:var(--space-4); border-bottom:1px solid var(--border-subtle);
+}
+.scan-report__title{ font-size:var(--text-h4); color:var(--text-primary); margin:0; outline:none; }
+.scan-report__title:focus-visible{ box-shadow:var(--focus-ring-on-surface); border-radius:var(--radius-sm); }
+.scan-report__target{
+  margin:var(--space-1) 0 0; font-family:var(--font-mono); font-size:var(--text-small);
+  color:var(--text-muted); word-break:break-all;
+}
+.scan-report__verdict{
+  flex:none; font-family:var(--font-mono); font-size:var(--text-xs); font-weight:700;
+  letter-spacing:0.06em; text-transform:uppercase; padding:0.4em 0.7em;
+  border-radius:var(--radius-pill); border:1px solid var(--accent-border);
+  color:var(--text-accent); background:var(--accent-soft);
+}
+.scan-report__verdict[data-verdict="clean"]{
+  color:var(--accent-2-text); border-color:rgba(61,214,232,0.32); background:var(--accent-2-soft);
+}
+.scan-report__verdict[data-verdict="action"]{
+  color:var(--sev-crit-text); border-color:var(--sev-crit-border); background:var(--sev-crit-soft);
+}
+
+/* summary tiles — severity counts, de-boxed inline like .analyzer-stats */
+.scan-report__summary{
+  list-style:none; margin:0 0 var(--space-5); padding:0;
+  display:grid; grid-template-columns:repeat(2, 1fr); gap:1px;
+  background:var(--border-subtle); border:1px solid var(--border-subtle);
+  border-radius:var(--radius-md); overflow:hidden;
+}
+@media (min-width:680px){ .scan-report__summary{ grid-template-columns:repeat(4, 1fr); } }
+.scan-summary{
+  display:flex; flex-direction:column; gap:2px; align-items:center; justify-content:center;
+  padding:var(--space-4) var(--space-3); background:var(--surface-1); text-align:center;
+}
+.scan-summary__n{
+  font-family:var(--font-display); font-weight:600; font-size:var(--text-h3);
+  color:var(--text-primary); line-height:1; font-variant-numeric:tabular-nums;
+}
+.scan-summary__n--text{ font-size:var(--text-h5); color:var(--accent-2-text); letter-spacing:0.02em; }
+.scan-summary--crit .scan-summary__n{ color:var(--sev-crit-text); }
+.scan-summary__k{
+  font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em;
+  text-transform:uppercase; color:var(--text-faint);
+}
+
+/* findings list — severity badge | body (title+where, detail, CWE/OWASP tags) */
+.scan-findings{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; }
+.scan-finding{
+  display:grid; grid-template-columns:auto 1fr; gap:var(--space-3) var(--space-4);
+  padding:var(--space-4) 0; border-top:1px solid var(--border-subtle);
+}
+.scan-finding:first-child{ border-top:0; }
+.scan-finding--clean{
+  display:block; padding:var(--space-4); border:0; color:var(--text-muted);
+  font-family:var(--font-mono); font-size:var(--text-small);
+}
+.scan-finding__sev{
+  flex:none; align-self:start; font-family:var(--font-mono); font-size:10px; font-weight:700;
+  letter-spacing:0.05em; text-transform:uppercase; line-height:1;
+  padding:0.4em 0.55em; border-radius:var(--radius-xs); border:1px solid var(--border-strong);
+  color:var(--text-muted); background:var(--surface-inset);
+}
+.scan-finding--critical .scan-finding__sev{ color:var(--sev-crit-text); border-color:var(--sev-crit-border); background:var(--sev-crit-soft); }
+.scan-finding--high .scan-finding__sev{ color:var(--sev-high-text); border-color:var(--sev-high-border); background:var(--sev-high-soft); }
+.scan-finding--medium .scan-finding__sev{ color:var(--text-accent); border-color:var(--accent-border); background:var(--accent-soft); }
+.scan-finding--low .scan-finding__sev{ color:var(--accent-2-text); border-color:rgba(61,214,232,0.32); background:var(--accent-2-soft); }
+.scan-finding__body{ min-width:0; display:flex; flex-direction:column; gap:var(--space-2); }
+.scan-finding__head{
+  margin:0; display:flex; flex-wrap:wrap; align-items:baseline; gap:var(--space-2) var(--space-3);
+}
+.scan-finding__title{ font-family:var(--font-display); font-weight:600; font-size:var(--text-h6); color:var(--text-primary); line-height:1.3; }
+.scan-finding__where{ font-family:var(--font-mono); font-size:var(--text-xs); color:var(--text-faint); }
+.scan-finding__detail{ margin:0; font-size:var(--text-small); color:var(--text-muted); line-height:1.55; }
+.scan-finding__tags{ margin:0; display:flex; flex-wrap:wrap; gap:var(--space-2); }
+.scan-finding__tag{
+  font-family:var(--font-mono); font-size:10px; font-weight:500; letter-spacing:0.03em;
+  color:var(--text-faint); background:var(--surface-inset);
+  border:1px solid var(--border-subtle); border-radius:var(--radius-pill); padding:0.28em 0.55em;
+}
+
+.scan-report__cta{
+  display:flex; flex-wrap:wrap; gap:var(--space-3); margin-top:var(--space-6);
+  padding-top:var(--space-5); border-top:1px solid var(--border-subtle);
+}
+
+/* State gating: hide the report until a run completes (JS also toggles [hidden],
+   this is belt-and-braces and keeps the idle layout clean). */
+.scan-report[hidden]{ display:none; }
+
+/* Reduced-motion: no spinner/report entrance/pulse — the form still works and
+   the report appears instantly. */
+@media (prefers-reduced-motion: reduce){
+  .scan-launch__spinner{ animation:none; }
+  .scan-report{ animation:none; }
+  .chip{ transition:none; }
+  .scan-launch__input{ transition:none; }
+  .scan-status__spin{ animation:none; }
+  .scan-status__dots::after{ animation:none; clip-path:none; }
+  .inspect-stage.is-running .inspect-stage__num{ animation:none; }
+}
+
+/* ============================================================
+   WHY THIS IS DIFFERENT + INCIDENT RESPONSE
+   ============================================================ */
+.link-arrow{
+  display:inline-flex; align-items:center; gap:var(--space-2); margin-top:var(--space-5);
+  font-family:var(--font-mono); font-size:var(--text-small); font-weight:500;
+  letter-spacing:0.02em; color:var(--text-accent);
+}
+.link-arrow svg{ transition:transform var(--dur-base) var(--ease-out); }
+.link-arrow:hover{ color:var(--text-link-hover); }
+.link-arrow:hover svg{ transform:translate(2px,-2px); }
+.link-arrow:focus-visible{ box-shadow:var(--focus-ring); border-radius:var(--radius-sm); }
+
+/* The incident ledger — one primary-source artifact, not four cards. A titled
+   chrome strip over rows divided by internal seams; each row is columnar
+   (case ID + class | description | status) so the full width is earned and the
+   prose never runs past a readable measure. Static by design: no scan, no
+   counters, no rAF — the restraint is what distinguishes it from the animated
+   analyzer above and the scan-radar stats below. Reads fully with no JS. */
+.ledger{
+  max-width:1080px; margin-inline:auto; overflow:hidden;
+  border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  background:linear-gradient(180deg, var(--surface-1) 0%, var(--bg-base-2) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.04), var(--shadow-sm);
+}
+
+/* Titled chrome strip — mirrors the analyzer window's chrome so the two read as
+   siblings, but carries a label instead of a filename. */
+.ledger__chrome{
+  display:flex; align-items:center; gap:var(--space-3);
+  padding:var(--space-3) var(--space-5);
+  border-bottom:1px solid var(--border-subtle); background:var(--surface-inset);
+  font-family:var(--font-mono); font-size:var(--text-xs);
+}
+.ledger__mark{
+  width:9px; height:9px; flex:none; border-radius:2px;
+  background:var(--accent-2); box-shadow:0 0 8px rgba(26,166,183,0.55);
+}
+.ledger__title{
+  color:var(--text-secondary); font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase;
+}
+.ledger__meta{
+  margin-left:auto; color:var(--text-faint); white-space:nowrap;
+  letter-spacing:0.04em; text-transform:uppercase; font-size:10px;
+}
+/* Below the row-columnar breakpoint the chrome can crowd; drop the meta so the
+   label keeps one clean line. */
+@media (max-width:520px){ .ledger__meta{ display:none; } }
+
+.ledger__rows{ list-style:none; margin:0; padding:0; }
+
+/* Each row: case ID column | description | status. Columnar on desktop; the id
+   and status collapse onto stacked lines on mobile. Seams are top borders. */
+.ledger-row{
+  display:grid; grid-template-columns:1fr; gap:var(--space-2) var(--space-5);
+  padding:var(--space-4) var(--space-5);
+  border-top:1px solid var(--border-subtle);
+  transition:background var(--dur-base) var(--ease-out);
+}
+.ledger-row:first-child{ border-top:0; }
+.ledger-row:hover{ background:var(--surface-1); }
+@media (min-width:780px){
+  .ledger-row{
+    grid-template-columns:11rem minmax(0,1fr) 7.5rem;
+    align-items:baseline; gap:var(--space-5);
+  }
+}
+
+/* Case ID + threat class — the provenance stamp. */
+.ledger-row__id{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+.ledger-row__case{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:600;
+  letter-spacing:0.08em; color:var(--accent-2-text);
+  font-variant-numeric:tabular-nums;
+}
+.ledger-row__class{
+  font-family:var(--font-display); font-size:var(--text-small); font-weight:600;
+  color:var(--text-primary); letter-spacing:0.01em;
+}
+
+.ledger-row__desc{
+  margin:0; color:var(--text-secondary);
+  font-size:var(--text-body); line-height:1.55;
+}
+
+/* Status — a neutral mono pill; resolution, not severity. Stays in the
+   two-accent palette (neutral by default; teal accent on hover only). */
+.ledger-row__status{
+  justify-self:start; align-self:center;
+  font-family:var(--font-mono); font-size:10px; font-weight:600;
+  letter-spacing:0.06em; text-transform:uppercase; line-height:1;
+  padding:0.42em 0.6em; border-radius:var(--radius-pill);
+  border:1px solid var(--border-subtle); background:var(--surface-inset);
+  color:var(--text-muted); white-space:nowrap;
+}
+@media (min-width:780px){ .ledger-row__status{ justify-self:end; } }
+
+/* The headline case — GLASSWORM ties back to the analyzer's "hidden character".
+   A teal leading edge marks it as the through-line, not a louder card. */
+.ledger-row--key{ position:relative; }
+.ledger-row--key::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:linear-gradient(180deg, var(--accent-2), transparent);
+}
+.ledger-row--key .ledger-row__status{
+  color:var(--accent-2-text); border-color:rgba(61,214,232,0.32);
+}
+
+/* ============================================================
+   HOSTING PARTNERS
+   ============================================================ */
+/* Partner band — the light, horizontal beat between the heavier bordered
+   sections. NOT a framed panel: a trusted-by wordmark wall bracketed by hairline
+   rules, deliberately open so it contrasts with the incident-ledger row-panel
+   above. Left-aligned header pairs with the wall and breaks the all-centered run
+   of neighbouring sections. Static apart from the existing status pulse. */
+.partner-band .section-head{ margin-bottom:var(--space-7); }
+
+/* The wall: real platform wordmarks in a single open row (wrapping as needed),
+   divided by thin vertical rules and topped/tailed by hairlines — a band, not a
+   grid of cards. Each platform shows its live state beneath the name. */
+.partner-wall{
+  list-style:none; margin:0; padding:var(--space-6) 0;
+  display:flex; flex-wrap:wrap; align-items:stretch;
+  gap:var(--space-5) 0;
+  border-top:1px solid var(--border-default);
+  border-bottom:1px solid var(--border-default);
+}
+.platform{
+  flex:1 1 auto; min-width:8.5rem;
+  display:flex; flex-direction:column; align-items:center; gap:var(--space-2);
+  padding:var(--space-2) var(--space-5); text-align:center;
+}
+/* Vertical divider rules between platforms (not after the last). */
+.platform + .platform{ border-left:1px solid var(--border-subtle); }
+.platform__name{
+  font-family:var(--font-display); font-weight:600; font-size:var(--text-h5);
+  color:var(--text-secondary); letter-spacing:0.01em;
+  transition:color var(--dur-base) var(--ease-out);
+}
+.platform:hover .platform__name{ color:var(--text-primary); }
+.platform__state{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  font-family:var(--font-mono); font-size:10px; letter-spacing:0.08em;
+  text-transform:uppercase; color:var(--text-muted);
+}
+.platform__state--active{ color:var(--text-accent); }
+.platform__state--available{ color:var(--accent-2-text); }
+.platform__dot{
+  width:6px; height:6px; border-radius:50%; background:var(--accent);
+  box-shadow:var(--glow-lime-sm); animation:pulse 2.4s var(--ease-in-out) infinite;
+}
+@media (prefers-reduced-motion: reduce){ .platform__dot{ animation:none; } }
+/* On narrow widths a wrapping horizontal wall scatters and strands the odd item.
+   Rotate the band signature vertical instead: a single tight column where each
+   platform is one row (name left · state right) divided by HORIZONTAL hairlines,
+   still bracketed top and bottom. Reads as one cohesive ruled band, no orphan. */
+@media (max-width:620px){
+  .partner-wall{ flex-direction:column; padding:0; gap:0; }
+  .platform{
+    flex:none; width:100%;
+    flex-direction:row; align-items:center; justify-content:space-between;
+    gap:var(--space-4); padding:var(--space-4) var(--space-1); text-align:left;
+  }
+  .platform + .platform{ border-left:0; border-top:1px solid var(--border-subtle); }
+}
+
+/* The API / white-label offer — one quiet line, set apart from the wall so it
+   never reads as a sixth partner. */
+.partner-band__offer{
+  margin-top:var(--space-6); color:var(--text-muted);
+  font-size:var(--text-body); line-height:1.6;
+}
+.link-arrow--inline{ margin-top:0; }
+
+/* ============================================================
+   PRICING — "Two products, one engine."
+   ------------------------------------------------------------
+   Hallmark · component: pricing-engine · genre: connector-diagram
+   theme: project tokens · motion: reveal-only (no rAF; #stats owns the
+   animated beat) · contrast: pass · a11y: connectors aria-hidden, all
+   copy is DOM text · form: THIRD distinct shape on the lower page
+   (partners=open band · pricing=converging doors+core · faq=console panel)
+   ============================================================ */
+.pricing-engine{ position:relative; isolation:isolate; }
+
+/* The two product "doors". Single column on mobile (they STACK and the spine
+   threads through them); two co-equal columns on desktop. Reuses .price-card
+   wholesale — only the relationship around them is new. */
+.pricing-engine__doors{
+  display:grid; grid-template-columns:1fr; gap:var(--grid-gap);
+  align-items:stretch;
+}
+
+/* ---- The shared engine core: CONNECTIVE TISSUE, never a panel ----
+   A bordered box here would clone the FAQ console directly below it (the exact
+   box-stack the redesign exists to remove). So the core has NO card surface and
+   NO full border — just a centered lime node the two doors plug into, plus one
+   line of sourced proof. It reads as the thing BETWEEN the cards, not a third
+   card. The connector geometry lives on ::before (the spine) so it scales from
+   the stacked spine (mobile) to the converging funnel (desktop) with no JS. */
+.pricing-engine__core{
+  position:relative;
+  margin-top:var(--space-6);
+  padding-top:var(--space-7);
+  text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:var(--space-2);
+}
+/* The spine: a vertical hairline rising from the node up into the door stack,
+   fading out at the top so it reads as "current flowing down into the core"
+   rather than a hard rule. On mobile this threads the stacked doors → node. */
+.pricing-engine__core::before{
+  content:""; position:absolute; left:50%; top:0; transform:translateX(-50%);
+  width:2px; height:var(--space-7);
+  background:linear-gradient(180deg, transparent, var(--accent-border) 70%, var(--accent));
+  border-radius:2px;
+}
+
+/* The engine node — a lime-rimmed shield glyph sitting at the spine's foot, the
+   literal point both doors converge on. Glow + a soft pulse ring mark it as the
+   live core without a competing rAF animation (pure CSS, reduced-motion-safe). */
+.pricing-core__node{
+  position:relative; z-index:1;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px; border-radius:var(--radius-pill);
+  color:var(--accent);
+  background:radial-gradient(circle at 50% 40%, var(--accent-soft), var(--surface-1) 70%);
+  border:1px solid var(--accent-border);
+  box-shadow:var(--glow-lime-sm), inset 0 1px 0 rgba(255,255,255,0.06);
+  margin-bottom:var(--space-3);
+}
+.pricing-core__pulse{
+  position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
+  border:1px solid var(--accent);
+  opacity:0; animation:core-pulse 3.2s var(--ease-out) infinite;
+}
+@keyframes core-pulse{
+  0%   { opacity:0.5; transform:scale(1); }
+  70%  { opacity:0;   transform:scale(1.6); }
+  100% { opacity:0;   transform:scale(1.6); }
+}
+@media (prefers-reduced-motion: reduce){ .pricing-core__pulse{ animation:none; opacity:0; } }
+
+.pricing-core__kicker{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--text-accent);
+}
+.pricing-core__title{
+  font-family:var(--font-display); font-weight:600;
+  font-size:var(--text-h4); color:var(--text-primary); letter-spacing:-0.01em;
+}
+.pricing-core__proof{
+  max-width:58ch; margin-inline:auto;
+  color:var(--text-secondary); font-size:var(--text-body); line-height:1.6;
+  text-wrap:balance;
+}
+.pricing-core__proof strong{ color:var(--text-primary); font-weight:600; }
+
+/* ---- Desktop: doors side-by-side; the spine becomes a converging funnel ---- */
+@media (min-width:880px){
+  .pricing-engine{ max-width:920px; margin-inline:auto; }
+  .pricing-engine__doors{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+  /* Two co-equal doors — the featured card no longer lifts (there's no third
+     card to rank against), so both read as equal entries into the one engine. */
+  .pricing-engine__doors .price-card--featured{ transform:none; }
+  .pricing-engine__doors .price-card--featured:hover{ transform:translateY(-4px); }
+
+  /* The converging funnel: two angled hairlines run from the node up-and-outward
+     toward where each door sits, making "both doors feed one core" literal. They
+     are drawn on the core's ::after as a single element with two linear-gradient
+     edges, so there's nothing to measure or sync (the analyzer-pass lesson: no
+     coordinate-synced connector). Sits behind the node (z-index:0). */
+  .pricing-engine__core{ padding-top:var(--space-8); }
+  .pricing-engine__core::before{ height:var(--space-8); }
+  .pricing-engine__core::after{
+    content:""; position:absolute; left:50%; top:0; transform:translateX(-50%);
+    z-index:0; width:min(420px, 60%); height:var(--space-8);
+    /* two symmetric diagonal hairlines meeting at the bottom-center node */
+    background:
+      linear-gradient(to top right, transparent calc(50% - 1px), var(--accent-border) calc(50% - 1px), var(--accent-border) calc(50% + 1px), transparent calc(50% + 1px)) left / 50% 100% no-repeat,
+      linear-gradient(to top left,  transparent calc(50% - 1px), var(--accent-border) calc(50% - 1px), var(--accent-border) calc(50% + 1px), transparent calc(50% + 1px)) right / 50% 100% no-repeat;
+    -webkit-mask-image:linear-gradient(180deg, transparent, #000 60%);
+            mask-image:linear-gradient(180deg, transparent, #000 60%);
+    opacity:0.9;
+  }
+}
+
+/* ============================================================
+   BLOG TEASER
+   ============================================================ */
+.blog__head{
+  display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
+  gap:var(--space-4); max-width:none; margin-bottom:var(--space-7);
+}
+.post-grid{
+  list-style:none; margin:0; padding:0;
+  display:grid; grid-template-columns:1fr; gap:var(--grid-gap);
+}
+@media (min-width:780px){ .post-grid{ grid-template-columns:repeat(3, minmax(0,1fr)); } }
+.post{
+  display:flex; flex-direction:column; gap:var(--space-3); height:100%;
+  padding:var(--space-6); border:1px solid var(--border-default); border-radius:var(--radius-lg);
+  background:linear-gradient(180deg, var(--surface-2) 0%, var(--surface-1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+  transition:border-color var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+}
+.post:hover{ border-color:var(--accent-border); transform:translateY(-4px); }
+.post:focus-visible{ box-shadow:var(--focus-ring); }
+.post__tag{
+  font-family:var(--font-mono); font-size:var(--text-xs); font-weight:500;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--text-accent);
+}
+.post__title{ font-size:var(--text-h5); color:var(--text-primary); line-height:1.3; }
+.post:hover .post__title{ color:var(--text-accent); }
+.post__excerpt{ font-size:var(--text-small); color:var(--text-muted); line-height:1.55; flex:1; text-wrap:balance; }
+.post__meta{ font-family:var(--font-mono); font-size:var(--text-xs); color:var(--text-faint); letter-spacing:0.04em; }

@@ -1,0 +1,15 @@
+{
+  "name": "wwyw2",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WeWatchYourWebsite — static landing page (dependency-light, framework-free).",
+  "author": "WebPath Agency",
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://wewatchyourwebsite.com/",
+  "scripts": {
+    "dev": "node serve.js",
+    "serve": "node serve.js",
+    "build": "node deploy.js",
+    "deploy": "node deploy.js deploy"
+  }
+}
