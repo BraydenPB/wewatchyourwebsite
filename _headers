@@ -18,7 +18,9 @@
   # style-src 'unsafe-inline'; self-hosted fonts/imgs are 'self' (+ data: for SVG).
   # If you re-introduce a Lottie with AE expressions, it will need 'unsafe-eval'
   # in script-src — strip/bake the expressions instead to keep this strict.
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'
+  # form-action is a navigation directive and does NOT inherit from default-src, so
+  # it's listed explicitly to constrain where forms (e.g. the scanner page) can post.
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'
 
 # Cache the vendor bundle for a week. NOT "immutable" / not a year: the filename has
 # no content hash, so if you ever bump the lottie-web version, a shorter max-age lets
