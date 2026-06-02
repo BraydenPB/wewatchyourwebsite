@@ -10,8 +10,9 @@ Third-party components retain their own licenses:
   - lottie-web (js/vendor/lottie.min.js) — MIT License, © Airbnb, Inc.
     https://github.com/airbnb/lottie-web
 
-  - Fonts (Space Grotesk, Inter, JetBrains Mono) are loaded from Google Fonts and are
-    licensed under the SIL Open Font License 1.1.
+  - Fonts (Space Grotesk, Inter, JetBrains Mono) are self-hosted in assets/fonts/ and
+    are licensed under the SIL Open Font License 1.1. Their copyright notices and the
+    full license text travel with the font files in assets/fonts/OFL.txt.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
 INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
