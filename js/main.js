@@ -305,7 +305,6 @@
     var main = document.querySelector("main");
     var footer = document.querySelector(".site-footer");
     var scrim = menu.querySelector("[data-menu-scrim]");
-    var firstLink = menu.querySelector(".mobile-menu__link");
     var revealTimer = null;
 
     function setOpen(open) {
@@ -328,17 +327,17 @@
 
       if (revealTimer) { clearTimeout(revealTimer); revealTimer = null; }
       if (open) {
-        // Move focus into the menu for keyboard users. The panel is
-        // visibility:hidden until the open transition runs, and hidden
-        // elements aren't focusable — so wait for the panel to settle
-        // (a hair past --dur-slow) before focusing the first link.
-        if (firstLink) {
-          revealTimer = setTimeout(function () {
-            if (toggle.getAttribute("aria-expanded") === "true") {
-              firstLink.focus({ preventScroll: true });
-            }
-          }, 300);
-        }
+        // Move focus INTO the dialog (the container itself, tabindex=-1), not the
+        // first link. Screen readers still announce "Site menu, dialog" and the
+        // Escape/focus-return/trap contract holds, but touch users don't see a
+        // weird pre-highlighted first row. The panel is visibility:hidden until the
+        // open transition runs and hidden elements aren't focusable, so wait for it
+        // to settle (a hair past --dur-slow) before focusing.
+        revealTimer = setTimeout(function () {
+          if (toggle.getAttribute("aria-expanded") === "true") {
+            menu.focus({ preventScroll: true });
+          }
+        }, 300);
       } else {
         // Re-apply `hidden` once the close transition has settled, so the
         // collapsed menu can't trap pointer/scroll events behind the page.

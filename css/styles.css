@@ -571,6 +571,9 @@ body::after{
   position:fixed; inset:0; z-index:var(--z-overlay);
   display:block; pointer-events:none;
 }
+/* Focused programmatically on open (tabindex=-1) so SRs announce the dialog;
+   it's never a Tab stop, so suppress its outline — the links keep their own. */
+.mobile-menu:focus{ outline:none; }
 .mobile-menu[hidden]{ display:none; }
 
 /* Backdrop scrim — dims + blurs the sliver of page beside/below the panel,
