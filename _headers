@@ -6,6 +6,11 @@
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
+  # Top-level browsing-context isolation (OWASP baseline). Safe here: the page
+  # opens no cross-origin popups that read window.opener, and every target=_blank
+  # link already carries rel=noopener. NOT paired with COEP:require-corp, which
+  # would block the cross-origin Google Fonts fetch.
+  Cross-Origin-Opener-Policy: same-origin
 
 # Cache the vendor bundle for a week. NOT "immutable" / not a year: the filename has
 # no content hash, so if you ever bump the lottie-web version, a shorter max-age lets

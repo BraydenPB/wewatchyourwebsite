@@ -5,6 +5,11 @@
    ============================================================ */
 
 :root{
+  /* Dark-only site: tell the UA so the root scrollbar, the default document
+     canvas, and any native control render dark to match. theme-color only tints
+     the browser chrome — this themes the page surface itself. */
+  color-scheme: dark;
+
   /* --- Brand source-of-truth (from logo SVG, do not alter) --- */
   --brand-lime:        #69ff12;
   --brand-lime-grad-a: #bed143;

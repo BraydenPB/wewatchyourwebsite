@@ -206,16 +206,23 @@
 
   if (prefersReduced) return; // static frame is already drawn; do not animate
 
+  // Cache the on-screen state so the visibilitychange resume can re-check it
+  // directly. A tab-visibility change moves no geometry, so the IntersectionObserver
+  // never re-fires on tab return — deriving on-screen from a bounding-rect heuristic
+  // there would resume the rAF + count/feed timers even when the hero is scrolled
+  // off-screen. This mirrors the cached-onScreen pattern in scan-radar/defense-field/
+  // faulty-terminal.
+  var onScreen = true;
   if ("IntersectionObserver" in window) {
     var io = new IntersectionObserver(function (entries) {
-      var on = entries[0].isIntersecting;
-      on && !document.hidden ? play() : pause();
+      onScreen = entries[0].isIntersecting;
+      onScreen && !document.hidden ? play() : pause();
     }, { threshold: 0.2 });
     io.observe(host);
   } else {
     play();
   }
   document.addEventListener("visibilitychange", function () {
-    document.hidden ? pause() : (host.getBoundingClientRect().top < innerHeight && play());
+    document.hidden || !onScreen ? pause() : play();
   });
 })();
