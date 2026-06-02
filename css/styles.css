@@ -163,7 +163,7 @@
   --section-py:       clamp(2.75rem, 6vw, 8rem);
   --section-py-tight: clamp(2.25rem, 4vw, 5rem);
   --section-gap:      clamp(1.75rem, 4vw, 4rem);
-  --hero-py-top:      clamp(3.5rem, 9vw, 11rem);
+  --hero-py-top:      clamp(3.5rem, 6vw, 7rem);
   --grid-gap:         clamp(1.25rem, 2.5vw, 2rem);
   --stack-gap:        1rem;
 }
