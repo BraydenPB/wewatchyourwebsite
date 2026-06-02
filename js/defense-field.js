@@ -41,6 +41,7 @@
     canvas.setAttribute("aria-hidden", "true");
     host.appendChild(canvas);
     var ctx = canvas.getContext("2d");
+    if (!ctx) { host.removeChild(canvas); return; } // 2D unavailable — degrade gracefully
 
     var w = 0, h = 0, dpr = 1, bound = 0; // bound = y of the defended line
     var topY = 0, frontH = 0, persp = 0;  // foundation slab: top-surface y, front-face height, perspective inset

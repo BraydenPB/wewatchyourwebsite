@@ -48,6 +48,7 @@
     this.canvas = document.createElement("canvas");
     this.canvas.setAttribute("aria-hidden", "true");
     this.ctx = this.canvas.getContext("2d");
+    if (!this.ctx) return; // 2D unavailable — leave the container empty, no decorative backdrop
     this.letters = [];
     this.grid = { columns: 0, rows: 0 };
     this.last = 0;
