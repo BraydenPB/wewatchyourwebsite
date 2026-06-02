@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const PORT = process.env.PORT || 8098;
+const HOST = "127.0.0.1"; // loopback only — never expose the repo root on the LAN
 const ROOT = __dirname;
 const TYPES = {
   ".html": "text/html", ".css": "text/css", ".js": "text/javascript",
@@ -23,6 +24,9 @@ http.createServer((req, res) => {
     res.writeHead(400); res.end("400"); return;
   }
   if (f.endsWith("/")) f += "index.html";
+  // Defense-in-depth: never serve dotfiles (.git/…) or the private memory/ notes,
+  // even though the server already binds loopback-only.
+  if (/(^|[\\/])\.|(^|[\\/])memory([\\/]|$)/.test(f)) { res.writeHead(404); res.end("404"); return; }
   f = path.normalize(path.join(ROOT, f));
   // Contain requests to ROOT — reject path-traversal (e.g. /../../etc/passwd).
   if (f !== ROOT && !f.startsWith(ROOT + path.sep)) { res.writeHead(403); res.end("403"); return; }
@@ -31,4 +35,4 @@ http.createServer((req, res) => {
     res.writeHead(200, { "content-type": TYPES[path.extname(f).toLowerCase()] || "application/octet-stream" });
     res.end(data);
   });
-}).listen(PORT, () => console.log(`wwyw2 dev server → http://localhost:${PORT}`));
+}).listen(PORT, HOST, () => console.log(`wwyw2 dev server → http://localhost:${PORT}`));
