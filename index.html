@@ -6,8 +6,11 @@
   <title>WeWatchYourWebsite — Real Security. Built From Real Attacks.</title>
   <meta name="description" content="WordPress security and AI-code analysis powered by 18 years of real threat intelligence. 8,000,000+ sites cleaned since 2007, with automated malware removal and no per-clean fees, plus an eight-stage analyzer for vibe-coded apps." />
   <meta name="theme-color" content="#05060a" />
+  <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://wewatchyourwebsite.com/" />
   <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
 
   <!-- Open Graph / social -->
   <meta property="og:type" content="website" />
@@ -15,15 +18,16 @@
   <meta property="og:title" content="Real Security. Built From Real Attacks." />
   <meta property="og:description" content="WordPress security and AI-code analysis powered by 18 years of real threat intelligence. 8,000,000+ sites cleaned since 2007. Automated malware removal, no per-clean fees." />
   <meta property="og:url" content="https://wewatchyourwebsite.com/" />
-  <!-- TODO: most social platforms will NOT render an SVG share image. Export a
-       1200x630 raster (PNG/JPG) and point og:image + twitter:image at it. -->
-  <meta property="og:image" content="https://wewatchyourwebsite.com/assets/img/horz-bnw-black.svg" />
+  <meta property="og:image" content="https://wewatchyourwebsite.com/assets/img/og-image.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="WeWatchYourWebsite — Real Security. Built From Real Attacks." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Real Security. Built From Real Attacks." />
   <meta name="twitter:description" content="WordPress security and AI-code analysis powered by 18 years of real threat intelligence. 8,000,000+ sites cleaned since 2007, no per-clean fees." />
-  <meta name="twitter:image" content="https://wewatchyourwebsite.com/assets/img/horz-bnw-black.svg" />
+  <meta name="twitter:image" content="https://wewatchyourwebsite.com/assets/img/og-image.jpg" />
+  <meta name="twitter:image:alt" content="WeWatchYourWebsite — Real Security. Built From Real Attacks." />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,6 +35,41 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Structured data. Only verified facts (founding 2007, the two products, the
+       confirmed pricing). No contact/address/phone is asserted — add those to the
+       Organization node once the client confirms them. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "WeWatchYourWebsite",
+    "url": "https://wewatchyourwebsite.com/",
+    "logo": "https://wewatchyourwebsite.com/assets/img/horz-bnw-black.svg",
+    "foundingDate": "2007",
+    "description": "Infrastructure-level WordPress security and AI-generated-code analysis, powered by 18 years of real threat intelligence. Over 8,000,000 sites cleaned since 2007, with automated malware removal and no per-clean fees.",
+    "sameAs": ["https://blog.wewatchyourwebsite.com/"],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Security products",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": { "@type": "Service", "name": "WordPress Protection", "description": "Automated malware removal, file-integrity monitoring, root-cause determination, and continuous intrusion detection at the infrastructure level." },
+          "price": "59.95",
+          "priceCurrency": "USD",
+          "priceSpecification": { "@type": "UnitPriceSpecification", "price": "59.95", "priceCurrency": "USD", "referenceQuantity": { "@type": "QuantitativeValue", "value": "1", "unitText": "YEAR" } }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": { "@type": "Service", "name": "Code Analyzer", "description": "Eight-stage vulnerability analysis pipeline for AI-generated code, mapped to OWASP Top 10 2025 with CWE classification and adversarially verified attack-chain reports. First scan free." },
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      ]
+    }
+  }
+  </script>
 </head>
 <body id="top">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -91,7 +130,7 @@
          dismissible blurred scrim beneath. Nav reads as a console manifest —
          numbered rows, status indicators — echoing the netops aesthetic.
          ============================================================ -->
-    <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Site menu" hidden>
+    <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Site menu" tabindex="-1" hidden>
       <div class="mobile-menu__scrim" data-menu-scrim aria-hidden="true"></div>
 
       <nav class="mobile-menu__panel" aria-label="Mobile primary">
@@ -391,7 +430,7 @@
             <ul class="passes" aria-label="Site protection scan passes" data-passes>
 
               <li class="pass-item is-active" data-pass-item="0">
-                <button class="pass" aria-current="true" data-pass-btn="0">
+                <button class="pass" aria-current="true" data-pass-btn="0" aria-label="Pass 1 of 4: Malware Removal — Remove">
                   <span class="pass__status" aria-hidden="true">
                     <span class="pass__num">01</span>
                     <span class="pass__indicator"></span>
@@ -417,7 +456,7 @@
               </li>
 
               <li class="pass-item" data-pass-item="1">
-                <button class="pass" data-pass-btn="1">
+                <button class="pass" data-pass-btn="1" aria-label="Pass 2 of 4: File Integrity Monitoring — Verify">
                   <span class="pass__status" aria-hidden="true">
                     <span class="pass__num">02</span>
                     <span class="pass__indicator"></span>
@@ -443,7 +482,7 @@
               </li>
 
               <li class="pass-item" data-pass-item="2">
-                <button class="pass" data-pass-btn="2">
+                <button class="pass" data-pass-btn="2" aria-label="Pass 3 of 4: Root-Cause Determination — Investigate">
                   <span class="pass__status" aria-hidden="true">
                     <span class="pass__num">03</span>
                     <span class="pass__indicator"></span>
@@ -469,7 +508,7 @@
               </li>
 
               <li class="pass-item" data-pass-item="3">
-                <button class="pass" data-pass-btn="3">
+                <button class="pass" data-pass-btn="3" aria-label="Pass 4 of 4: Total Protection — Protect">
                   <span class="pass__status" aria-hidden="true">
                     <span class="pass__num">04</span>
                     <span class="pass__indicator"></span>
@@ -1321,16 +1360,19 @@
       <div class="footer-legal">
         <span>© 2007–2026 WeWatchYourWebsite. All rights reserved.</span>
         <span class="footer-legal__guarantee">18 years of real-world threat intelligence. No per-clean fees.</span>
+        <!-- CLIENT TODO: these resolve to in-repo placeholder stubs (noindex) at
+             privacy-policy/ and terms-of-service/. Replace their placeholder copy
+             with real legal text before launch — see README "Before you launch". -->
         <span class="footer-legal__links">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
+          <a href="/privacy-policy/">Privacy Policy</a>
+          <a href="/terms-of-service/">Terms of Service</a>
         </span>
       </div>
     </div>
   </footer>
 
-  <!-- lottie-web player (CDN) -->
-  <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js" defer></script>
+  <!-- lottie-web player (self-hosted, v5.12.2 — no CDN/supply-chain dependency, works offline) -->
+  <script src="js/vendor/lottie.min.js" defer></script>
   <script src="js/letter-glitch.js" defer></script>
   <script src="js/scan-radar.js" defer></script>
   <script src="js/defense-field.js" defer></script>

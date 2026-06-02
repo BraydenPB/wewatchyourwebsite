@@ -571,6 +571,9 @@ body::after{
   position:fixed; inset:0; z-index:var(--z-overlay);
   display:block; pointer-events:none;
 }
+/* Focused programmatically on open (tabindex=-1) so SRs announce the dialog;
+   it's never a Tab stop, so suppress its outline — the links keep their own. */
+.mobile-menu:focus{ outline:none; }
 .mobile-menu[hidden]{ display:none; }
 
 /* Backdrop scrim — dims + blurs the sliver of page beside/below the panel,
@@ -1237,7 +1240,6 @@ body::after{
 }
 @media (min-width:560px){ .defense__stage{ aspect-ratio:16 / 11; } }
 @media (min-width:720px){ .defense__stage{ aspect-ratio:16 / 9; } }
-.defense__canvas{ display:block; width:100%; height:100%; }
 
 /* Zone annotations — mono labels sitting over the three regions of the canvas.
    The boundary fraction MUST match `bound` in js/defense-field.js; keeping it

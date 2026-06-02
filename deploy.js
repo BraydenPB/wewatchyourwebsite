@@ -9,10 +9,11 @@
 //
 // Usage:
 //   npm run build    -> just assemble dist/ (inspect before shipping)
-//   npm run deploy   -> assemble dist/ AND push it to Pages (project: wwyw2)
+//   npm run deploy   -> assemble dist/ AND push it to Pages
 //
-// Requires: wrangler logged in, and CLOUDFLARE_ACCOUNT_ID set to the WebPath
-// Agency account (the script sets a sensible default if unset).
+// Requires: wrangler logged in, and CLOUDFLARE_ACCOUNT_ID set to your own
+// Cloudflare account (there is no built-in default — deploy throws if unset).
+// Optionally set CLOUDFLARE_PROJECT to override the Pages project name.
 
 const fs = require("fs");
 const path = require("path");
@@ -22,11 +23,30 @@ const ROOT = __dirname;
 const DIST = path.join(ROOT, "dist");
 
 // The ONLY things that get published. Files are copied as-is; dirs recursively.
-const PUBLISH = ["index.html", "assets", "css", "js"];
+// (robots.txt, sitemap.xml, _headers are root-level static config Cloudflare reads.
+// privacy-policy/ and terms-of-service/ are placeholder legal pages — see README.)
+const PUBLISH = [
+  "index.html", "assets", "css", "js",
+  "robots.txt", "sitemap.xml", "_headers", "site.webmanifest",
+  "privacy-policy", "terms-of-service",
+];
 
-const PROJECT = "wwyw2";
-const ACCOUNT_ID =
-  process.env.CLOUDFLARE_ACCOUNT_ID || "75620f084ea25ade5ee57a71a830bba2"; // WebPath Agency
+// Cloudflare Pages target. Both are required via environment for a clean handoff —
+// set CLOUDFLARE_PROJECT and CLOUDFLARE_ACCOUNT_ID (plus CLOUDFLARE_API_TOKEN in CI)
+// to your own Cloudflare account. See README → "Deploying".
+const PROJECT = process.env.CLOUDFLARE_PROJECT || "wwyw2";
+const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
+
+// PROJECT is interpolated into the deploy shell command below, so validate it
+// against Cloudflare Pages' own project-name rules (lowercase alphanumeric and
+// hyphens, no leading/trailing hyphen, <=58 chars). This both catches typos and
+// prevents shell-metacharacter injection via a malformed CLOUDFLARE_PROJECT.
+if (!/^[a-z0-9](?:[a-z0-9-]{0,56}[a-z0-9])?$/.test(PROJECT)) {
+  throw new Error(
+    `Invalid CLOUDFLARE_PROJECT "${PROJECT}". Cloudflare Pages project names must be ` +
+      "lowercase letters, numbers, and hyphens (no leading/trailing hyphen), max 58 chars."
+  );
+}
 
 function rmrf(p) {
   fs.rmSync(p, { recursive: true, force: true });
@@ -82,11 +102,17 @@ function countFiles(dir) {
 }
 
 function deploy() {
+  if (!ACCOUNT_ID) {
+    throw new Error(
+      "CLOUDFLARE_ACCOUNT_ID is not set. Set it (and CLOUDFLARE_API_TOKEN in CI) " +
+        "to your own Cloudflare account before deploying. See README → Deploying."
+    );
+  }
   build();
   console.log(`Deploying dist/ to Pages project "${PROJECT}"...`);
-  // Single command string (all args are static/trusted) so Node doesn't warn
-  // about passing an args array with shell:true. shell:true is needed on
-  // Windows, where `wrangler` is a .cmd shim.
+  // Single command string (PROJECT is validated above; all other args are static)
+  // so Node doesn't warn about passing an args array with shell:true. shell:true is
+  // needed on Windows, where `wrangler` is a .cmd shim.
   const cmd = `wrangler pages deploy dist --project-name=${PROJECT} --branch=main --commit-dirty=true`;
   execSync(cmd, {
     stdio: "inherit",

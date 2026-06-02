@@ -48,6 +48,10 @@
     this.canvas = document.createElement("canvas");
     this.canvas.setAttribute("aria-hidden", "true");
     this.ctx = this.canvas.getContext("2d");
+    // 2D unavailable — leave the container empty, no decorative backdrop. The instance
+    // is intentionally left inert (un-mounted): callers must not invoke its prototype
+    // methods. Safe here because mountGlitch() constructs and discards (never calls in).
+    if (!this.ctx) return;
     this.letters = [];
     this.grid = { columns: 0, rows: 0 };
     this.last = 0;

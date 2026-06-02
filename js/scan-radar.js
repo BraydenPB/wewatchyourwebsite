@@ -31,6 +31,7 @@
     canvas.setAttribute("aria-hidden", "true");
     host.appendChild(canvas);
     var ctx = canvas.getContext("2d");
+    if (!ctx) { host.removeChild(canvas); return; } // 2D unavailable — degrade gracefully
 
     var w = 0, h = 0, cx = 0, cy = 0, R = 0, dpr = 1;
     var raf = 0, running = false, t0 = 0, last = 0, angle = 0;
