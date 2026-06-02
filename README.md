@@ -36,6 +36,7 @@ js/
   vendor/lottie.min.js  Self-hosted lottie-web 5.12.2 (the 4 scan-pass animations).
 assets/
   img/                Brand logos, favicon (SVG), apple-touch + PWA icons, OG share image.
+  fonts/              Self-hosted variable woff2 (Space Grotesk, Inter, JetBrains Mono).
   lottie/             Lottie JSON animations for the WordPress scan console.
 robots.txt            Allows all crawlers; points at the sitemap.
 sitemap.xml           Single-page sitemap.
@@ -51,7 +52,8 @@ The page is built to WCAG-friendly standards: a skip link, a focus-trapped modal
 menu (Escape closes, focus returns), descriptive `aria-label`s, and full
 `prefers-reduced-motion` support — every animated module paints a single static frame
 when the visitor prefers reduced motion, and the page is fully readable with JavaScript
-disabled.
+disabled. For visitors who haven't set the OS motion preference, a **"Pause animations"**
+control in the footer freezes all ambient motion in place (WCAG 2.2.2), and resumes it.
 
 ---
 
@@ -126,9 +128,11 @@ The markup is framework-agnostic and templating-friendly:
 - [ ] **Structured data.** `index.html` includes Organization + product JSON-LD with only
       verified facts. Add contact details (phone/email/address) to the Organization node if
       you want them in search results.
-- [ ] **Optional CSP.** `_headers` ships conservative security headers. A
-      Content-Security-Policy template is included but commented out — test it in a preview
-      deploy before enabling (the page uses inline styles and Google Fonts).
+- [ ] **Optional CSP.** `_headers` ships conservative security headers (including
+      `Cross-Origin-Opener-Policy`). A Content-Security-Policy template is included but
+      commented out — test it in a preview deploy before enabling. Fonts are self-hosted,
+      so the template needs only `'unsafe-inline'` in `style-src` (for the inline wordmark
+      `<style>` and `style="--i:.."` attributes) and `font-src 'self'`.
 
 ---
 

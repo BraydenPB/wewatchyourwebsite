@@ -5,3 +5,6 @@ js/vendor/lottie.min.js  -diff  linguist-vendored  linguist-generated
 # Generated raster assets — never diffed as text.
 assets/img/*.png  binary
 assets/img/*.jpg  binary
+
+# Self-hosted web fonts — binary blobs, suppress from diffs and language stats.
+assets/fonts/*.woff2  binary  -diff  linguist-vendored

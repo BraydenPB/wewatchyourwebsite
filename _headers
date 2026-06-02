@@ -8,8 +8,8 @@
   Permissions-Policy: geolocation=(), microphone=(), camera=()
   # Top-level browsing-context isolation (OWASP baseline). Safe here: the page
   # opens no cross-origin popups that read window.opener, and every target=_blank
-  # link already carries rel=noopener. NOT paired with COEP:require-corp, which
-  # would block the cross-origin Google Fonts fetch.
+  # link already carries rel=noopener. (COEP:require-corp is intentionally not
+  # paired — it's unnecessary here and would only add cross-origin friction.)
   Cross-Origin-Opener-Policy: same-origin
 
 # Cache the vendor bundle for a week. NOT "immutable" / not a year: the filename has
@@ -19,9 +19,16 @@
 /js/vendor/*
   Cache-Control: public, max-age=604800
 
+# Self-hosted fonts: content-stable woff2 we control. Long-cache immutable — if you
+# ever re-subset or bump a family, ship a new filename so returning visitors fetch it.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
 # OPTIONAL — Content-Security-Policy. Left disabled because this page uses inline
-# <style> (the wordmark sprite) and inline style="--i:.." attributes, plus Google
-# Fonts. TEST in a preview deployment before enabling. A working starting point:
+# <style> (the wordmark sprite) and inline style="--i:.." attributes, so it needs
+# 'unsafe-inline' in style-src. Fonts are now self-hosted, so no third-party font
+# origins are required (font-src 'self'). TEST in a preview deployment before
+# enabling. A working starting point:
 #
 # /*
-#   Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; base-uri 'self'; frame-ancestors 'self'
+#   Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; base-uri 'self'; frame-ancestors 'self'
