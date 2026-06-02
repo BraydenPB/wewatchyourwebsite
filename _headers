@@ -11,6 +11,14 @@
   # link already carries rel=noopener. (COEP:require-corp is intentionally not
   # paired — it's unnecessary here and would only add cross-origin friction.)
   Cross-Origin-Opener-Policy: same-origin
+  # Content-Security-Policy. Validated against both pages with Report-Only +
+  # Chrome (zero violations): all scripts are external/defer (script-src 'self',
+  # no 'unsafe-eval' needed once the malware-removal Lottie's redundant AE
+  # expressions were baked out); inline <style> sprite + style="--i:.." attrs need
+  # style-src 'unsafe-inline'; self-hosted fonts/imgs are 'self' (+ data: for SVG).
+  # If you re-introduce a Lottie with AE expressions, it will need 'unsafe-eval'
+  # in script-src — strip/bake the expressions instead to keep this strict.
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'
 
 # Cache the vendor bundle for a week. NOT "immutable" / not a year: the filename has
 # no content hash, so if you ever bump the lottie-web version, a shorter max-age lets
@@ -24,11 +32,9 @@
 /assets/fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
-# OPTIONAL — Content-Security-Policy. Left disabled because this page uses inline
-# <style> (the wordmark sprite) and inline style="--i:.." attributes, so it needs
-# 'unsafe-inline' in style-src. Fonts are now self-hosted, so no third-party font
-# origins are required (font-src 'self'). TEST in a preview deployment before
-# enabling. A working starting point:
-#
-# /*
-#   Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; base-uri 'self'; frame-ancestors 'self'
+# NOTE on rollout: the CSP above is enforcing. To gather field telemetry without
+# risk before committing on a new domain, you can duplicate it as a
+# `Content-Security-Policy-Report-Only:` header (it blocks nothing, only reports)
+# on a preview deploy first, then remove the Report-Only copy. HSTS
+# (Strict-Transport-Security) is intentionally NOT set here — it's sticky and
+# domain-level, so enable it at the apex once the production domain is final.
