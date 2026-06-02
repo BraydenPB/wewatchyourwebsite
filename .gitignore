@@ -13,3 +13,6 @@ skills-lock.json
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
 .workflow-landing.js
+
+# Private working notes — design strategy / internal history. Never ship to client.
+memory/

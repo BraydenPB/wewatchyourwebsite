@@ -1,0 +1,21 @@
+Copyright © 2026 WebPath Agency
+
+This website — its source code, design, copy, and assets — was created by WebPath
+Agency and is hereby transferred to the client for their unrestricted use. The client
+may host, modify, adapt, port (including into WordPress or any other platform), and
+otherwise use this work without restriction or further permission.
+
+Third-party components retain their own licenses:
+
+  - lottie-web (js/vendor/lottie.min.js) — MIT License, © Airbnb, Inc.
+    https://github.com/airbnb/lottie-web
+
+  - Fonts (Space Grotesk, Inter, JetBrains Mono) are loaded from Google Fonts and are
+    licensed under the SIL Open Font License 1.1.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

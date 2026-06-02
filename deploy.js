@@ -22,11 +22,14 @@ const ROOT = __dirname;
 const DIST = path.join(ROOT, "dist");
 
 // The ONLY things that get published. Files are copied as-is; dirs recursively.
-const PUBLISH = ["index.html", "assets", "css", "js"];
+// (robots.txt, sitemap.xml, _headers are root-level static config Cloudflare reads.)
+const PUBLISH = ["index.html", "assets", "css", "js", "robots.txt", "sitemap.xml", "_headers", "site.webmanifest"];
 
-const PROJECT = "wwyw2";
-const ACCOUNT_ID =
-  process.env.CLOUDFLARE_ACCOUNT_ID || "75620f084ea25ade5ee57a71a830bba2"; // WebPath Agency
+// Cloudflare Pages target. Both are required via environment for a clean handoff —
+// set CLOUDFLARE_PROJECT and CLOUDFLARE_ACCOUNT_ID (plus CLOUDFLARE_API_TOKEN in CI)
+// to your own Cloudflare account. See README → "Deploying".
+const PROJECT = process.env.CLOUDFLARE_PROJECT || "wwyw2";
+const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 
 function rmrf(p) {
   fs.rmSync(p, { recursive: true, force: true });
@@ -82,6 +85,12 @@ function countFiles(dir) {
 }
 
 function deploy() {
+  if (!ACCOUNT_ID) {
+    throw new Error(
+      "CLOUDFLARE_ACCOUNT_ID is not set. Set it (and CLOUDFLARE_API_TOKEN in CI) " +
+        "to your own Cloudflare account before deploying. See README → Deploying."
+    );
+  }
   build();
   console.log(`Deploying dist/ to Pages project "${PROJECT}"...`);
   // Single command string (all args are static/trusted) so Node doesn't warn
