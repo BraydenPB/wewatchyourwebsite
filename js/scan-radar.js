@@ -175,8 +175,10 @@
       render(true, now);
     }
 
+    var motionPaused = document.documentElement.getAttribute("data-motion") === "paused";
+
     function play() {
-      if (running || prefersReduced) return;
+      if (running || prefersReduced || motionPaused) return;
       running = true;
       last = 0;
       raf = requestAnimationFrame(frame);
@@ -211,6 +213,13 @@
       }
       document.addEventListener("visibilitychange", function () {
         document.hidden || !onScreen ? pause() : play();
+      });
+      // Global Pause/Resume (WCAG 2.2.2): freeze to a static sweep, or resume
+      // only when on-screen and the tab is visible.
+      document.addEventListener("wwyw:motion", function (e) {
+        motionPaused = !!(e.detail && e.detail.paused);
+        if (motionPaused) { pause(); render(false, 0); }
+        else if (onScreen && !document.hidden) play();
       });
       render(true, 0);
       play();

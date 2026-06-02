@@ -188,8 +188,13 @@
     waveRaf = requestAnimationFrame(waveFrame);
   }
 
+  // Runtime motion gate (WCAG 2.2.2 footer toggle). A runtime-toggleable sibling
+  // of prefersReduced: folded into play()'s early-return so every existing IO /
+  // visibilitychange caller honors it automatically (play() just no-ops).
+  var motionPaused = document.documentElement.getAttribute("data-motion") === "paused";
+
   function play() {
-    if (running || prefersReduced) return;
+    if (running || prefersReduced || motionPaused) return;
     running = true;
     startCount(); startFeed(); startWave();
   }
@@ -224,5 +229,13 @@
   }
   document.addEventListener("visibilitychange", function () {
     document.hidden || !onScreen ? pause() : play();
+  });
+
+  // Global Pause/Resume: freeze to the static frame on pause; on resume re-check
+  // the on-screen + tab-visible gate (never blind-start an off-screen panel).
+  document.addEventListener("wwyw:motion", function (e) {
+    motionPaused = !!(e.detail && e.detail.paused);
+    if (motionPaused) { pause(); paintStatic(); }
+    else if (onScreen && !document.hidden) play();
   });
 })();

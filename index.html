@@ -1363,6 +1363,16 @@
       <div class="footer-legal">
         <span>© 2007–2026 WeWatchYourWebsite. All rights reserved.</span>
         <span class="footer-legal__guarantee">18 years of real-world threat intelligence. No per-clean fees.</span>
+        <!-- WCAG 2.2.2 (Pause, Stop, Hide) control for the always-on decorative
+             motion (waveform, radar, glitch fields, scan console). Hidden until
+             JS confirms it can drive the animations, and CSS-hidden under
+             prefers-reduced-motion (nothing to pause). main.js (motionControl)
+             toggles documentElement[data-motion] + dispatches "wwyw:motion";
+             every animated module listens and freezes/resumes accordingly. -->
+        <button class="motion-toggle" type="button" data-motion-toggle aria-pressed="false" hidden>
+          <span class="motion-toggle__icon" aria-hidden="true"></span>
+          <span class="motion-toggle__label" data-motion-toggle-label>Pause animations</span>
+        </button>
         <!-- CLIENT TODO: these resolve to in-repo placeholder stubs (noindex) at
              privacy-policy/ and terms-of-service/. Replace their placeholder copy
              with real legal text before launch — see README "Before you launch". -->

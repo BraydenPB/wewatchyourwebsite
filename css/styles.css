@@ -1947,6 +1947,48 @@ body::after{
 .footer-legal__guarantee{ width:100%; color:var(--text-faint); font-family:var(--font-mono); letter-spacing:0.04em; }
 @media (min-width:680px){ .footer-legal__guarantee{ width:auto; order:1; } }
 
+/* WCAG 2.2.2 "Pause animations" control. Mono pill matching the footer voice;
+   small glyph flips pause↔play via aria-pressed. Reveals only once JS confirms
+   it can drive the canvases (button[hidden] lifted in motionControl()), and is
+   removed entirely under reduced-motion (no motion to stop). */
+.motion-toggle{
+  display:inline-flex; align-items:center; gap:var(--space-2);
+  min-height:32px; padding:var(--space-2) var(--space-3);
+  border:1px solid var(--border-subtle); border-radius:var(--radius-pill);
+  background:var(--surface-1); color:var(--text-faint);
+  font-family:var(--font-mono); font-size:var(--text-xs); letter-spacing:0.02em;
+  cursor:pointer; transition:color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
+}
+.motion-toggle:hover{ color:var(--text-secondary); border-color:var(--border-default); background:var(--surface-2); }
+.motion-toggle:focus-visible{ outline:none; box-shadow:var(--focus-ring-on-surface); }
+/* Glyph: two bars (pause) by default; a triangle (play) when paused. */
+.motion-toggle__icon{
+  width:10px; height:10px; flex:0 0 auto;
+  background:currentColor;
+  clip-path:polygon(0 0, 38% 0, 38% 100%, 0 100%, 0 0, 62% 0, 100% 0, 100% 100%, 62% 100%, 62% 0);
+}
+.motion-toggle[aria-pressed="true"] .motion-toggle__icon{
+  clip-path:polygon(15% 0, 100% 50%, 15% 100%);
+}
+.motion-toggle[aria-pressed="true"]{ color:var(--text-accent); border-color:var(--accent-border); }
+@media (forced-colors: active){
+  .motion-toggle__icon{ background:ButtonText; }
+}
+/* Reduced motion: nothing to pause — hide the control even if JS un-hides it. */
+@media (prefers-reduced-motion: reduce){ .motion-toggle{ display:none; } }
+
+/* When the global control is engaged, freeze EVERY running CSS animation in
+   place (the many decorative pulses/scans/carets) so "Pause" is honest about
+   ALL ambient motion, not just the JS canvas layer (those freeze via the
+   "wwyw:motion" event). animation-play-state freezes loops without dropping
+   transitions, and is fully reversible on resume. The !important is needed to
+   beat the per-animation shorthands (same specificity necessity as the
+   reduced-motion overrides). */
+:root[data-motion="paused"] *,
+:root[data-motion="paused"] *::before,
+:root[data-motion="paused"] *::after{ animation-play-state:paused !important; }
+
 /* ============================================================
    SECTION DIVIDER (thin glitch strip)
    ============================================================ */

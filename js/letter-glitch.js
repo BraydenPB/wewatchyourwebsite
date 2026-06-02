@@ -62,6 +62,11 @@
       typeof matchMedia === "function" &&
       matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    this._onScreen = true;
+    // Runtime motion gate (WCAG 2.2.2 footer toggle), a sibling of _reduceMotion.
+    this._motionPaused =
+      document.documentElement.getAttribute("data-motion") === "paused";
+
     this._mount();
     this._bindResize();
     this.resize();
@@ -72,7 +77,21 @@
     // stalls everything (Lottie, progress bars, highlight) until scrolling settles.
     // Pausing off-screen instances removed 100% of scroll long-tasks in profiling.
     this._bindVisibility();
+    this._bindMotion();
   }
+
+  // Global Pause/Resume (WCAG 2.2.2): freeze to the current static frame on pause;
+  // on resume re-check the cached on-screen flag (never blind-start off-screen).
+  LetterGlitch.prototype._bindMotion = function () {
+    if (this._reduceMotion) return; // no motion to pause under reduced-motion
+    var self = this;
+    this._onMotion = function (e) {
+      self._motionPaused = !!(e.detail && e.detail.paused);
+      if (self._motionPaused) self.stop();
+      else if (self._onScreen) self.start();
+    };
+    document.addEventListener("wwyw:motion", this._onMotion);
+  };
 
   LetterGlitch.prototype._mount = function () {
     this.container.classList.add("glitch");
@@ -223,8 +242,8 @@
     }
     var self = this;
     this._io = new IntersectionObserver(function (entries) {
-      var onScreen = entries[entries.length - 1].isIntersecting;
-      if (onScreen) self.start();
+      self._onScreen = entries[entries.length - 1].isIntersecting;
+      if (self._onScreen) self.start();
       else self.stop();
     }, { rootMargin: "200px 0px" }); // warm up just before it scrolls into view
     this._io.observe(this.container);
@@ -249,6 +268,7 @@
       this._draw();
       return;
     }
+    if (this._motionPaused) return; // global Pause control is active — stay frozen
     if (this.rafId) cancelAnimationFrame(this.rafId);
     var self = this;
     this.last = performance.now();
@@ -258,6 +278,7 @@
   LetterGlitch.prototype.destroy = function () {
     if (this.rafId) cancelAnimationFrame(this.rafId);
     if (this._io) { this._io.disconnect(); this._io = null; }
+    if (this._onMotion) { document.removeEventListener("wwyw:motion", this._onMotion); this._onMotion = null; }
     clearTimeout(this.resizeTimer);
     window.removeEventListener("resize", this._onResize);
     if (this.canvas && this.canvas.parentNode) {

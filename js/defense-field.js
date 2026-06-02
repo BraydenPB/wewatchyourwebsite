@@ -417,8 +417,10 @@
       render(true, now);
     }
 
+    var motionPaused = document.documentElement.getAttribute("data-motion") === "paused";
+
     function play() {
-      if (running || prefersReduced) return;
+      if (running || prefersReduced || motionPaused) return;
       running = true; last = 0;
       raf = requestAnimationFrame(frame);
     }
@@ -463,6 +465,13 @@
       }
       document.addEventListener("visibilitychange", function () {
         document.hidden || !onScreen ? pause() : play();
+      });
+      // Global Pause/Resume (WCAG 2.2.2): freeze to the static boundary frame, or
+      // resume only when on-screen and the tab is visible.
+      document.addEventListener("wwyw:motion", function (e) {
+        motionPaused = !!(e.detail && e.detail.paused);
+        if (motionPaused) { pause(); staticFrame(); }
+        else if (onScreen && !document.hidden) play();
       });
       render(true, 0);
       play();

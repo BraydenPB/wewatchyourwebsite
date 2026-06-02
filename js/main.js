@@ -194,6 +194,21 @@
       toggle.addEventListener("click", function () { setUserPaused(!userPaused); });
     }
 
+    // Global "Pause animations" control (footer) → freeze/resume the auto-cycle
+    // too, so the site-wide control is honest (it can't leave the console
+    // visibly advancing). It rides the SAME sticky user-pause used by this
+    // console's own button, so the two never fight: a global pause pauses here,
+    // and a global resume only un-pauses if the user hadn't separately paused.
+    var pausedByGlobal = false;
+    document.addEventListener("wwyw:motion", function (e) {
+      var paused = !!(e.detail && e.detail.paused);
+      if (paused) {
+        if (!userPaused) { pausedByGlobal = true; setUserPaused(true); }
+      } else if (pausedByGlobal) {
+        pausedByGlobal = false; setUserPaused(false);
+      }
+    });
+
     tabs.forEach(function (tab, i) {
       tab.addEventListener("click", function () {
         // On touch (no hover), a tap is the user taking control — pause stickily
@@ -497,6 +512,36 @@
     Array.prototype.forEach.call(nums, function (el) { io.observe(el); });
   }
 
+  /* ---------- Global motion control (WCAG 2.2.2 Pause, Stop, Hide) ----------
+     The decorative canvases (waveform, radar, defense field, glitch fields) and
+     the scan console auto-run for far longer than 5s. prefers-reduced-motion is
+     an OS-level setting a user may not have (or be able to) set, and it's a
+     2.3.3-AAA technique — NOT sufficient for 2.2.2 (Level A). This adds one
+     discoverable in-page control: it flips documentElement[data-motion] and
+     fires a "wwyw:motion" event that every animated module listens for to freeze
+     to its static frame / resume. Under prefers-reduced-motion there's nothing
+     to pause, so the button is CSS-hidden and we don't reveal it. */
+  function motionControl() {
+    var btn = document.querySelector("[data-motion-toggle]");
+    if (!btn || prefersReduced) return; // no button, or no motion to control
+    var label = btn.querySelector("[data-motion-toggle-label]");
+    var root = document.documentElement;
+
+    function apply(paused) {
+      if (paused) root.setAttribute("data-motion", "paused");
+      else root.removeAttribute("data-motion");
+      btn.setAttribute("aria-pressed", paused ? "true" : "false");
+      if (label) label.textContent = paused ? "Resume animations" : "Pause animations";
+      // Modules subscribe to this and freeze/resume on their own gates.
+      document.dispatchEvent(new CustomEvent("wwyw:motion", { detail: { paused: paused } }));
+    }
+
+    btn.addEventListener("click", function () {
+      apply(root.getAttribute("data-motion") !== "paused");
+    });
+    btn.hidden = false; // reveal only once JS can actually drive the animations
+  }
+
   function init() {
     mountGlitch();
     mountConsole();
@@ -505,6 +550,7 @@
     scrollSpy();
     scrollReveal();
     countUp();
+    motionControl();
     document.documentElement.classList.add("js-ready");
   }
 
