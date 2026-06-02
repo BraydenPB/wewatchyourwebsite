@@ -35,3 +35,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Pages project name. Set the CLOUDFLARE_PROJECT repository *variable*
+          # (it is non-sensitive) to deploy to your own project; falls back to
+          # "wwyw2" if unset. See README → Deploying.
+          CLOUDFLARE_PROJECT: ${{ vars.CLOUDFLARE_PROJECT }}

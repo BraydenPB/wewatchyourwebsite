@@ -35,7 +35,7 @@ js/
   pipeline.js         Code-analyzer inspect/scan animation.
   vendor/lottie.min.js  Self-hosted lottie-web 5.12.2 (the 4 scan-pass animations).
 assets/
-  img/                Logos, favicon, social/app icons (see "Icons & social" below).
+  img/                Brand logos, favicon (SVG), apple-touch + PWA icons, OG share image.
   lottie/             Lottie JSON animations for the WordPress scan console.
 robots.txt            Allows all crawlers; points at the sitemap.
 sitemap.xml           Single-page sitemap.
@@ -87,8 +87,11 @@ npm run deploy     # assemble dist/ AND deploy to Cloudflare Pages
 ```
 
 `.github/workflows/deploy.yml` auto-deploys on push to `main`. To use it, add
-`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as GitHub repository secrets. **If you
-don't want auto-deploy, delete that workflow file.**
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as GitHub repository **secrets**.
+The workflow deploys to a Pages project named `wwyw2` by default; to target a
+differently-named project, add a `CLOUDFLARE_PROJECT` repository **variable** (it's
+non-sensitive, so a variable rather than a secret). **If you don't want auto-deploy,
+delete that workflow file.**
 
 ---
 
@@ -110,8 +113,10 @@ The markup is framework-agnostic and templating-friendly:
 
 ## Before you launch — checklist
 
-- [ ] **Legal pages.** The footer links to `/privacy-policy/` and `/terms-of-service/`.
-      Create those pages (or repoint the links). They are intentionally not written here.
+- [ ] **Legal pages.** `privacy-policy/` and `terms-of-service/` ship as honest
+      "being finalized" placeholders (marked `noindex`) so the footer links resolve instead
+      of 404ing. Replace their contents with your real Privacy Policy and Terms before
+      launch — the legal text is intentionally not written for you.
 - [ ] **Cloudflare account.** Set `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_PROJECT` to your own
       account before deploying (see above). Nothing ships to anyone else's account.
 - [ ] **Domain in metadata.** Canonical URL, Open Graph `og:url`/`og:image`, the JSON-LD

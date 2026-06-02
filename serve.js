@@ -7,13 +7,21 @@ const PORT = process.env.PORT || 8098;
 const ROOT = __dirname;
 const TYPES = {
   ".html": "text/html", ".css": "text/css", ".js": "text/javascript",
-  ".json": "application/json", ".svg": "image/svg+xml", ".png": "image/png",
+  ".json": "application/json", ".webmanifest": "application/manifest+json",
+  ".svg": "image/svg+xml", ".png": "image/png",
   ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp",
   ".gif": "image/gif", ".woff2": "font/woff2", ".woff": "font/woff", ".ttf": "font/ttf",
+  ".xml": "application/xml", ".txt": "text/plain",
 };
 
 http.createServer((req, res) => {
-  let f = decodeURIComponent(req.url.split("?")[0]);
+  let f;
+  try {
+    f = decodeURIComponent(req.url.split("?")[0]);
+  } catch {
+    // Malformed percent-encoding (e.g. a stray "%") — don't crash the server.
+    res.writeHead(400); res.end("400"); return;
+  }
   if (f.endsWith("/")) f += "index.html";
   f = path.normalize(path.join(ROOT, f));
   // Contain requests to ROOT — reject path-traversal (e.g. /../../etc/passwd).

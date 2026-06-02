@@ -9,10 +9,11 @@
 //
 // Usage:
 //   npm run build    -> just assemble dist/ (inspect before shipping)
-//   npm run deploy   -> assemble dist/ AND push it to Pages (project: wwyw2)
+//   npm run deploy   -> assemble dist/ AND push it to Pages
 //
-// Requires: wrangler logged in, and CLOUDFLARE_ACCOUNT_ID set to the WebPath
-// Agency account (the script sets a sensible default if unset).
+// Requires: wrangler logged in, and CLOUDFLARE_ACCOUNT_ID set to your own
+// Cloudflare account (there is no built-in default — deploy throws if unset).
+// Optionally set CLOUDFLARE_PROJECT to override the Pages project name.
 
 const fs = require("fs");
 const path = require("path");
@@ -22,8 +23,13 @@ const ROOT = __dirname;
 const DIST = path.join(ROOT, "dist");
 
 // The ONLY things that get published. Files are copied as-is; dirs recursively.
-// (robots.txt, sitemap.xml, _headers are root-level static config Cloudflare reads.)
-const PUBLISH = ["index.html", "assets", "css", "js", "robots.txt", "sitemap.xml", "_headers", "site.webmanifest"];
+// (robots.txt, sitemap.xml, _headers are root-level static config Cloudflare reads.
+// privacy-policy/ and terms-of-service/ are placeholder legal pages — see README.)
+const PUBLISH = [
+  "index.html", "assets", "css", "js",
+  "robots.txt", "sitemap.xml", "_headers", "site.webmanifest",
+  "privacy-policy", "terms-of-service",
+];
 
 // Cloudflare Pages target. Both are required via environment for a clean handoff —
 // set CLOUDFLARE_PROJECT and CLOUDFLARE_ACCOUNT_ID (plus CLOUDFLARE_API_TOKEN in CI)
