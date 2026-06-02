@@ -492,8 +492,8 @@ body::after{
 .nav__brand:focus-visible{ box-shadow:var(--focus-ring); }
 /* Logo height. Base governs MOBILE; the desktop override below sets its own size.
    The header bar is a fixed 64px (.nav), independent of this, so the logo height
-   does NOT grow the header (40px clears 64px with 12px breathing room each side). */
-.brand-logo{ height:40px; width:auto; }
+   does NOT grow the header (48px clears 64px with 8px breathing room each side). */
+.brand-logo{ height:48px; width:auto; }
 
 .nav__links{
   display:none; align-items:center; gap:var(--space-2);
