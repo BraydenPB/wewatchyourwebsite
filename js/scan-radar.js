@@ -63,12 +63,14 @@
 
     function drawRings() {
       var i, rr;
-      // concentric range rings
+      // concentric range rings — climb the lime ramp outward (deep inner →
+      // brighter outer) so the dial reads with depth, matching the netops bars.
+      var ringAlpha = [0.07, 0.10, 0.14, 0.19];
       for (i = 1; i <= 4; i++) {
         rr = (R * i) / 4;
         ctx.beginPath();
         ctx.arc(cx, cy, rr, 0, Math.PI * 2);
-        ctx.strokeStyle = rgba(LIME, 0.10);
+        ctx.strokeStyle = rgba(LIME, ringAlpha[i - 1]);
         ctx.lineWidth = 1;
         ctx.stroke();
       }
