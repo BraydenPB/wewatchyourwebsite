@@ -1,0 +1,18 @@
+node_modules/
+.DS_Store
+*.log
+.wrangler/
+.reference/
+.screenshots/
+dist/
+
+# Claude Code — personal/local state (keep .mcp.json tracked, ignore local approvals)
+.claude/
+.agents/
+skills-lock.json
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+.workflow-landing.js
+
+# Private working notes — design strategy / internal history. Never ship to client.
+memory/

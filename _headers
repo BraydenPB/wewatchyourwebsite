@@ -1,0 +1,34 @@
+# Cloudflare Pages response headers. https://developers.cloudflare.com/pages/configuration/headers/
+# These are conservative, non-breaking security headers safe for this static site.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  # Top-level browsing-context isolation (OWASP baseline). Safe here: the page
+  # opens no cross-origin popups that read window.opener, and every target=_blank
+  # link already carries rel=noopener. (COEP:require-corp is intentionally not
+  # paired — it's unnecessary here and would only add cross-origin friction.)
+  Cross-Origin-Opener-Policy: same-origin
+
+# Cache the vendor bundle for a week. NOT "immutable" / not a year: the filename has
+# no content hash, so if you ever bump the lottie-web version, a shorter max-age lets
+# returning visitors pick it up without serving a stale bundle. HTML stays default so
+# content edits show immediately.
+/js/vendor/*
+  Cache-Control: public, max-age=604800
+
+# Self-hosted fonts: content-stable woff2 we control. Long-cache immutable — if you
+# ever re-subset or bump a family, ship a new filename so returning visitors fetch it.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# OPTIONAL — Content-Security-Policy. Left disabled because this page uses inline
+# <style> (the wordmark sprite) and inline style="--i:.." attributes, so it needs
+# 'unsafe-inline' in style-src. Fonts are now self-hosted, so no third-party font
+# origins are required (font-src 'self'). TEST in a preview deployment before
+# enabling. A working starting point:
+#
+# /*
+#   Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; base-uri 'self'; frame-ancestors 'self'
